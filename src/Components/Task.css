@@ -1,0 +1,47 @@
+.parent {
+  display: flex;
+  flex-direction: row;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: green;
+  border-radius: 8px;
+  background-color: lightgreen;
+  width: 80%;
+  /* width: 200px;
+  
+  height: 200px; */
+}
+
+.child1 {
+  display: flex;
+  flex: 2;
+  flex-direction: column;
+}
+
+.child2 {
+  display: flex;
+  flex: 1;
+}
+
+.taskTitle {
+  display: flex;
+  width: 100%;
+}
+
+.taskInfo {
+  display: flex;
+  width: 100%;
+}
+
+.card {
+  display: flex;
+  margin-bottom: 10px;
+  width: 90% !important;
+}
+
+.task {
+  display: flex;
+  justify-content: center;
+}

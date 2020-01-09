@@ -1,0 +1,9 @@
+.dashboard {
+  margin-top: 10px;
+}
+
+.panelContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
