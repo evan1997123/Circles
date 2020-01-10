@@ -4,9 +4,11 @@ import { BrowserRouter, Route, Redirect } from "react-router-dom";
 import GetStarted from "./Components/GetStarted";
 import Dashboard from "./Components/Dashboard/Dashboard";
 import Circle from "./Components/Circle/Circle";
+import CircleColumn from "./Components/Circle/CircleColumn";
+
 import "bootstrap/dist/css/bootstrap.min.css";
 import Nav from "react-bootstrap/Nav";
-import NavigationBar from "./Components/NavigationBar";
+import NavigationBar from "./Components/NavigationBar/NavigationBar";
 import firebase from "./config/firebase.js";
 // import withFirebaseAuth from "react-with-firebase-auth";
 import { connect } from "react-redux";
@@ -50,7 +52,6 @@ class App extends React.Component {
   componentDidUpdate() {}
 
   render() {
-    console.log(this.props);
     var user;
     const auth = this.props.firebaseAuthRedux;
     const profile = this.props.firebaseProfileRedux;
@@ -68,16 +69,14 @@ class App extends React.Component {
       ]
     );
 
-    console.log("new proj");
     return (
-      <BrowserRouter>
-        <div>
-          <NavigationBar
-            profile={profile}
-            signInUpOrOut={signInUpOrOut}
-            isAuthed={auth.uid}
-          />
-
+      <div>
+        <NavigationBar
+          profile={profile}
+          signInUpOrOut={signInUpOrOut}
+          isAuthed={auth.uid}
+        />
+        <BrowserRouter>
           <Route
             path="/getstarted"
             component={() => <GetStarted isAuthed={auth.uid} />}
@@ -91,6 +90,7 @@ class App extends React.Component {
           <Route path="/circle:id" component={Circle} />
           <Route path="/signin" component={SignInPage} />
           <Route path="/signup" component={SignUpPage} />
+          <Route path="/testing" component={CircleColumn} />
 
           <Route
             path="/home"
@@ -100,14 +100,13 @@ class App extends React.Component {
           />
 
           <Route exact path="/" component={() => <Redirect to="/home" />} />
-        </div>
-      </BrowserRouter>
+        </BrowserRouter>
+      </div>
     );
   }
 }
 
 const mapStateToProps = state => {
-  console.log(state);
   return {
     firebaseAuthRedux: state.firebase.auth,
     firebaseProfileRedux: state.firebase.profile

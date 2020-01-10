@@ -1,6 +1,6 @@
 import React from "react";
 // import NotificationContainer from "../Components/Dashboard/NotificationContainer";
-import CircleColumn from "./CircleColumn";
+import TaskList from "./Tasklist";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import "./CircleHome.css";

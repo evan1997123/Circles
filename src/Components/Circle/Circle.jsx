@@ -1,8 +1,9 @@
 import React from "react";
 import "./Circle.css";
-import CircleColumn from "./CircleColumn";
+import TaskForm from "./TaskForm";
+import CircleColumns from "./CircleColumns";
 import { connect } from "react-redux";
-import { createTask } from "../../Store/Actions/TaskActions";
+import { createTask, moveTask } from "../../Store/Actions/TaskActions";
 import { firestoreConnect } from "react-redux-firebase"; // so this allows us to connect this component to a firebase collection
 import { compose } from "redux";
 import { Redirect } from "react-router-dom";
@@ -17,46 +18,33 @@ class Circle extends React.Component {
       completeBy: "",
       reward: 0
     };
-    this.addToPendingTasks = this.addToPendingTasks.bind(this);
-    this.removedFromToDo = this.removedFromToDo.bind(this);
-    this.updateInput = this.updateInput.bind(this);
-    this.createTask = this.createTask.bind(this);
+
+    //input form local state
+    this.handleChangeInput = this.handleChangeInput.bind(this);
+    //creating a task from the form
+    this.handleCreateTask = this.handleCreateTask.bind(this);
+
+    //methods for moving tasks from toDo => pending => completed
+    this.handleMoveTasks = this.handleMoveTasks.bind(this);
   }
 
-  componentDidMount() {}
-  addToPendingTasks(task) {
-    console.log("addToPendingTasks");
-  }
-  removedFromToDo(tasks) {
-    // this.setState({
-    //   toDoTasks: tasks
-    // });
-  }
-
-  updateInput(e) {
+  //event handler for change in input form local state
+  handleChangeInput(e) {
     this.setState({
       [e.target.name]:
         e.target.type === "number" ? parseInt(e.target.value) : e.target.value
     });
   }
 
-  createTask(e) {
+  //event handler for creating a task
+  handleCreateTask(e) {
     e.preventDefault();
-    // this function is at the bottom,
-    this.props.createTaskComponent(this.state);
-    // var newTask = {
-    //   taskName: this.state.taskName,
-    //   taskDescription: this.state.taskDescription,
-    //   completeBy: this.state.completeBy,
-    //   reward: this.state.reward
-    // };
-    // this.setState({
-    //   toDoTasks: [...this.state.toDoTasks, newTask]
-    // });
-    // console.log(this.state.taskName);
-    // console.log(this.state.assignedBy);
-    // console.log(this.state.taskDescription);
-    var frm = document.getElementsByName("newTaskForm")[0];
+
+    //dispatch creation of task data object
+    this.props.dispatchCreateTask(this.state);
+
+    //find form
+    var frm = document.getElementsByName("TaskForm")[0];
     frm.reset();
     this.setState({
       taskName: "",
@@ -66,179 +54,91 @@ class Circle extends React.Component {
       reward: ""
     });
   }
-  render() {
-    var longInput = {
-      width: 500
-    };
 
-    const auth = this.props.firebaseAuthRedux;
+  //event handler for moving tasks to a different stage
+  handleMoveTasks(task, userID) {
+    //this.props.dispatchMoveTask();
+    this.props.dispatchMoveTask(task, userID);
+  }
+
+  render() {
+    //console.log(this.state);
+    const auth = this.props.firebaseAuth;
+    const userID = auth.uid;
+
     //if not logged in, then redirect to signin page
-    if (!auth.uid) {
+    if (!userID) {
       return <Redirect to="/signin" />;
     }
-    var dynamicTasks = this.props.allTasksRedux;
-    var allUsers = this.props.allUsersRedux;
-    // console.log(allUsers);
-    console.log(this.state);
-    if (allUsers) {
-      var listOfUsers = [
-        allUsers.map((user, index) => (
-          <option value={user.id} key={index}>
-            {user.firstName} {user.lastName}
-          </option>
-        ))
-      ];
-      listOfUsers.unshift(
-        <option
-          disabled
-          hidden
-          style={{ display: "none" }}
-          value=""
-          key={-1}
-        ></option>
-      );
-    }
 
-    // if (dynamicTasks !== this.state.toDoTasks) {
-    //   this.setState({
-    //     toDoTasks: dynamicTasks
-    //   });
-    // }
-    console.log(this.props);
+    //IDEALLY allTasks should get all the tasks from a particular circle, without having to fetch all the tasks and filter out via circle ID
+    //similarily, allUsers should only be all the users in this circle
+    //isn't that bad security design?
+    var allTasks = this.props.firestoreTasks;
+    var allUsers = this.props.firestoreUsers;
+    //console.log(allTasks);
+
     return (
       <div className="overallContainer">
         TaskForm
-        <div>
-          <form name="newTaskForm" onSubmit={this.createTask}>
-            <label>Task Name</label>
-            <input
-              type="text"
-              name="taskName"
-              placeholder="Finish Homework 0"
-              onChange={this.updateInput}
-              value={this.state.taskName}
-            />
-            <br />
-            {/* unneccessary becuase whoever is logged in is the creator*/}
-            {/* <label>Assigned By</label>
-            <input
-              type="text"
-              name="assignedBy"
-              placeholder="Christine"
-              onChange={this.updateInput}
-              alue={this.state.assignedBy}
-            />
-            <br /> */}
-            <label>
-              Assigned For
-              <select
-                name="assignedForID"
-                onChange={this.updateInput}
-                value={this.state.assignedForID}
-              >
-                {listOfUsers}
-              </select>
-            </label>
-            <br />
-            <label>Complete By</label>
-            <input
-              type="date"
-              name="completeBy"
-              placeholder="01/10/2020"
-              onChange={this.updateInput}
-              alue={this.state.completeBy}
-            />
-            <br />
-            <label>Reward</label>
-            <input
-              type="number"
-              name="reward"
-              placeholder="10"
-              onChange={this.updateInput}
-              alue={this.state.reward}
-            />
-            <br />
-            <label>Task Description</label>
-            <input
-              type="text"
-              name="taskDescription"
-              placeholder="Task Description"
-              onChange={this.updateInput}
-              style={longInput}
-              alue={this.state.taskDescription}
-            />
-            <br />
-
-            <button type="submit">Submit</button>
-          </form>
-        </div>
+        <TaskForm
+          handleCreateTask={this.handleCreateTask}
+          handleChangeInput={this.handleChangeInput}
+          formData={this.state}
+          allUsers={allUsers}
+          userID={userID}
+        />
         <div className="centered">
-          <CircleColumn
-            title="Tasks To Do"
-            color="primary"
-            button="Complete"
-            tasks={dynamicTasks}
-            addToPendingTasks={this.addToPendingTasks}
-            removedFromToDo={this.removedFromToDo}
-          ></CircleColumn>
-          <CircleColumn
-            title="Pending"
-            color="secondary"
-            button="Request Approval"
-            tasks={this.state.pendingTasks}
-          ></CircleColumn>
-          <CircleColumn
-            title="Tasks Completed"
-            color="success"
-            button="Dismiss"
-            tasks={this.state.completedTasks}
-            removedFromTasksCompleted={this.removedFromTasksCompleted}
-          ></CircleColumn>
+          <CircleColumns
+            allTasks={allTasks}
+            handleMoveTasks={this.handleMoveTasks}
+            userID={userID}
+          />
         </div>
       </div>
     );
   }
 }
 
-// ownProps allows us to pass in props to this, incase we want something from props
+//if we had a parameter that was passed in from the props such as a taskID or something we could do
+/*
+const id = ownProps.match.params.taskID
+const tasks = state.firestore.data.task
+const task = tasks ? tasks[id] : null
+return  {
+  firestoreTask: task
+}
+
+the return value would now be a single task that would be stored in this.props.firestoreTask
+*/
+
+// state is the REDUX STORE
+// ownProps allows us to pass in this.props to this, incase we want something from props
 const mapStateToProps = (state, ownProps) => {
-  console.log(state); // this console.log, go to the webpage and inspect. then check object>firestore>ordered or data C:
-  // this for dummy data
-  // return {
-  //   allTasksRedux: state.task.tasks
-  // };
-
-  //if we had a parameter that was passed in from the props such as a taskID or something we could do
-  /*
-  const id = ownProps.match.params.taskID
-  const tasks = state.firestore.data.task
-  const task = tasks ? tasks[id] : null
-  return  {
-    allTasksRedux: task
-  }
-
-  the return calue would now be a single task that would be stored in this.props.reduxStoreTask
-   */
+  //this shows the current state of the Redux store
+  //console.log(state);
 
   //this for firestore data
   return {
-    allTasksRedux: state.firestore.ordered.tasks,
-    allUsersRedux: state.firestore.ordered.users,
-    firebaseAuthRedux: state.firebase.auth
+    firestoreTasks: state.firestore.ordered.tasks,
+    firestoreUsers: state.firestore.ordered.users,
+    firebaseAuth: state.firebase.auth
   };
 };
 
+//dispatchCreateTask is a method to dispatch the create task event upon submitting the form
+//createTask is a functional action creator from TaskActions
 const mapDispatchToProps = dispatch => {
   return {
-    //this takes in a task ( which we pass in above) and calls dispatch which just calls a function on createTask
-    // creatTask is created from above import, and that  takes us to TaskActions.js
-    createTaskComponent: task => dispatch(createTask(task))
+    dispatchCreateTask: task => dispatch(createTask(task)),
+    dispatchMoveTask: (task, userID) => dispatch(moveTask(task, userID))
   };
 };
+
+//firestoreConnect takes in an array of of objects that say which collection you want to connect to
+//whenever database for this collection is changed, it will induce the firestoreReducer, which will sync firestore/redux store state
+//and then this component will "hear" it.
 export default compose(
   connect(mapStateToProps, mapDispatchToProps),
-  //firestoreConnect takes in an array of of objects that say which collection you want to connect to
-  //whenever database for this collection is changed, it will induce the firestoreReducer, which will sync store state
-  // and then this component will "hear" that because we connected that. Then state will change for the store
   firestoreConnect([{ collection: "tasks" }, { collection: "users" }])
 )(Circle);

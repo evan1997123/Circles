@@ -1,124 +1,60 @@
 import React from "react";
 import "./CircleColumn.css";
-import Task from "../Task";
+import Task from "./Task";
 import Button from "react-bootstrap/Button";
+//props should have something like:
+
+//title="Tasks To Do"
+//color="primary"
+//buttonText="Complete"
+//tasks={tTasks}
+
+//props.tasks
+//essentially the list of tasks to be displayed. ASSUME that these tasks are of the proper type,
 
 class CircleColumn extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      title: this.props.title,
-      tasks: []
-    };
-    this.change = this.change.bind(this);
-    this.resetTasks = this.resetTasks.bind(this);
-  }
-
-  componentDidMount() {
-    this.setState({
-      title: this.props.title
-    });
-  }
-
-  componentDidUpdate(prevState) {
-    if (this.state.tasks !== this.props.tasks) {
-      this.setState({
-        tasks: this.props.tasks
-      });
-    }
-  }
-
-  change(task) {
-    let copyList = [...this.state.tasks];
-    copyList = copyList.filter(item => item !== task);
-
-    if (this.state.title === "Tasks To Do") {
-      this.props.addToPendingTasks(task);
-      this.props.removedFromToDo(copyList);
-    }
-
-    if (this.state.title === "Tasks Completed") {
-      this.props.removedFromTasksCompleted(copyList);
-    }
-  }
-
-  resetTasks() {
-    if (this.state.title === "Tasks To Do") {
-      this.props.removedFromToDo([
-        {
-          taskName: "Reducer: Do your homework 0",
-          assignedBy: "Christine",
-          taskDescription: "Do your homework 0"
-        },
-        {
-          taskName: "Reducer: Wash the dishes",
-          assignedBy: "Christine",
-          taskDescription: "Wash the left dishes"
-        },
-        {
-          taskName: "Reducer: Give your girlfriend attention",
-          assignedBy: "Christine",
-          taskDescription: "Cuddles <3"
-        }
-      ]);
-    }
-    if (this.state.title === "Tasks Completed") {
-      this.props.removedFromTasksCompleted([
-        {
-          taskName: "Reducer: Do your homework 0",
-          assignedBy: "Christine",
-          taskDescription: "Do your homework 0"
-        },
-        {
-          taskName: "Reducer: Wash the dishes",
-          assignedBy: "Christine",
-          taskDescription: "Wash the left dishes"
-        },
-        {
-          taskName: "Reducer: Give your girlfriend attention",
-          assignedBy: "Christine",
-          taskDescription: "Cuddles <3"
-        },
-        {
-          taskName: "Reducer: By Boba",
-          assignedBy: "Evan",
-          taskDescription: "Caramelized Boba"
-        }
-      ]);
-    }
   }
 
   render() {
-    if (this.state.title === "Tasks Completed") {
-      // console.log(this.state.tasks);
-    }
-    var tasks;
-    if (typeof this.state.tasks !== "undefined") {
-      tasks = this.state.tasks.map((task, index) => (
+    //if there are tasks
+    let {
+      tasks,
+      userID,
+      color,
+      buttonText,
+      handleMoveTasks,
+      title
+    } = this.props;
+
+    if (!(typeof tasks === "undefined")) {
+      //tasks is all the task components to be rendered
+      var tasksList = tasks.map((task, index) => (
         <Task
-          color={this.props.color}
+          color={color}
           task={task}
-          change={this.change}
-          button={this.props.button}
-          column={this.state.title}
+          buttonText={buttonText}
+          handleMoveTasks={handleMoveTasks}
           key={index}
+          userID={userID}
         ></Task>
       ));
+      //console.log(tasks);
     }
-    if (tasks) {
+
+    if (!(typeof tasksList === "undefined")) {
       return (
         <div className="columns">
-          <h4>{this.state.title}</h4>
-          {tasks && tasks}
-          <Button onClick={this.resetTasks}>Reset tasks</Button>
+          <h4>{title}</h4>
+          {tasksList && tasksList}
         </div>
       );
     } else {
       return (
         <div className="columns">
-          <h4>{this.state.title}</h4>
+          <h4>{title}</h4>
           Loading Tasks.....
-          <Button onClick={this.resetTasks}>Reset tasks</Button>
         </div>
       );
     }
