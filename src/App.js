@@ -7,6 +7,7 @@ import Circle from "./Components/Circle/Circle";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Nav from "react-bootstrap/Nav";
 import NavigationBar from "./Components/NavigationBar";
+import Landing from "./Components/Landing";
 import firebase from "./config/firebase.js";
 // import withFirebaseAuth from "react-with-firebase-auth";
 import { connect } from "react-redux";
@@ -67,8 +68,6 @@ class App extends React.Component {
         </Nav.Link>
       ]
     );
-
-    console.log("new proj");
     return (
       <BrowserRouter>
         <div>
@@ -77,29 +76,27 @@ class App extends React.Component {
             signInUpOrOut={signInUpOrOut}
             isAuthed={auth.uid}
           />
-
-          <Route
+          {/* <Route
+            exact
             path="/getstarted"
             component={() => <GetStarted isAuthed={auth.uid} />}
-          />
-
+          /> */}
           <Route
             path="/dashboard"
             component={() => <Dashboard isAuthed={auth.uid} />}
           />
           <Route path="/circle" component={Circle} />
-          <Route path="/circle:id" component={Circle} />
+          <Route path="/circle/:id" component={Circle} />
           <Route path="/signin" component={SignInPage} />
           <Route path="/signup" component={SignUpPage} />
 
           <Route
-            path="/home"
-            component={() => (
-              <Redirect to={auth.uid ? "/dashboard" : "/getstarted"} />
-            )}
+            exact
+            path="/"
+            component={() =>
+              auth.uid ? <Dashboard isAuthed={auth.uid} /> : <Landing />
+            }
           />
-
-          <Route exact path="/" component={() => <Redirect to="/home" />} />
         </div>
       </BrowserRouter>
     );
@@ -120,4 +117,7 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App);
