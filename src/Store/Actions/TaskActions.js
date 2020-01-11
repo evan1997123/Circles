@@ -1,7 +1,14 @@
+//action creators that return an inner function that will be passed to the outer dispatch
+//once the outer dispatch is called these will run
+
+//action creator for creating a task and storing it in firestore database
+//input: task data object
 export const createTask = task => {
   return (dispatch, getState, { getFirebase, getFirestore }) => {
     //pause dispatch
     //do async calls to Database
+    //this is asynchronous and returns a Promise. This promise we can use .then, which only fires when promise is returned
+    // if an error, then it will catch and dispatch an error
     const firestore = getFirestore();
     const profile = getState().firebase.profile;
     const assignedByID = getState().firebase.auth.uid;
@@ -15,23 +22,28 @@ export const createTask = task => {
         if (!doc.exists) {
           dispatch({
             type: "CREATE_TASK_ERROR",
-            err: "couldn't find assignedFor User"
+            err: "couldn't find User corresponding to Task (i.e. assignedFor)"
           });
         } else {
           assignedFor = doc.data().firstName + " " + doc.data().lastName;
+          const uuidv4 = require("uuid/v4");
+          const uuid = uuidv4();
           var newTask = {
             ...task,
-            createdAt: new Date(),
+            createdDate: new Date(),
             assignedBy: fullName,
             assignedByID: assignedByID,
             assignedFor: assignedFor,
-            taskStage: "toDo"
+            taskStage: "toDo",
+            taskID: uuid
           };
-          //this is asynchronous and returns a Promise. This promise we can use .then, which only fires when promise is returned
-          // if an error, then it will catch and dispatch an error
+          //add task to firestore, then
+          //dispatch action again so be handled by TaskReducer.js
+
           firestore
             .collection("tasks")
-            .add(newTask)
+            .doc(uuid)
+            .set(newTask)
             .then(() => {
               dispatch({
                 type: "CREATE_TASK",
@@ -44,33 +56,102 @@ export const createTask = task => {
                 err: err
               });
             });
-          //dispatch action again and it goes to TaskReducer.js
         }
       });
-    // var newTask = {
-    //   ...task,
-    //   createdAt: new Date(),
-    //   assignedBy: fullName,
-    //   assignedByID: assignedByID,
-    //   assignedFor: assignedFor
-    // };
-    // //this is asynchronous and returns a Promise. This promise we can use .then, which only fires when promise is returned
-    // // if an error, then it will catch and dispatch an error
-    // firestore
-    //   .collection("tasks")
-    //   .add(newTask)
-    //   .then(() => {
-    //     dispatch({
-    //       type: "CREATE_TASK",
-    //       task: newTask
-    //     });
-    //   })
-    //   .catch(err => {
-    //     dispatch({
-    //       type: "CREATE_TASK_ERROR",
-    //       err: err
-    //     });
-    //   });
-    // //dispatch action again and it goes to TaskReducer.js
+  };
+};
+
+//action creator for moving a task, i.e. modifying it's taskStage property in firestore database
+//input: task data object
+export const moveTask = (task, userID) => {
+  return (dispatch, getState, { getFirebase, getFirestore }) => {
+    //console.log(task);
+    //console.log(userID);
+
+    const firestore = getFirestore();
+
+    //delete bad tasks, display error
+    if (typeof task.taskID === "undefined") {
+      dispatch({
+        type: "MOVE_TASK_ERROR",
+        err: "taskID is undefined"
+      });
+    } else {
+      if (task.taskStage === "toDo") {
+        firestore
+          .collection("tasks")
+          .doc(task.taskID)
+          .update({
+            taskStage: "pending"
+          })
+          .then(() => {
+            dispatch({
+              type: "MOVE_TASK_TODO2PENDING",
+              task: { ...task, taskStage: "pending" }
+            });
+          })
+          .catch(err => {
+            dispatch({
+              type: "MOVE_TASK_ERROR",
+              err: err
+            });
+          });
+      } else if (task.taskStage === "pending") {
+        //if the current logged in user is the one with accountability over this task
+        if (userID === undefined) {
+          dispatch({
+            type: "MOVE_TASK_ERROR",
+            err: "userID missing"
+          });
+        } else {
+          if (userID === task.assignedByID) {
+            firestore
+              .collection("tasks")
+              .doc(task.taskID)
+              .update({
+                taskStage: "completed"
+              })
+              .then(() => {
+                dispatch({
+                  type: "MOVE_TASK_PENDING2COMPLETED",
+                  task: { ...task, taskStage: "completed" }
+                });
+              })
+              .catch(err => {
+                dispatch({
+                  type: "MOVE_TASK_ERROR",
+                  err: err
+                });
+              });
+          } else {
+            console.log("sanity check");
+          }
+        }
+      } else if (task.taskStage === "completed") {
+        firestore
+          .collection("tasks")
+          .doc(task.taskID)
+          .update({
+            taskStage: "dismissed"
+          })
+          .then(() => {
+            dispatch({
+              type: "MOVE_TASK_COMPLETED2DISMISSED",
+              task: { ...task, taskStage: "dismissed" }
+            });
+          })
+          .catch(err => {
+            dispatch({
+              type: "MOVE_TASK_ERROR",
+              err: err
+            });
+          });
+      } else {
+        dispatch({
+          type: "MOVE_TASK_ERROR",
+          err: "taskStage corrupted: " + task.taskStage
+        });
+      }
+    }
   };
 };

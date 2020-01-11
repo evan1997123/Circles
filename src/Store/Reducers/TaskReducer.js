@@ -1,61 +1,4 @@
-const initState = {
-  tasks: [
-    {
-      toDoTasks: [
-        {
-          taskName: "Reducer: Do your homework 0",
-          assignedBy: "Christine",
-          taskDescription: "Do your homework 0"
-        },
-        {
-          taskName: "Reducer: Wash the dishes",
-          assignedBy: "Christine",
-          taskDescription: "Wash the left dishes"
-        },
-        {
-          taskName: "Reducer: Give your girlfriend attention",
-          assignedBy: "Christine",
-          taskDescription: "Cuddles <3"
-        }
-      ],
-      pendingTasks: [
-        {
-          taskName: "Reducer: Do your homework 0",
-          assignedBy: "Christine",
-          taskDescription: "Do your homework 0"
-        },
-        {
-          taskName: "Reducer: Wash the dishes",
-          assignedBy: "Christine",
-          taskDescription: "Wash the left dishes"
-        },
-        {
-          taskName: "Reducer: Give your girlfriend attention",
-          assignedBy: "Christine",
-          taskDescription: "Cuddles <3"
-        },
-        {
-          taskName: "Reducer: By Boba",
-          assignedBy: "Evan",
-          taskDescription: "Caramelized Boba"
-        }
-      ]
-    },
-    {
-      toDoTasks: [
-        "Reducer: Do your homework",
-        "Reducer: Wash the dishes",
-        "Reducer: Give your girlfriend attention"
-      ],
-      pendingTasks: [
-        "Reducer: Do your homework",
-        "Reducer: Wash the dishes",
-        "Reducer: Give your girlfriend attention",
-        "Reducer: Buy boba"
-      ]
-    }
-  ]
-};
+const initState = {};
 
 const TaskReducer = (state = initState, action) => {
   switch (action.type) {
@@ -64,6 +7,18 @@ const TaskReducer = (state = initState, action) => {
       return state;
     case "CREATE_TASK_ERROR":
       console.log("create task error:", action.err);
+      return state;
+    case "MOVE_TASK_TODO2PENDING":
+      console.log("moved task from toDo to pending", action.task);
+      return state;
+    case "MOVE_TASK_PENDING2COMPLETED":
+      console.log("moved task from pending to completed", action.task);
+      return state;
+    case "MOVE_TASK_COMPLETED2DISMISSED":
+      console.log("moved task from completed to dismissed", action.task);
+      return state;
+    case "MOVE_TASK_ERROR":
+      console.log("move task error:", action.err);
       return state;
     default:
       return state;

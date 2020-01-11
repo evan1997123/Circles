@@ -4,6 +4,8 @@ import { BrowserRouter, Route, Redirect } from "react-router-dom";
 import GetStarted from "./Components/GetStarted";
 import Dashboard from "./Components/Dashboard/Dashboard";
 import Circle from "./Components/Circle/Circle";
+import CircleColumn from "./Components/Circle/CircleColumn";
+
 import "bootstrap/dist/css/bootstrap.min.css";
 import Nav from "react-bootstrap/Nav";
 import NavigationBar from "./Components/NavigationBar";
@@ -51,7 +53,6 @@ class App extends React.Component {
   componentDidUpdate() {}
 
   render() {
-    console.log(this.props);
     var user;
     const auth = this.props.firebaseAuthRedux;
     const profile = this.props.firebaseProfileRedux;
@@ -89,6 +90,7 @@ class App extends React.Component {
           <Route path="/circle/:id" component={Circle} />
           <Route path="/signin" component={SignInPage} />
           <Route path="/signup" component={SignUpPage} />
+          <Route path="/testing" component={CircleColumn} />
 
           <Route
             exact
@@ -104,7 +106,6 @@ class App extends React.Component {
 }
 
 const mapStateToProps = state => {
-  console.log(state);
   return {
     firebaseAuthRedux: state.firebase.auth,
     firebaseProfileRedux: state.firebase.profile
