@@ -5,11 +5,10 @@ import Nav from "react-bootstrap/Nav";
 
 class NavigationBar extends Component {
   render() {
-    //console.log(this.props.isAuthed);
-    let homePage = this.props.isAuthed ? "/dashboard" : "/getstarted";
+    let homePage = this.props.isAuthed ? "/dashboard" : "/";
 
     return (
-      <Navbar bg="light" expand="lg">
+      <Navbar id="navbar" bg="light" expand="lg">
         <Navbar.Brand href={homePage}>Circles</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">

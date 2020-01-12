@@ -9,6 +9,7 @@ import CircleColumn from "./Components/Circle/CircleColumn";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Nav from "react-bootstrap/Nav";
 import NavigationBar from "./Components/NavigationBar/NavigationBar";
+import Landing from "./Components/Landing";
 import firebase from "./config/firebase.js";
 // import withFirebaseAuth from "react-with-firebase-auth";
 import { connect } from "react-redux";
@@ -68,40 +69,38 @@ class App extends React.Component {
         </Nav.Link>
       ]
     );
-
     return (
-      <div>
-        <NavigationBar
-          profile={profile}
-          signInUpOrOut={signInUpOrOut}
-          isAuthed={auth.uid}
-        />
-        <BrowserRouter>
-          <Route
+      <BrowserRouter>
+        <div>
+          <NavigationBar
+            profile={profile}
+            signInUpOrOut={signInUpOrOut}
+            isAuthed={auth.uid}
+          />
+          {/* <Route
+            exact
             path="/getstarted"
             component={() => <GetStarted isAuthed={auth.uid} />}
-          />
-
+          /> */}
           <Route
             path="/dashboard"
             component={() => <Dashboard isAuthed={auth.uid} />}
           />
           <Route path="/circle" component={Circle} />
-          <Route path="/circle:id" component={Circle} />
+          <Route path="/circle/:id" component={Circle} />
           <Route path="/signin" component={SignInPage} />
           <Route path="/signup" component={SignUpPage} />
           <Route path="/testing" component={CircleColumn} />
 
           <Route
-            path="/home"
-            component={() => (
-              <Redirect to={auth.uid ? "/dashboard" : "/getstarted"} />
-            )}
+            exact
+            path="/"
+            component={() =>
+              auth.uid ? <Dashboard isAuthed={auth.uid} /> : <Landing />
+            }
           />
-
-          <Route exact path="/" component={() => <Redirect to="/home" />} />
-        </BrowserRouter>
-      </div>
+        </div>
+      </BrowserRouter>
     );
   }
 }
@@ -119,4 +118,7 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App);
