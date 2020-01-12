@@ -5,7 +5,7 @@ import Nav from "react-bootstrap/Nav";
 
 class NavigationBar extends Component {
   render() {
-    let homePage = this.props.isAuthed ? "/dashboard" : "/getstarted";
+    let homePage = this.props.isAuthed ? "/dashboard" : "/";
 
     return (
       <Navbar id="navbar" bg="light" expand="lg">

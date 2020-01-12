@@ -8,7 +8,7 @@ import CircleColumn from "./Components/Circle/CircleColumn";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import Nav from "react-bootstrap/Nav";
-import NavigationBar from "./Components/NavigationBar";
+import NavigationBar from "./Components/NavigationBar/NavigationBar";
 import Landing from "./Components/Landing";
 import firebase from "./config/firebase.js";
 // import withFirebaseAuth from "react-with-firebase-auth";
