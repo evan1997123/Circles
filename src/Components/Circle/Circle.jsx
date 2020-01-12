@@ -3,10 +3,15 @@ import "./Circle.css";
 import TaskForm from "./TaskForm";
 import CircleColumns from "./CircleColumns";
 import { connect } from "react-redux";
-import { createTask, moveTask } from "../../Store/Actions/TaskActions";
+import {
+  createTask,
+  moveTask,
+  deleteTask
+} from "../../Store/Actions/TaskActions";
 import { firestoreConnect } from "react-redux-firebase"; // so this allows us to connect this component to a firebase collection
 import { compose } from "redux";
 import { Redirect } from "react-router-dom";
+import { Button, Modal, ModalFooter } from "react-bootstrap";
 
 class Circle extends React.Component {
   constructor(props) {
@@ -16,7 +21,8 @@ class Circle extends React.Component {
       assignedForID: "",
       taskDescription: "",
       completeBy: "",
-      reward: 0
+      reward: 0,
+      show: false
     };
 
     //input form local state
@@ -27,6 +33,11 @@ class Circle extends React.Component {
     //methods for moving tasks from toDo => pending => completed
     this.handleMoveTasks = this.handleMoveTasks.bind(this);
   }
+
+  deleteTask = taskId => {
+    // Delete task
+    this.props.dispatchDeleteTask(taskId);
+  };
 
   //event handler for change in input form local state
   handleChangeInput(e) {
@@ -51,7 +62,8 @@ class Circle extends React.Component {
       assignedForID: "",
       taskDescription: "",
       completeBy: "",
-      reward: ""
+      reward: "",
+      show: false
     });
   }
 
@@ -60,6 +72,19 @@ class Circle extends React.Component {
     //this.props.dispatchMoveTask();
     this.props.dispatchMoveTask(task, userID);
   }
+
+  // For showing modal (creating new task)
+  handleClick = () => {
+    this.setState({
+      show: true
+    });
+  };
+
+  handleClose = () => {
+    this.setState({
+      show: false
+    });
+  };
 
   render() {
     //console.log(this.state);
@@ -80,19 +105,41 @@ class Circle extends React.Component {
 
     return (
       <div className="overallContainer">
-        TaskForm
+        <div className="createTaskButton">
+          <Button onClick={this.handleClick}>Create Task</Button>
+        </div>
+        <Modal show={this.state.show} onHide={this.handleClose}>
+          <Modal.Header>
+            <Modal.Title>Create a New Task</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <TaskForm
+              handleCreateTask={this.handleCreateTask}
+              handleChangeInput={this.handleChangeInput}
+              formData={this.state}
+              allUsers={allUsers}
+              userID={userID}
+            />
+          </Modal.Body>
+          <Modal.Footer>
+            <Button onClick={this.handleClose}>Close</Button>
+            <Button onClick={this.handleCreateTask}>Submit</Button>
+          </Modal.Footer>
+        </Modal>
+        {/* Task Form
         <TaskForm
           handleCreateTask={this.handleCreateTask}
           handleChangeInput={this.handleChangeInput}
           formData={this.state}
           allUsers={allUsers}
           userID={userID}
-        />
+        /> */}
         <div className="centered">
           <CircleColumns
             allTasks={allTasks}
             handleMoveTasks={this.handleMoveTasks}
             userID={userID}
+            deleteTask={this.deleteTask}
           />
         </div>
       </div>
@@ -131,7 +178,8 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = dispatch => {
   return {
     dispatchCreateTask: task => dispatch(createTask(task)),
-    dispatchMoveTask: (task, userID) => dispatch(moveTask(task, userID))
+    dispatchMoveTask: (task, userID) => dispatch(moveTask(task, userID)),
+    dispatchDeleteTask: taskId => dispatch(deleteTask(taskId))
   };
 };
 
@@ -139,6 +187,9 @@ const mapDispatchToProps = dispatch => {
 //whenever database for this collection is changed, it will induce the firestoreReducer, which will sync firestore/redux store state
 //and then this component will "hear" it.
 export default compose(
-  connect(mapStateToProps, mapDispatchToProps),
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  ),
   firestoreConnect([{ collection: "tasks" }, { collection: "users" }])
 )(Circle);

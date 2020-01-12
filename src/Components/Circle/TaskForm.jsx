@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import { Form, Button } from "react-bootstrap";
+
 class TaskForm extends Component {
   render() {
     //this.props passes handleCreateTask, handleChangeInput, formData
@@ -31,62 +33,67 @@ class TaskForm extends Component {
 
     return (
       <React.Fragment>
-        <form name="TaskForm" onSubmit={handleCreateTask}>
-          <label>Task Name</label>
-          <input
-            type="text"
-            name="taskName"
-            placeholder="Finish Homework 0"
-            onChange={handleChangeInput}
-            value={formData.taskName}
-          />
-          <br />
+        <Form name="TaskForm" onSubmit={handleCreateTask}>
+          <Form.Group>
+            <Form.Label>Task Name</Form.Label>
+            <Form.Control
+              type="text"
+              name="taskName"
+              placeholder="Finish Homework 0"
+              onChange={handleChangeInput}
+              value={formData.taskName}
+            />
+          </Form.Group>
 
-          <label>Assigned For</label>
-          <select
-            name="assignedForID"
-            onChange={handleChangeInput}
-            value={formData.assignedForID}
-          >
-            {listOfUsers}
-          </select>
-          <br />
+          <Form.Group>
+            <Form.Label>Assigned For</Form.Label>
+            <Form.Control
+              as="select"
+              name="assignedForID"
+              onChange={handleChangeInput}
+              value={formData.assignedForID}
+            >
+              {listOfUsers}
+            </Form.Control>
+          </Form.Group>
 
-          <label>Complete By</label>
-          <input
-            type="date"
-            name="completeBy"
-            placeholder="2020-01-01"
-            onChange={handleChangeInput}
-            value={formData.completeBy}
-          />
-          <br />
+          <Form.Group>
+            <Form.Label>Complete By</Form.Label>
+            <Form.Control
+              type="date"
+              name="completeBy"
+              placeholder="2020-01-01"
+              onChange={handleChangeInput}
+              value={formData.completeBy}
+            ></Form.Control>
+          </Form.Group>
 
-          <label>Reward</label>
-          <input
-            type="number"
-            name="reward"
-            placeholder="10"
-            onChange={handleChangeInput}
-            value={formData.reward}
-          />
-          <br />
+          <Form.Group>
+            <Form.Label>Reward</Form.Label>
+            <Form.Control
+              type="number"
+              name="reward"
+              placeholder="10"
+              onChange={handleChangeInput}
+              value={formData.reward}
+            />
+          </Form.Group>
 
-          <label>Task Description</label>
-          <input
-            type="text"
-            name="taskDescription"
-            placeholder="Task Description"
-            onChange={handleChangeInput}
-            style={{
-              width: 500
-            }}
-            value={formData.taskDescription}
-          />
-          <br />
-
-          <button type="submit">Submit</button>
-        </form>
+          <Form.Group>
+            <Form.Label>Task Description</Form.Label>
+            <Form.Control
+              type="text"
+              name="taskDescription"
+              placeholder="Task Description"
+              onChange={handleChangeInput}
+              // style={{
+              //   width: 500
+              // }}
+              value={formData.taskDescription}
+            />
+          </Form.Group>
+          <Button type="submit">Submit</Button>
+        </Form>
       </React.Fragment>
     );
   }

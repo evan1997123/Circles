@@ -20,6 +20,11 @@ const TaskReducer = (state = initState, action) => {
     case "MOVE_TASK_ERROR":
       console.log("move task error:", action.err);
       return state;
+    case "DELETE_TASK":
+      console.log("DELETE_TASK completed!");
+      return state;
+    case "DELETE_TASK_ERROR":
+      console.log("DELETE_TASK ERROR", action.err);
     default:
       return state;
   }

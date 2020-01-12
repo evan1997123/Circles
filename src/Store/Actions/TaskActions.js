@@ -155,3 +155,25 @@ export const moveTask = (task, userID) => {
     }
   };
 };
+
+// Action creator for deleting a task
+export const deleteTask = taskId => {
+  // Pause dispatch
+  // Make asynchronous call to firebase
+  return (dispatch, getState, { getFirebase, getFirestore }) => {
+    // Reference to firestore database
+    const firestore = getFirestore();
+    firestore
+      .collection("tasks")
+      .doc(taskId)
+      .delete()
+      .then(() => {
+        // Resume dispatch
+        dispatch({ type: "DELETE_TASK" });
+      })
+      // Catch promise error
+      .catch(err => {
+        dispatch({ type: "DELETE_TASK_ERROR", err });
+      });
+  };
+};

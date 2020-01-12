@@ -5,7 +5,7 @@ class CircleColumns extends Component {
   //this.props passes handleMoveTasks and allTasks
   //allTasks should be relevant to THIS CIRCLE ONLY
   render() {
-    let { handleMoveTasks, allTasks, userID } = this.props;
+    let { handleMoveTasks, allTasks, userID, deleteTask } = this.props;
     if (allTasks) {
       //all tasks that the current user has to do
       var tTasks = allTasks.filter(
@@ -39,6 +39,7 @@ class CircleColumns extends Component {
           tasks={tTasks}
           handleMoveTasks={handleMoveTasks}
           userID={userID}
+          deleteTask={deleteTask}
         ></CircleColumn>
         <CircleColumn
           title="Pending"

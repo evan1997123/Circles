@@ -5,11 +5,24 @@ import "./Task.css";
 
 class Task extends React.Component {
   render() {
-    let { task, color, userID, handleMoveTasks, buttonText } = this.props;
+    console.log(this.props);
+    let {
+      task,
+      color,
+      userID,
+      handleMoveTasks,
+      buttonText,
+      deleteTask
+    } = this.props;
     var ifExists = handleMoveTasks
       ? () => handleMoveTasks(task, userID)
       : () => "do nothing";
-
+    const deleteButton =
+      task.taskStage === "toDo" ? (
+        <Button className="deleteButton" onClick={() => deleteTask(task.id)}>
+          Delete
+        </Button>
+      ) : null;
     return (
       <div className="task">
         <Card style={{ width: "18rem" }} className="card">
@@ -22,6 +35,7 @@ class Task extends React.Component {
             <Button variant={color} onClick={ifExists}>
               {buttonText}
             </Button>
+            {deleteButton}
           </Card.Body>
         </Card>
       </div>

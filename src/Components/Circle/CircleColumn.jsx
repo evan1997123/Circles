@@ -25,7 +25,8 @@ class CircleColumn extends React.Component {
       color,
       buttonText,
       handleMoveTasks,
-      title
+      title,
+      deleteTask
     } = this.props;
 
     if (!(typeof tasks === "undefined")) {
@@ -38,6 +39,7 @@ class CircleColumn extends React.Component {
           handleMoveTasks={handleMoveTasks}
           key={index}
           userID={userID}
+          deleteTask={deleteTask}
         ></Task>
       ));
       //console.log(tasks);

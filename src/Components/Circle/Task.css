@@ -45,3 +45,7 @@
   display: flex;
   justify-content: center;
 }
+
+.deleteButton {
+  margin-left: 10px;
+}
