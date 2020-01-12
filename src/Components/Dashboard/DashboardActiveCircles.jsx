@@ -28,30 +28,12 @@ class ActiveCircles extends React.Component {
       redirect: false,
       redirectPath: ""
     };
-
-    this.allCircles2 = [
-      { circle: "Homework", color: "primary" },
-      { circle: "Workout", color: "secondary" },
-      { circle: "Study Buddies", color: "success" },
-      { circle: "Tennis", color: "warning" },
-      { circle: "CSM", color: "danger" },
-      { circle: "Food", color: "info" },
-      { circle: "More Food", color: "light" }
-    ];
     this.createNewCircle = this.createNewCircle.bind(this);
     this.hideModal = this.hideModal.bind(this);
 
     this.handleChanges = this.handleChanges.bind(this);
-    this.handleAdding = this.handleAdding.bind(this);
-    this.handleRemoving = this.handleRemoving.bind(this);
-    this.clearForm = this.clearForm.bind(this);
-    this.clearLeaderForm = this.clearLeaderForm.bind(this);
     this.setRedirect = this.setRedirect.bind(this);
     this.createCircle = this.createCircle.bind(this);
-    this.textInput = React.createRef();
-    this.nameInput = React.createRef();
-    this.leaderInput = React.createRef();
-    this.dueDateInput = React.createRef();
   }
 
   componentDidMount() {}
@@ -68,122 +50,15 @@ class ActiveCircles extends React.Component {
     });
   }
 
-  clearLeaderForm() {
-    this.leaderInput.current.value = "";
-  }
-
   handleChanges(e) {
     this.setState({
       [e.target.name]: e.target.value
     });
   }
 
-  handleAdding(eventKey, e) {
-    const userID = eventKey;
-    const name = e.target.textContent;
-    const newMemberOrLeader = e.target.name;
-    var checkMembersList;
-    var checkLeadersList;
-    var copyList;
-
-    if (newMemberOrLeader === "newMember") {
-      checkMembersList = this.state.currentMembersOfNewCircle.filter(
-        member => member.userID === userID
-      );
-      checkLeadersList = this.state.currentLeadersOfNewCircle.filter(
-        leader => leader.userID === userID
-      );
-      if (checkMembersList.length !== 0 || checkLeadersList.length !== 0) {
-        return;
-      }
-      copyList = [
-        ...this.state.currentMembersOfNewCircle,
-        { userID: userID, name: name }
-      ];
-
-      this.setState({
-        currentMembersOfNewCircle: copyList
-      });
-    } else if (newMemberOrLeader === "newLeader") {
-      checkMembersList = this.state.currentMembersOfNewCircle.filter(
-        member => member.userID === userID
-      );
-      checkLeadersList = this.state.currentLeadersOfNewCircle.filter(
-        leader => leader.userID === userID
-      );
-      if (checkMembersList.length !== 0 || checkLeadersList.length !== 0) {
-        return;
-      }
-      copyList = [
-        ...this.state.currentLeadersOfNewCircle,
-        { userID: userID, name: name }
-      ];
-      this.setState({
-        currentLeadersOfNewCircle: copyList
-      });
-    }
-  }
-
-  handleRemoving(e) {
-    e.preventDefault();
-    const idToDelete = e.target.value;
-    const newMemberOrLeader = e.target.name;
-    var copyList;
-    if (e.target.name === "deleteMember") {
-      copyList = this.state.currentMembersOfNewCircle.filter(
-        nameAndID => nameAndID.userID !== idToDelete
-      );
-      this.setState({
-        currentMembersOfNewCircle: copyList
-      });
-    } else if (newMemberOrLeader === "deleteLeader") {
-      copyList = this.state.currentLeadersOfNewCircle.filter(
-        nameAndID => nameAndID.userID !== idToDelete
-      );
-      this.setState({
-        currentLeadersOfNewCircle: copyList
-      });
-    }
-  }
-
-  clearForm() {
-    this.textInput.current.value = "";
-  }
-
-  // submitAndCreateNewCircle() {
-  //   let copyList = [...this.state.allCircles];
-  //   copyList.push({ circle: this.nameInput.current.value, value: "primary" });
-
-  //   // const circleRef =
-  //   this.db.collection("circles").add({
-  //     circleName: this.nameInput.current.value,
-  //     createdAt: new firebase.firestore.Timestamp.fromDate(new Date()),
-  //     membersList: this.state.currentMembersOfNewCircle,
-  //     leadersList: this.state.currentLeadersOfNewCircle,
-  //     allMembersList: this.state.currentMembersOfNewCircle.concat(
-  //       this.state.currentLeadersOfNewCircle
-  //     )
-  //   });
-
-  //   this.setState({
-  //     newCircleName: this.nameInput.current.value,
-  //     show: false,
-  //     allCircles: copyList,
-  //     currentMembersOfNewCircle: [],
-  //     currentLeadersOfNewCircle: [],
-  //     newCircleDueDate: this.dueDateInput.current.value
-  //   });
-  //   this.nameInput.current.value = "";
-  // }
-
   createCircle(e) {
     e.preventDefault();
     console.log("creating");
-
-    const firesbaseAuth = this.props.firebaseAuthRedux;
-    // const profileID = firesbaseAuth.uid;
-    // const firebaseProfile = this.props.firebaseProfileRedux;
-    // const fullName = firebaseProfile.firstName + " " + firebaseProfile.lastName;
     var newMemberList = [];
     var newLeaderList = [];
 
@@ -235,9 +110,8 @@ class ActiveCircles extends React.Component {
   render() {
     // console.log(this.state);
     var circles;
-    var allCircles = this.props.allCirclesRedux;
-    if (allCircles) {
-      circles = allCircles.map((circle, index) => (
+    if (this.props.myCircles) {
+      circles = this.props.myCircles.map((circle, index) => (
         <div className="activeCircle" key={index}>
           <div>
             <Button
@@ -435,7 +309,10 @@ const mapDispatchToProps = dispatch => {
   };
 };
 export default compose(
-  connect(mapStateToProps, mapDispatchToProps),
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  ),
   //firestoreConnect takes in an array of of objects that say which collection you want to connect to
   //whenever database for this collection is changed, it will induce the firestoreReducer, which will sync store state
   // and then this component will "hear" that because we connected that. Then state will change for the store
