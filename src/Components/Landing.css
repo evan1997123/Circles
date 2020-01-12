@@ -85,6 +85,7 @@
 
 .firstLastRowContainer {
   display: flex;
+  width: 75%;
   flex-direction: row;
   justify-content: space-around;
 }

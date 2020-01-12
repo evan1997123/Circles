@@ -44,14 +44,9 @@ class ActiveCircles extends React.Component {
     this.handleChanges = this.handleChanges.bind(this);
     this.handleAdding = this.handleAdding.bind(this);
     this.handleRemoving = this.handleRemoving.bind(this);
-    this.clearForm = this.clearForm.bind(this);
-    this.clearLeaderForm = this.clearLeaderForm.bind(this);
     this.setRedirect = this.setRedirect.bind(this);
     this.createCircle = this.createCircle.bind(this);
-    this.textInput = React.createRef();
-    this.nameInput = React.createRef();
-    this.leaderInput = React.createRef();
-    this.dueDateInput = React.createRef();
+    this.filterMyCircles = this.filterMyCircles.bind(this);
   }
 
   componentDidMount() {}
@@ -66,10 +61,6 @@ class ActiveCircles extends React.Component {
     this.setState({
       show: false
     });
-  }
-
-  clearLeaderForm() {
-    this.leaderInput.current.value = "";
   }
 
   handleChanges(e) {
@@ -146,44 +137,9 @@ class ActiveCircles extends React.Component {
     }
   }
 
-  clearForm() {
-    this.textInput.current.value = "";
-  }
-
-  // submitAndCreateNewCircle() {
-  //   let copyList = [...this.state.allCircles];
-  //   copyList.push({ circle: this.nameInput.current.value, value: "primary" });
-
-  //   // const circleRef =
-  //   this.db.collection("circles").add({
-  //     circleName: this.nameInput.current.value,
-  //     createdAt: new firebase.firestore.Timestamp.fromDate(new Date()),
-  //     membersList: this.state.currentMembersOfNewCircle,
-  //     leadersList: this.state.currentLeadersOfNewCircle,
-  //     allMembersList: this.state.currentMembersOfNewCircle.concat(
-  //       this.state.currentLeadersOfNewCircle
-  //     )
-  //   });
-
-  //   this.setState({
-  //     newCircleName: this.nameInput.current.value,
-  //     show: false,
-  //     allCircles: copyList,
-  //     currentMembersOfNewCircle: [],
-  //     currentLeadersOfNewCircle: [],
-  //     newCircleDueDate: this.dueDateInput.current.value
-  //   });
-  //   this.nameInput.current.value = "";
-  // }
-
   createCircle(e) {
     e.preventDefault();
     console.log("creating");
-
-    const firesbaseAuth = this.props.firebaseAuthRedux;
-    // const profileID = firesbaseAuth.uid;
-    // const firebaseProfile = this.props.firebaseProfileRedux;
-    // const fullName = firebaseProfile.firstName + " " + firebaseProfile.lastName;
     var newMemberList = [];
     var newLeaderList = [];
 
@@ -232,12 +188,37 @@ class ActiveCircles extends React.Component {
     this.props.history.push(path);
   }
 
+  filterMyCircles(circle) {
+    const firebaseAuth = this.props.firebaseAuthRedux;
+    //check memberList
+    var memberList = circle.memberList;
+    for (var i = 0; i < memberList.length; i++) {
+      var memberListKey = Object.keys(circle.memberList[i])[0];
+      if (memberListKey === firebaseAuth.uid) {
+        return true;
+      }
+    }
+
+    var leaderList = circle.leaderList;
+    //check leaderList
+    for (var i = 0; i < leaderList.length; i++) {
+      var leaderListKey = Object.keys(circle.leaderList[i])[0];
+      if (leaderListKey === firebaseAuth.uid) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   render() {
     // console.log(this.state);
+
     var circles;
     var allCircles = this.props.allCirclesRedux;
     if (allCircles) {
-      circles = allCircles.map((circle, index) => (
+      var allMyCircles = allCircles.filter(this.filterMyCircles);
+      circles = allMyCircles.map((circle, index) => (
         <div className="activeCircle" key={index}>
           <div>
             <Button
@@ -435,9 +416,18 @@ const mapDispatchToProps = dispatch => {
   };
 };
 export default compose(
-  connect(mapStateToProps, mapDispatchToProps),
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  ),
   //firestoreConnect takes in an array of of objects that say which collection you want to connect to
   //whenever database for this collection is changed, it will induce the firestoreReducer, which will sync store state
   // and then this component will "hear" that because we connected that. Then state will change for the store
-  firestoreConnect([{ collection: "circles" }, { collection: "users" }])
+  firestoreConnect(props => [
+    {
+      collection: "circles",
+      orderBy: ["circleName"]
+    },
+    { collection: "users" }
+  ])
 )(ActiveCircles);
