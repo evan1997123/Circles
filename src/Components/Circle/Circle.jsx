@@ -191,5 +191,8 @@ export default compose(
     mapStateToProps,
     mapDispatchToProps
   ),
+  //firestoreConnect takes in an array of of objects that say which collection you want to connect to
+  //whenever database for this collection is changed, it will induce the firestoreReducer, which will sync store state
+  // and then this component will "hear" that because we connected that. Then state will change for the store
   firestoreConnect([{ collection: "tasks" }, { collection: "users" }])
 )(Circle);

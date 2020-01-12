@@ -12,7 +12,7 @@ class Dashboard extends React.Component {
 
   render() {
     if (!this.props.isAuthed) {
-      return <Redirect to="/home" />;
+      return <Redirect to="/" />;
     }
 
     // let notifications1 = ["Task added", "Circles created"];
