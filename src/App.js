@@ -1,7 +1,6 @@
 import React from "react";
 import "./App.css";
 import { BrowserRouter, Route, Redirect } from "react-router-dom";
-import GetStarted from "./Components/GetStarted";
 import Dashboard from "./Components/Dashboard/Dashboard";
 import Circle from "./Components/Circle/Circle";
 import CircleColumn from "./Components/Circle/CircleColumn";
@@ -70,18 +69,13 @@ class App extends React.Component {
       ]
     );
     return (
-      <BrowserRouter>
+      <BrowserRouter basename="/">
         <div>
           <NavigationBar
             profile={profile}
             signInUpOrOut={signInUpOrOut}
             isAuthed={auth.uid}
           />
-          {/* <Route
-            exact
-            path="/getstarted"
-            component={() => <GetStarted isAuthed={auth.uid} />}
-          /> */}
           <Route
             path="/dashboard"
             component={() => <Dashboard isAuthed={auth.uid} />}
