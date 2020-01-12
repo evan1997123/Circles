@@ -1,4 +1,8 @@
 import React from "react";
+import { connect } from "react-redux";
+import { signIn } from "../Store/Actions/AuthActions";
+import { signUp } from "../Store/Actions/AuthActions";
+import { Redirect } from "react-router-dom";
 import "./Landing.css";
 
 class Landing extends React.Component {
@@ -7,7 +11,7 @@ class Landing extends React.Component {
     this.state = {
       height: 0,
       width: 0,
-      form: "login",
+      form: "signUp",
       email: "",
       password: "",
       firstName: "",
@@ -49,9 +53,23 @@ class Landing extends React.Component {
   };
   handleSubmit = e => {
     e.preventDefault();
-    console.log("hi");
-    console.log(e.target.name);
-    // this.props.signUp(this.state);
+    if (e.target.name === "signUp") {
+      const newUser = {
+        email: this.state.email,
+        password: this.state.password,
+        firstName: this.state.firstName,
+        lastName: this.state.lastName
+      };
+      this.props.signUpRedux(newUser);
+    } else if (e.target.name === "login") {
+      const credentials = {
+        email: this.state.email,
+        password: this.state.password
+      };
+      this.props.signInRedux(credentials);
+    } else {
+      console.log("Error in form name");
+    }
   };
 
   render() {
@@ -205,4 +223,22 @@ class Landing extends React.Component {
   }
 }
 
-export default Landing;
+const mapStateToProps = state => {
+  return {
+    authError: state.auth.authError,
+    firebaseAuthRedux: state.firebase.auth
+  };
+};
+
+//this gives us the action signIn from "../../Store/Actions/AuthActions"
+const mapDispatchToProps = dispatch => {
+  return {
+    signInRedux: credentials => dispatch(signIn(credentials)),
+    signUpRedux: newUser => dispatch(signUp(newUser))
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Landing);
