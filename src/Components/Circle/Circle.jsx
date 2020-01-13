@@ -87,9 +87,14 @@ class Circle extends React.Component {
   };
 
   render() {
-    //console.log(this.state);
-    const auth = this.props.firebaseAuth;
+    // console.log(this.props);
+
+    const auth = this.props.firebaseAuthRedux;
     const userID = auth.uid;
+    var currentCircle;
+    if (this.props.firestoreCircleRedux) {
+      currentCircle = this.props.firestoreCircleRedux[0];
+    }
 
     //if not logged in, then redirect to signin page
     if (!userID) {
@@ -99,51 +104,54 @@ class Circle extends React.Component {
     //IDEALLY allTasks should get all the tasks from a particular circle, without having to fetch all the tasks and filter out via circle ID
     //similarily, allUsers should only be all the users in this circle
     //isn't that bad security design?
-    var allTasks = this.props.firestoreTasks;
-    var allUsers = this.props.firestoreUsers;
+    var allTasks = this.props.firestoreTasksRedux;
+    var allUsers = this.props.firestoreUsersRedux;
     //console.log(allTasks);
 
-    return (
-      <div className="overallContainer">
-        <div className="createTaskButton">
-          <Button onClick={this.handleClick}>Create Task</Button>
-        </div>
-        <Modal show={this.state.show} onHide={this.handleClose}>
-          <Modal.Header>
-            <Modal.Title>Create a New Task</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <TaskForm
-              handleCreateTask={this.handleCreateTask}
-              handleChangeInput={this.handleChangeInput}
-              formData={this.state}
-              allUsers={allUsers}
+    if (currentCircle) {
+      return (
+        <div className="overallContainer">
+          <div className="title text-center">
+            {currentCircle.circleName}
+            <br />
+            Number of people: &nbsp;{currentCircle.numberOfPeople}
+            <br />
+          </div>
+          <div className="createTaskButton">
+            <Button onClick={this.handleClick}>Create Task</Button>
+          </div>
+          <Modal show={this.state.show} onHide={this.handleClose}>
+            <Modal.Header>
+              <Modal.Title>Create a New Task</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <TaskForm
+                handleCreateTask={this.handleCreateTask}
+                handleChangeInput={this.handleChangeInput}
+                formData={this.state}
+                allUsers={allUsers}
+                userID={userID}
+              />
+            </Modal.Body>
+            <Modal.Footer>
+              <Button onClick={this.handleClose}>Close</Button>
+              <Button onClick={this.handleCreateTask}>Submit</Button>
+            </Modal.Footer>
+          </Modal>
+
+          <div className="centered">
+            <CircleColumns
+              allTasks={allTasks}
+              handleMoveTasks={this.handleMoveTasks}
               userID={userID}
+              deleteTask={this.deleteTask}
             />
-          </Modal.Body>
-          <Modal.Footer>
-            <Button onClick={this.handleClose}>Close</Button>
-            <Button onClick={this.handleCreateTask}>Submit</Button>
-          </Modal.Footer>
-        </Modal>
-        {/* Task Form
-        <TaskForm
-          handleCreateTask={this.handleCreateTask}
-          handleChangeInput={this.handleChangeInput}
-          formData={this.state}
-          allUsers={allUsers}
-          userID={userID}
-        /> */}
-        <div className="centered">
-          <CircleColumns
-            allTasks={allTasks}
-            handleMoveTasks={this.handleMoveTasks}
-            userID={userID}
-            deleteTask={this.deleteTask}
-          />
+          </div>
         </div>
-      </div>
-    );
+      );
+    } else {
+      return <div>Loading...</div>;
+    }
   }
 }
 
@@ -167,9 +175,10 @@ const mapStateToProps = (state, ownProps) => {
 
   //this for firestore data
   return {
-    firestoreTasks: state.firestore.ordered.tasks,
-    firestoreUsers: state.firestore.ordered.users,
-    firebaseAuth: state.firebase.auth
+    firestoreTasksRedux: state.firestore.ordered.tasks,
+    firestoreUsersRedux: state.firestore.ordered.users,
+    firestoreCircleRedux: state.firestore.ordered.circles,
+    firebaseAuthRedux: state.firebase.auth
   };
 };
 
@@ -194,5 +203,11 @@ export default compose(
   //firestoreConnect takes in an array of of objects that say which collection you want to connect to
   //whenever database for this collection is changed, it will induce the firestoreReducer, which will sync store state
   // and then this component will "hear" that because we connected that. Then state will change for the store
-  firestoreConnect([{ collection: "tasks" }, { collection: "users" }])
+  firestoreConnect(props => {
+    return [
+      { collection: "tasks" },
+      { collection: "users" },
+      { collection: "circles", doc: props.match.params.id }
+    ];
+  })
 )(Circle);

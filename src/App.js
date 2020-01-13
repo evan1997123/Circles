@@ -80,11 +80,12 @@ class App extends React.Component {
             path="/dashboard"
             component={() => <Dashboard isAuthed={auth.uid} />}
           />
-          <Route path="/circle" component={Circle} />
+          {/* <Route path="/circle" component={Circle} /> */}
           <Route path="/circle/:id" component={Circle} />
           <Route path="/signin" component={SignInPage} />
           <Route path="/signup" component={SignUpPage} />
           <Route path="/testing" component={CircleColumn} />
+          {/* <Route path="/circle/:id" component={Circle} /> */}
 
           <Route
             exact

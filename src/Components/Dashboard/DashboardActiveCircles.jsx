@@ -157,27 +157,24 @@ class ActiveCircles extends React.Component {
     });
   }
 
-  setRedirect(circleName) {
+  setRedirect(circleID) {
     this.setState({
       redirect: true,
       redirectPath:
-        "/" +
-        circleName
+        "/circle/" +
+        circleID
           .toString()
           .toLowerCase()
           .split(" ")
           .join("")
     });
-  }
-
-  routeChange(circleName) {
-    let path = circleName.toLowerCase();
-    this.props.history.push(path);
+    console.log(circleID);
   }
 
   render() {
     // console.log(this.state);
     var circles;
+    console.log(this.props.myCircles);
     if (this.props.myCircles) {
       circles = this.props.myCircles.map((circle, index) => (
         <div className="activeCircle" key={index}>
@@ -185,7 +182,7 @@ class ActiveCircles extends React.Component {
             <Button
               variant="primary"
               className="myButton"
-              // onClick={() => this.setRedirect(circle.circle)}
+              onClick={() => this.setRedirect(circle.id)}
             ></Button>
           </div>
           <h6>{circle.circleName}</h6>
