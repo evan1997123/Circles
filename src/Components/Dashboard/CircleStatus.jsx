@@ -49,9 +49,8 @@ class CircleStatus extends React.Component {
 
   render() {
     var dropdownOptions;
-    var allCircles = this.props.allCirclesRedux;
-    if (allCircles) {
-      var listWithout = allCircles.filter(
+    if (this.props.myCircles) {
+      var listWithout = this.props.myCircles.filter(
         circle => circle.circleName !== this.state.currentCircle
       );
       dropdownOptions = listWithout.map((circle, index) => (

@@ -17,9 +17,11 @@ class CircleContainer extends React.Component {
     var firebaseProfile = this.props.firebaseProfileRedux;
     console.log(firebaseProfile);
     var myCirclesIDs = [];
-    firebaseProfile.circleList.map(idAndName =>
-      myCirclesIDs.push(Object.keys(idAndName)[0])
-    );
+    if (firebaseProfile.circleList) {
+      firebaseProfile.circleList.map(idAndName =>
+        myCirclesIDs.push(Object.keys(idAndName)[0])
+      );
+    }
     console.log(myCirclesIDs);
     return myCirclesIDs;
   }
