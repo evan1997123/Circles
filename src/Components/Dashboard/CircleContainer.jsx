@@ -56,7 +56,7 @@ class CircleContainer extends React.Component {
     return (
       <div className="column">
         <div className="circle">
-          <CircleStatus numberTasksRemaining={1} myCircles={circles} />
+          <CircleStatus myCircles={circles} />
         </div>
         <div className="circle">
           <ActiveCircles myCircles={circles} />
