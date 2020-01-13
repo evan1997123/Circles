@@ -91,7 +91,7 @@ class App extends React.Component {
             exact
             path="/"
             component={() =>
-              auth.uid ? <Dashboard isAuthed={auth.uid} /> : <Landing />
+              auth.uid ? <Redirect to="/dashboard" /> : <Landing />
             }
           />
         </div>
