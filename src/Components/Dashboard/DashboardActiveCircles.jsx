@@ -28,25 +28,17 @@ class ActiveCircles extends React.Component {
       redirect: false,
       redirectPath: ""
     };
-
-    this.allCircles2 = [
-      { circle: "Homework", color: "primary" },
-      { circle: "Workout", color: "secondary" },
-      { circle: "Study Buddies", color: "success" },
-      { circle: "Tennis", color: "warning" },
-      { circle: "CSM", color: "danger" },
-      { circle: "Food", color: "info" },
-      { circle: "More Food", color: "light" }
-    ];
     this.createNewCircle = this.createNewCircle.bind(this);
     this.hideModal = this.hideModal.bind(this);
-
     this.handleChanges = this.handleChanges.bind(this);
     this.handleAdding = this.handleAdding.bind(this);
     this.handleRemoving = this.handleRemoving.bind(this);
     this.setRedirect = this.setRedirect.bind(this);
     this.createCircle = this.createCircle.bind(this);
+<<<<<<< HEAD
     this.filterMyCircles = this.filterMyCircles.bind(this);
+=======
+>>>>>>> groupCircle
   }
 
   componentDidMount() {}
@@ -68,7 +60,6 @@ class ActiveCircles extends React.Component {
       [e.target.name]: e.target.value
     });
   }
-
   handleAdding(eventKey, e) {
     const userID = eventKey;
     const name = e.target.textContent;
@@ -170,22 +161,18 @@ class ActiveCircles extends React.Component {
     });
   }
 
-  setRedirect(circleName) {
+  setRedirect(circleID) {
     this.setState({
       redirect: true,
       redirectPath:
-        "/" +
-        circleName
+        "/circle/" +
+        circleID
           .toString()
           .toLowerCase()
           .split(" ")
           .join("")
     });
-  }
-
-  routeChange(circleName) {
-    let path = circleName.toLowerCase();
-    this.props.history.push(path);
+    console.log(circleID);
   }
 
   filterMyCircles(circle) {
@@ -215,16 +202,22 @@ class ActiveCircles extends React.Component {
     // console.log(this.state);
 
     var circles;
+<<<<<<< HEAD
     var allCircles = this.props.allCirclesRedux;
     if (allCircles) {
       var allMyCircles = allCircles.filter(this.filterMyCircles);
       circles = allMyCircles.map((circle, index) => (
+=======
+    console.log(this.props.myCircles);
+    if (this.props.myCircles) {
+      circles = this.props.myCircles.map((circle, index) => (
+>>>>>>> groupCircle
         <div className="activeCircle" key={index}>
           <div>
             <Button
               variant="primary"
               className="myButton"
-              // onClick={() => this.setRedirect(circle.circle)}
+              onClick={() => this.setRedirect(circle.id)}
             ></Button>
           </div>
           <h6>{circle.circleName}</h6>
@@ -401,7 +394,6 @@ class ActiveCircles extends React.Component {
 // THESE TAKE TIME TO SHOW UP!
 const mapStateToProps = (state, ownProps) => {
   return {
-    allCirclesRedux: state.firestore.ordered.circles,
     allUsersRedux: state.firestore.ordered.users,
     firebaseAuthRedux: state.firebase.auth
     // firebaseProfileRedux: state.firebase.profile

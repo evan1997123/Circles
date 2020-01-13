@@ -11,7 +11,7 @@ class CircleStatus extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentCircle: ""
+      currentCircle: null
     };
     this.changeCircle = this.changeCircle.bind(this);
     this.filterMyCircles = this.filterMyCircles.bind(this);
@@ -37,6 +37,7 @@ class CircleStatus extends React.Component {
     });
   }
 
+<<<<<<< HEAD
   componentWillReceiveProps(nextProps) {
     if (
       nextProps.allCirclesRedux[0]
@@ -85,6 +86,20 @@ class CircleStatus extends React.Component {
     if (allCircles) {
       var allMyCircles = allCircles.filter(this.filterMyCircles);
       var listWithout = allMyCircles.filter(
+=======
+  render() {
+    var dropdownOptions;
+    var selected = this.state.currentCircle;
+    if (this.props.myCircles) {
+      if (this.state.currentCircle === null) {
+        if (this.props.myCircles[0]) {
+          selected = this.props.myCircles[0].circleName;
+        } else {
+          selected = "Create a circle!";
+        }
+      }
+      var listWithout = this.props.myCircles.filter(
+>>>>>>> groupCircle
         circle => circle.circleName !== this.state.currentCircle
       );
       dropdownOptions = listWithout.map((circle, index) => (
@@ -102,27 +117,17 @@ class CircleStatus extends React.Component {
           <Card.Body>
             <Dropdown className="dropdown">
               <Dropdown.Toggle variant="success" id="dropdown-basic">
-                {this.state.currentCircle}
+                {selected}
               </Dropdown.Toggle>
-              <Dropdown.Menu>{dropdownOptions}</Dropdown.Menu>
+              {dropdownOptions && dropdownOptions.length > 0 ? (
+                <Dropdown.Menu>{dropdownOptions}</Dropdown.Menu>
+              ) : null}
             </Dropdown>
             {/* <Card.Title>Card title</Card.Title> */}
             <Card.Text>
               This is where we'll put the number of tasks remained and the
               number of points earned. The number of tasks remaining is: blank
             </Card.Text>
-            {/* <Button variant="primary">Go to circle</Button> */}
-            {/* <Figure>
-              <Figure.Image
-                width={171}
-                height={180}
-                alt="171x180"
-                src="holder.js/171x180"
-              />
-              <Figure.Caption>
-                Nulla vitae elit libero, a pharetra augue mollis interdum.
-              </Figure.Caption>
-            </Figure> */}
           </Card.Body>
         </Card>
       </div>

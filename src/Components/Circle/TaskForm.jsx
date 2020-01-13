@@ -8,8 +8,7 @@ class TaskForm extends Component {
       handleCreateTask,
       handleChangeInput,
       formData,
-      allUsers,
-      userID
+      allUsers
     } = this.props;
 
     if (allUsers) {
@@ -92,7 +91,7 @@ class TaskForm extends Component {
               value={formData.taskDescription}
             />
           </Form.Group>
-          <Button type="submit">Submit</Button>
+          {/* <Button type="submit">Submit</Button> */}
         </Form>
       </React.Fragment>
     );
