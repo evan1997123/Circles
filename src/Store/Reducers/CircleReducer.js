@@ -44,20 +44,6 @@ const CircleReducer = (state = initState, action) => {
     case "CREATE_CIRCLE_ERROR":
       console.log("error creating circle", action.err);
       return state;
-<<<<<<< HEAD
-    case "UPDATE_USER_WHILE_CREATING_CIRCLE":
-      console.log(
-        "updated " +
-          action.userID +
-          " to have " +
-          action.circle.circleName +
-          "in their circleList"
-      );
-      return state;
-    case "UPDATE_USER_WHILE_CREATING_CIRCLE_ERROR":
-      console.log("error creating circle", action.err);
-      return state;
-=======
     case "UPDATED_USER_CIRCLELIST":
       console.log(
         "updated user " +
@@ -66,7 +52,6 @@ const CircleReducer = (state = initState, action) => {
           action.circle.circleID
       );
       return state;
->>>>>>> groupCircle
     default:
       return state;
   }

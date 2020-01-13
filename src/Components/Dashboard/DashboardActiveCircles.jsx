@@ -35,10 +35,6 @@ class ActiveCircles extends React.Component {
     this.handleRemoving = this.handleRemoving.bind(this);
     this.setRedirect = this.setRedirect.bind(this);
     this.createCircle = this.createCircle.bind(this);
-<<<<<<< HEAD
-    this.filterMyCircles = this.filterMyCircles.bind(this);
-=======
->>>>>>> groupCircle
   }
 
   componentDidMount() {}
@@ -202,16 +198,9 @@ class ActiveCircles extends React.Component {
     // console.log(this.state);
 
     var circles;
-<<<<<<< HEAD
-    var allCircles = this.props.allCirclesRedux;
-    if (allCircles) {
-      var allMyCircles = allCircles.filter(this.filterMyCircles);
-      circles = allMyCircles.map((circle, index) => (
-=======
     console.log(this.props.myCircles);
     if (this.props.myCircles) {
       circles = this.props.myCircles.map((circle, index) => (
->>>>>>> groupCircle
         <div className="activeCircle" key={index}>
           <div>
             <Button
