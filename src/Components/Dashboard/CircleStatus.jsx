@@ -14,7 +14,6 @@ class CircleStatus extends React.Component {
       currentCircle: null
     };
     this.changeCircle = this.changeCircle.bind(this);
-    this.filterMyCircles = this.filterMyCircles.bind(this);
   }
 
   componentDidMount() {}
@@ -37,56 +36,6 @@ class CircleStatus extends React.Component {
     });
   }
 
-<<<<<<< HEAD
-  componentWillReceiveProps(nextProps) {
-    if (
-      nextProps.allCirclesRedux[0]
-      // nextProps.allCirclesRedux !== this.props.allCirclesRedux
-    ) {
-      console.log(
-        "updating it to be " + nextProps.allCirclesRedux[0].circleName
-      );
-      var newName = nextProps.allCirclesRedux[0].circleName;
-      this.setState(
-        {
-          currentCircle: newName
-        },
-        () => {
-          console.log(this.state);
-        }
-      );
-    }
-  }
-  filterMyCircles(circle) {
-    // const firebaseAuth = this.props.firebaseAuthRedux;
-    //check memberList
-    var memberList = circle.memberList;
-    for (var i = 0; i < memberList.length; i++) {
-      var memberListKey = Object.keys(circle.memberList[i])[0];
-      // if (memberListKey === firebaseAuth.uid) {
-      //   return true;
-      // }
-    }
-
-    var leaderList = circle.leaderList;
-    //check leaderList
-    for (var i = 0; i < leaderList.length; i++) {
-      var leaderListKey = Object.keys(circle.leaderList[i])[0];
-      // if (leaderListKey === firebaseAuth.uid) {
-      //   return true;
-      // }
-    }
-
-    return false;
-  }
-
-  render() {
-    var dropdownOptions;
-    var allCircles = this.props.allCirclesRedux;
-    if (allCircles) {
-      var allMyCircles = allCircles.filter(this.filterMyCircles);
-      var listWithout = allMyCircles.filter(
-=======
   render() {
     var dropdownOptions;
     var selected = this.state.currentCircle;
@@ -99,7 +48,6 @@ class CircleStatus extends React.Component {
         }
       }
       var listWithout = this.props.myCircles.filter(
->>>>>>> groupCircle
         circle => circle.circleName !== this.state.currentCircle
       );
       dropdownOptions = listWithout.map((circle, index) => (
