@@ -359,7 +359,6 @@ class ActiveCircles extends React.Component {
 // THESE TAKE TIME TO SHOW UP!
 const mapStateToProps = (state, ownProps) => {
   return {
-    allCirclesRedux: state.firestore.ordered.circles,
     allUsersRedux: state.firestore.ordered.users,
     firebaseAuthRedux: state.firebase.auth
     // firebaseProfileRedux: state.firebase.profile

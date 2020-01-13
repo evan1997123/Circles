@@ -13,7 +13,7 @@ class NavigationBar extends Component {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mr-auto">
-            <Nav.Link href="/circle">Circle Example</Nav.Link>
+            <Nav.Link href="/circle">Circle Example Broken</Nav.Link>
             {this.props.signInUpOrOut}
           </Nav>
           <Navbar.Brand>

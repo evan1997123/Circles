@@ -17,6 +17,7 @@ class Circle extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      circleID: this.props.match.params.id,
       taskName: "",
       assignedForID: "",
       taskDescription: "",
@@ -205,7 +206,10 @@ export default compose(
   // and then this component will "hear" that because we connected that. Then state will change for the store
   firestoreConnect(props => {
     return [
-      { collection: "tasks" },
+      {
+        collection: "tasks",
+        where: ["circleID", "==", props.match.params.id]
+      },
       { collection: "users" },
       { collection: "circles", doc: props.match.params.id }
     ];
