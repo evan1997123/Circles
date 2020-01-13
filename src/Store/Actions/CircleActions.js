@@ -6,17 +6,68 @@ export const createCircle = circleDetails => {
     const profile = getState().firebase.profile;
     const assignedByID = getState().firebase.auth.uid;
     const fullName = profile.firstName + " " + profile.lastName;
+    const uuidv4 = require("uuid/v4");
+    const uuid = uuidv4();
 
     var newCircleDetails = {
       ...circleDetails,
       createdAt: new Date(),
       creator: fullName,
-      creatorID: assignedByID
+      creatorID: assignedByID,
+      circleID: uuid
     };
+
+    var allUsersToUpdate = [];
+    newCircleDetails.memberList.map(member => {
+      allUsersToUpdate.push(Object.keys(member)[0]);
+    });
+
+    newCircleDetails.leaderList.map(leader => {
+      allUsersToUpdate.push(Object.keys(leader)[0]);
+    });
+
+    console.log("creating user");
+    console.log(allUsersToUpdate);
+
+    allUsersToUpdate.map(userID => {
+      firestore
+        .collection("users")
+        .doc(userID)
+        .get()
+        .then(doc => {
+          var updatingUser = doc.data();
+          console.log(updatingUser);
+
+          var updatedCircleList = updatingUser.circleList;
+
+          updatedCircleList.push({ [uuid]: newCircleDetails.circleName });
+          firestore
+            .collection("users")
+            .doc(userID)
+            .update({
+              circleList: updatedCircleList
+            })
+            .then(() => {
+              console.log("updated");
+              dispatch({
+                type: "UPDATED_USER_CIRCLELIST",
+                circle: newCircleDetails,
+                userID: userID
+              });
+            });
+        })
+        .catch(err => {
+          dispatch({
+            type: "ERROR_UPDATING_USER_CIRCLELIST",
+            err: err
+          });
+        });
+    });
 
     firestore
       .collection("circles")
-      .add(newCircleDetails)
+      .doc(uuid)
+      .set(newCircleDetails)
       .then(() => {
         dispatch({
           type: "CREATE_CIRCLE",

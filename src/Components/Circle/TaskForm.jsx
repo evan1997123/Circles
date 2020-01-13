@@ -8,8 +8,7 @@ class TaskForm extends Component {
       handleCreateTask,
       handleChangeInput,
       formData,
-      allUsers,
-      userID
+      allUsers
     } = this.props;
 
     if (allUsers) {

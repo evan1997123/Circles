@@ -30,8 +30,9 @@ class ActiveCircles extends React.Component {
     };
     this.createNewCircle = this.createNewCircle.bind(this);
     this.hideModal = this.hideModal.bind(this);
-
     this.handleChanges = this.handleChanges.bind(this);
+    this.handleAdding = this.handleAdding.bind(this);
+    this.handleRemoving = this.handleRemoving.bind(this);
     this.setRedirect = this.setRedirect.bind(this);
     this.createCircle = this.createCircle.bind(this);
   }
@@ -54,6 +55,73 @@ class ActiveCircles extends React.Component {
     this.setState({
       [e.target.name]: e.target.value
     });
+  }
+  handleAdding(eventKey, e) {
+    const userID = eventKey;
+    const name = e.target.textContent;
+    const newMemberOrLeader = e.target.name;
+    var checkMembersList;
+    var checkLeadersList;
+    var copyList;
+
+    if (newMemberOrLeader === "newMember") {
+      checkMembersList = this.state.currentMembersOfNewCircle.filter(
+        member => member.userID === userID
+      );
+      checkLeadersList = this.state.currentLeadersOfNewCircle.filter(
+        leader => leader.userID === userID
+      );
+      if (checkMembersList.length !== 0 || checkLeadersList.length !== 0) {
+        return;
+      }
+      copyList = [
+        ...this.state.currentMembersOfNewCircle,
+        { userID: userID, name: name }
+      ];
+
+      this.setState({
+        currentMembersOfNewCircle: copyList
+      });
+    } else if (newMemberOrLeader === "newLeader") {
+      checkMembersList = this.state.currentMembersOfNewCircle.filter(
+        member => member.userID === userID
+      );
+      checkLeadersList = this.state.currentLeadersOfNewCircle.filter(
+        leader => leader.userID === userID
+      );
+      if (checkMembersList.length !== 0 || checkLeadersList.length !== 0) {
+        return;
+      }
+      copyList = [
+        ...this.state.currentLeadersOfNewCircle,
+        { userID: userID, name: name }
+      ];
+      this.setState({
+        currentLeadersOfNewCircle: copyList
+      });
+    }
+  }
+
+  handleRemoving(e) {
+    e.preventDefault();
+    const idToDelete = e.target.value;
+    const newMemberOrLeader = e.target.name;
+    var copyList;
+    if (e.target.name === "deleteMember") {
+      copyList = this.state.currentMembersOfNewCircle.filter(
+        nameAndID => nameAndID.userID !== idToDelete
+      );
+      this.setState({
+        currentMembersOfNewCircle: copyList
+      });
+    } else if (newMemberOrLeader === "deleteLeader") {
+      copyList = this.state.currentLeadersOfNewCircle.filter(
+        nameAndID => nameAndID.userID !== idToDelete
+      );
+      this.setState({
+        currentLeadersOfNewCircle: copyList
+      });
+    }
   }
 
   createCircle(e) {
