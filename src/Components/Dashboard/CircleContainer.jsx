@@ -7,10 +7,6 @@ import { compose } from "redux";
 import "./CircleContainer.css";
 
 class CircleContainer extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     var circles = this.props.allCirclesRedux;
     return (
@@ -29,18 +25,15 @@ class CircleContainer extends React.Component {
 const mapStateToProps = (state, ownProps) => {
   function getMyCircleIds() {
     var firebaseProfile = state.firebase.profile;
-    console.log(firebaseProfile);
     var myCirclesIDs = [];
     if (firebaseProfile.circleList) {
       firebaseProfile.circleList.map(idAndName =>
         myCirclesIDs.push(Object.keys(idAndName)[0])
       );
     }
-    console.log(myCirclesIDs);
     return myCirclesIDs;
   }
   var myCirclesID = getMyCircleIds();
-  console.log(myCirclesID);
   if (state.firestore.ordered.circles) {
     return {
       allCirclesRedux: state.firestore.ordered.circles.filter(circle =>

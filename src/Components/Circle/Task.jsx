@@ -5,7 +5,6 @@ import "./Task.css";
 
 class Task extends React.Component {
   render() {
-    console.log(this.props);
     let {
       task,
       color,

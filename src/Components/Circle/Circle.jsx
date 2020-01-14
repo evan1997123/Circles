@@ -11,7 +11,7 @@ import {
 import { firestoreConnect } from "react-redux-firebase"; // so this allows us to connect this component to a firebase collection
 import { compose } from "redux";
 import { Redirect } from "react-router-dom";
-import { Button, Modal, ModalFooter } from "react-bootstrap";
+import { Button, Modal } from "react-bootstrap";
 
 class Circle extends React.Component {
   constructor(props) {
@@ -88,8 +88,6 @@ class Circle extends React.Component {
   };
 
   render() {
-    // console.log(this.props);
-
     const auth = this.props.firebaseAuthRedux;
     const userID = auth.uid;
     var currentCircle;
@@ -107,7 +105,6 @@ class Circle extends React.Component {
     //isn't that bad security design?
     var allTasks = this.props.firestoreTasksRedux;
     var allUsers = this.props.firestoreUsersRedux;
-    //console.log(allTasks);
 
     if (currentCircle) {
       return (

@@ -177,7 +177,6 @@ class CircleHome extends React.Component {
       ></CircleColumn>
     );
 
-    console.log("this is the circleHome: " + this.state.completedTasks);
     let completed = (
       <CircleColumn
         title="Tasks Completed"

@@ -1,7 +1,6 @@
 import React from "react";
 import "./CircleColumn.css";
 import Task from "./Task";
-import Button from "react-bootstrap/Button";
 //props should have something like:
 
 //title="Tasks To Do"
@@ -13,10 +12,6 @@ import Button from "react-bootstrap/Button";
 //essentially the list of tasks to be displayed. ASSUME that these tasks are of the proper type,
 
 class CircleColumn extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     //if there are tasks
     let {

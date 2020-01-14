@@ -14,30 +14,25 @@ export const createCircle = circleDetails => {
       circleID: uuid,
       createdAt: new Date(),
       creator: fullName,
-      creatorID: assignedByID,
-      circleID: uuid
+      creatorID: assignedByID
     };
 
     var allUsersToUpdate = [];
-    newCircleDetails.memberList.map(member => {
-      allUsersToUpdate.push(Object.keys(member)[0]);
-    });
+    newCircleDetails.memberList.map(member =>
+      allUsersToUpdate.push(Object.keys(member)[0])
+    );
 
-    newCircleDetails.leaderList.map(leader => {
-      allUsersToUpdate.push(Object.keys(leader)[0]);
-    });
+    newCircleDetails.leaderList.map(leader =>
+      allUsersToUpdate.push(Object.keys(leader)[0])
+    );
 
-    console.log("creating user");
-    console.log(allUsersToUpdate);
-
-    allUsersToUpdate.map(userID => {
+    allUsersToUpdate.map(userID =>
       firestore
         .collection("users")
         .doc(userID)
         .get()
         .then(doc => {
           var updatingUser = doc.data();
-          console.log(updatingUser);
 
           var updatedCircleList = updatingUser.circleList;
 
@@ -62,8 +57,8 @@ export const createCircle = circleDetails => {
             type: "ERROR_UPDATING_USER_CIRCLELIST",
             err: err
           });
-        });
-    });
+        })
+    );
 
     firestore
       .collection("circles")

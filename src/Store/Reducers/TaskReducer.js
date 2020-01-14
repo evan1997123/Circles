@@ -25,6 +25,7 @@ const TaskReducer = (state = initState, action) => {
       return state;
     case "DELETE_TASK_ERROR":
       console.log("DELETE_TASK ERROR", action.err);
+      return state;
     default:
       return state;
   }

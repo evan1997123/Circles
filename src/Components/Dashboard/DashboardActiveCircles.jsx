@@ -168,14 +168,14 @@ class ActiveCircles extends React.Component {
           .split(" ")
           .join("")
     });
-    console.log(circleID);
   }
 
   filterMyCircles(circle) {
     const firebaseAuth = this.props.firebaseAuthRedux;
     //check memberList
+    var i;
     var memberList = circle.memberList;
-    for (var i = 0; i < memberList.length; i++) {
+    for (i = 0; i < memberList.length; i++) {
       var memberListKey = Object.keys(circle.memberList[i])[0];
       if (memberListKey === firebaseAuth.uid) {
         return true;
@@ -184,7 +184,7 @@ class ActiveCircles extends React.Component {
 
     var leaderList = circle.leaderList;
     //check leaderList
-    for (var i = 0; i < leaderList.length; i++) {
+    for (i = 0; i < leaderList.length; i++) {
       var leaderListKey = Object.keys(circle.leaderList[i])[0];
       if (leaderListKey === firebaseAuth.uid) {
         return true;
@@ -198,7 +198,6 @@ class ActiveCircles extends React.Component {
     // console.log(this.state);
 
     var circles;
-    console.log(this.props.myCircles);
     if (this.props.myCircles) {
       circles = this.props.myCircles.map((circle, index) => (
         <div className="activeCircle" key={index}>

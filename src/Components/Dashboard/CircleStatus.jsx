@@ -19,18 +19,6 @@ class CircleStatus extends React.Component {
   componentDidMount() {}
 
   changeCircle(newCircle) {
-    // let copyList = [...this.state.allCircles];
-    // copyList = copyList.filter(
-    //   circle => circle.circleName !== newCircle.circleName
-    // );
-    // let insert = { circle: prevCircle };
-    // // console.log(insert);
-    // copyList.push(insert);
-    // this.setState({
-    //   currentCircle: newCircle.circle,
-    //   numberTasksRemaining: newCircle.numberTasks,
-    //   allCircles: copyList
-    // });
     this.setState({
       currentCircle: newCircle.circleName
     });
