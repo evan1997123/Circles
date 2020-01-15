@@ -4,6 +4,7 @@ import { signIn } from "../Store/Actions/AuthActions";
 import { signUp } from "../Store/Actions/AuthActions";
 import { Redirect } from "react-router-dom";
 import "./Landing.css";
+import { throwStatement } from "@babel/types";
 
 class Landing extends React.Component {
   constructor(props) {
@@ -15,14 +16,29 @@ class Landing extends React.Component {
       email: "",
       password: "",
       firstName: "",
-      lastName: ""
+      lastName: "",
+      authError: ""
     };
     this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
-    this.changeform = this.changeform.bind(this);
+    this.changeForm = this.changeForm.bind(this);
   }
+
   componentDidMount() {
     this.updateWindowDimensions();
     window.addEventListener("resize", this.updateWindowDimensions.bind(this));
+  }
+
+  componentDidUpdate(prevProp, prevState) {
+    console.log("Component update");
+    if (
+      prevProp.authError !== this.props.authError &&
+      prevState.form === this.state.form
+    ) {
+      console.log("Update authError on state");
+      this.setState({
+        authError: this.props.authError
+      });
+    }
   }
 
   componentWillUnmount() {
@@ -31,6 +47,7 @@ class Landing extends React.Component {
       this.updateWindowDimensions.bind(this)
     );
   }
+
   updateWindowDimensions() {
     var nav = document.getElementById("navbar");
     var navHeight = nav.offsetHeight;
@@ -41,16 +58,21 @@ class Landing extends React.Component {
     });
   }
 
-  changeform() {
+  changeForm() {
     this.setState(prevState => {
-      return { form: prevState.form === "signUp" ? "login" : "signUp" };
+      return {
+        form: prevState.form === "signUp" ? "login" : "signUp",
+        authError: null
+      };
     });
   }
+
   handleChange = e => {
     this.setState({
       [e.target.id]: e.target.value
     });
   };
+
   handleSubmit = e => {
     e.preventDefault();
     if (e.target.name === "signUp") {
@@ -151,7 +173,7 @@ class Landing extends React.Component {
                     className="forInput password"
                     type="password"
                     id="password"
-                    onChange={this.handleChange}
+                    // onChange={this.handleChange}
                   />
                 </div>
               </div>
@@ -160,9 +182,12 @@ class Landing extends React.Component {
                   <button className="buttonText">Sign Up</button>
                 </div>
               </div>
+              <div className="authErrorContainer">
+                {this.state.authError ? <p>{this.state.authError}</p> : null}
+              </div>
               <div className="orLogIn ">
-                <div> Have an account?&nbsp;</div>
-                <div className="orLogInText" onClick={this.changeform}>
+                <div>Have an account?&nbsp;</div>
+                <div className="orLogInText" onClick={this.changeForm}>
                   Log in
                 </div>
               </div>
@@ -209,9 +234,12 @@ class Landing extends React.Component {
                   <button className="buttonText">Sign Up</button>
                 </div>
               </div>
+              <div className="authErrorContainer">
+                {this.state.authError ? <p>{this.state.authError}</p> : null}
+              </div>
               <div className="orLogIn">
                 <div> Don't have an account?&nbsp;</div>
-                <div className="orLogInText" onClick={this.changeform}>
+                <div className="orLogInText" onClick={this.changeForm}>
                   Sign Up!
                 </div>
               </div>

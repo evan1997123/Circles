@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
 import { signUp } from "../../Store/Actions/AuthActions";
-
 import "./SignUpPage.css";
+
 class SignUpPage extends Component {
   constructor(props) {
     super(props);
@@ -11,18 +11,28 @@ class SignUpPage extends Component {
       email: "",
       password: "",
       firstName: "",
-      lastName: ""
+      lastName: "",
+      top: 0
     };
   }
+
   handleChange = e => {
     this.setState({
       [e.target.id]: e.target.value
     });
   };
+
   handleSubmit = e => {
     e.preventDefault();
     this.props.signUp(this.state);
   };
+
+  componentDidMount() {
+    this.setState({
+      top: document.getElementById("navbar").clientHeight
+    });
+  }
+
   render() {
     const auth = this.props.firebaseAuthRedux;
     const authError = this.props.authError;
@@ -31,30 +41,38 @@ class SignUpPage extends Component {
       return <Redirect to="/dashboard" />;
     }
     return (
-      <div className="">
-        <form className="" onSubmit={this.handleSubmit}>
-          <h5 className="">Sign In</h5>
-          <div className="">
-            <label htmlFor="email">Email</label>
-            <input type="email" id="email" onChange={this.handleChange} />
-          </div>
-          <div className="">
-            <label htmlFor="password">Password</label>
-            <input type="password" id="password" onChange={this.handleChange} />
-          </div>
-          <div className="">
-            <label htmlFor="firstName">First Name</label>
-            <input type="text" id="firstName" onChange={this.handleChange} />
-          </div>
-          <div className="">
-            <label htmlFor="lastName">Last Name</label>
-            <input type="text" id="lastName" onChange={this.handleChange} />
-          </div>
-          <div className="">
-            <button className="">Sign Up</button>
-          </div>
-          {authError ? <p>{authError}</p> : null}
-        </form>
+      <div className="signUpPageContainer" style={{ top: this.state.top }}>
+        <div className="signUpWhiteBackground">
+          <form className="" onSubmit={this.handleSubmit}>
+            <div className="titleContainer">
+              <h5 className="title">Sign In</h5>
+            </div>
+            <div className="christineInputContainer">
+              <label htmlFor="email">Email</label>
+              <input type="email" id="email" onChange={this.handleChange} />
+            </div>
+            <div className="christineInputContainer">
+              <label htmlFor="password">Password</label>
+              <input
+                type="password"
+                id="password"
+                onChange={this.handleChange}
+              />
+            </div>
+            <div className="christineInputContainer">
+              <label htmlFor="firstName">First Name</label>
+              <input type="text" id="firstName" onChange={this.handleChange} />
+            </div>
+            <div className="christineInputContainer">
+              <label htmlFor="lastName">Last Name</label>
+              <input type="text" id="lastName" onChange={this.handleChange} />
+            </div>
+            <div className="christineButtonContainer">
+              <button className="signUpButton">Sign Up</button>
+            </div>
+            {authError ? <p>{authError}</p> : null}
+          </form>
+        </div>
       </div>
     );
   }
@@ -73,4 +91,7 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(SignUpPage);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SignUpPage);

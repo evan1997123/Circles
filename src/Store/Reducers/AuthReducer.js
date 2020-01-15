@@ -18,7 +18,7 @@ const AuthReducer = (state = initState, action) => {
       return { ...state, authError: null };
     case "SIGN_UP_ERROR":
       console.log("SIGN_UP_ERROR");
-      // console.log(action.err);
+      console.log(action.err);
       return { ...state, authError: action.err.message };
     default:
       return state;
