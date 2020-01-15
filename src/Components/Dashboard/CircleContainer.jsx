@@ -33,13 +33,17 @@ const mapStateToProps = (state, ownProps) => {
     }
     return myCirclesIDs;
   }
+
+  function circleNameSort(circleA, circleB) {
+    return circleA.circleName.localeCompare(circleB.circleName);
+  }
+
   var myCirclesID = getMyCircleIds();
   if (state.firestore.ordered.circles) {
     return {
-      allCirclesRedux: state.firestore.ordered.circles.filter(circle =>
-        myCirclesID.includes(circle.id)
-      ),
-      firebaseAuthRedux: state.firebase.auth,
+      allCirclesRedux: state.firestore.ordered.circles
+        .filter(circle => myCirclesID.includes(circle.id))
+        .sort(circleNameSort),
       firebaseProfileRedux: state.firebase.profile
     };
   } else {

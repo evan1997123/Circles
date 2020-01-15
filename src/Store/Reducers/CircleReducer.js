@@ -39,7 +39,7 @@ const initState = {
 const CircleReducer = (state = initState, action) => {
   switch (action.type) {
     case "CREATE_CIRCLE":
-      console.log("created the task", action.circle);
+      console.log("created the circle", action.circle);
       return state;
     case "CREATE_CIRCLE_ERROR":
       console.log("error creating circle", action.err);
