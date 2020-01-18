@@ -1,0 +1,13 @@
+.panelContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.settings {
+  position: absolute;
+  left: 10px;
+}
+
+.panelItem {
+}

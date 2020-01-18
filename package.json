@@ -5,9 +5,11 @@
   "dependencies": {
     "bootstrap": "^4.4.1",
     "firebase": "^7.6.1",
+    "install": "^0.13.0",
     "react": "^16.12.0",
     "react-bootstrap": "^1.0.0-beta.16",
     "react-dom": "^16.12.0",
+    "react-firebase-file-uploader": "^2.4.3",
     "react-redux": "^5.1.2",
     "react-redux-firebase": "^2.5.0",
     "react-router": "^5.1.2",
@@ -16,6 +18,7 @@
     "react-with-firebase-auth": "^1.2.0",
     "redux": "^4.0.5",
     "redux-firestore": "^0.11.0",
+    "redux-form": "^8.2.6",
     "redux-thunk": "^2.3.0",
     "uuid": "^3.3.3"
   },

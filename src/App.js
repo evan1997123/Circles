@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Redirect } from "react-router-dom";
 import Dashboard from "./Components/Dashboard/Dashboard";
 import Circle from "./Components/Circle/Circle";
 import CircleColumn from "./Components/Circle/CircleColumn";
+import Profile from "./Components/Profile/Profile";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import Nav from "react-bootstrap/Nav";
@@ -80,11 +81,17 @@ class App extends React.Component {
             path="/dashboard"
             component={() => <Dashboard isAuthed={auth.uid} />}
           />
+          <Route
+            path="/profile"
+            component={() => <Profile isAuthed={auth.uid} />}
+          />
+
           {/* <Route path="/circle" component={Circle} /> */}
           <Route path="/circle/:id" component={Circle} />
           <Route path="/signin" component={SignInPage} />
           <Route path="/signup" component={SignUpPage} />
-          <Route path="/testing" component={CircleColumn} />
+
+          {/*<Route path="/testing" component={CircleColumn} >*/}
           {/* <Route path="/circle/:id" component={Circle} /> */}
 
           <Route
@@ -113,7 +120,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);
