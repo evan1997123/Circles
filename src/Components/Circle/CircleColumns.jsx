@@ -17,9 +17,9 @@ class CircleColumns extends Component {
       );
 
       //all (requested) tasks that the current user can check off for someone else
-      var rTasks = allTasks.filter(
-        task => task.taskStage === "pending" && task.assignedByID === userID
-      );
+      // var rTasks = allTasks.filter(
+      //   task => task.taskStage === "pending" && task.assignedByID === userID
+      // );
 
       //all tasks that the current user has completed
       var cTasks = allTasks.filter(
@@ -42,22 +42,22 @@ class CircleColumns extends Component {
           deleteTask={deleteTask}
         ></CircleColumn>
         <CircleColumn
-          title="Pending"
+          title="Pending Tasks"
           color="secondary"
           buttonText="Requesting Approval"
           tasks={pTasks}
           userID={userID}
         ></CircleColumn>
-        <CircleColumn
+        {/* <CircleColumn
           title="Requests"
           color="secondary"
           buttonText="Approve"
           tasks={rTasks}
           handleMoveTasks={handleMoveTasks}
           userID={userID}
-        ></CircleColumn>
+        ></CircleColumn> */}
         <CircleColumn
-          title="Tasks Completed"
+          title="Completed Tasks"
           color="success"
           buttonText="Dismiss"
           tasks={cTasks}

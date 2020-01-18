@@ -117,6 +117,9 @@ class Circle extends React.Component {
           </div>
           <div className="createTaskButton">
             <Button onClick={this.handleClick}>Create Task</Button>
+            &nbsp;<Button onClick={this.handleClick}>Invite Members</Button>
+            &nbsp;<Button onClick={this.handleClick}>Promote/Demote</Button>
+            &nbsp;<Button onClick={this.handleClick}>Approve Tasks</Button>
           </div>
           <Modal show={this.state.show} onHide={this.handleClose}>
             <Modal.Header>

@@ -91,7 +91,6 @@ class TaskForm extends Component {
               value={formData.taskDescription}
             />
           </Form.Group>
-          {/* <Button type="submit">Submit</Button> */}
         </Form>
       </React.Fragment>
     );
