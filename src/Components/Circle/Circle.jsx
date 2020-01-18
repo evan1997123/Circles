@@ -2,6 +2,9 @@ import React from "react";
 import "./Circle.css";
 import TaskForm from "./TaskForm";
 import CircleColumns from "./CircleColumns";
+import ApproveTasksModal from "./ApproveTasksModal";
+import InviteMembersModal from "./InviteMembersModal";
+import PromoteDemoteModal from "./PromoteDemoteModal";
 import { connect } from "react-redux";
 import {
   createTask,
@@ -23,7 +26,10 @@ class Circle extends React.Component {
       taskDescription: "",
       completeBy: "",
       reward: 0,
-      show: false
+      showCreateTaskModal: false,
+      showInviteMembersModal: false,
+      showPromoteDemoteModal: false,
+      showApproveTasksModal: false
     };
 
     //input form local state
@@ -64,7 +70,10 @@ class Circle extends React.Component {
       taskDescription: "",
       completeBy: "",
       reward: "",
-      show: false
+      showCreateTaskModal: false,
+      showInviteMembersModal: false,
+      showPromoteDemoteModal: false,
+      showApproveTasksModal: false
     });
   }
 
@@ -75,15 +84,38 @@ class Circle extends React.Component {
   }
 
   // For showing modal (creating new task)
-  handleClick = () => {
-    this.setState({
-      show: true
-    });
+  handleClick = e => {
+    console.log(e.target.name);
+    switch (e.target.name) {
+      case "createTaskButton":
+        this.setState({
+          showCreateTaskModal: true
+        });
+        return;
+      case "inviteMembersButton":
+        this.setState({
+          showInviteMembersModal: true
+        });
+        return;
+      case "promoteDemoteButton":
+        this.setState({
+          showPromoteDemoteModal: true
+        });
+        return;
+      case "approveTasksButton":
+        this.setState({
+          showApproveTasksModal: true
+        });
+        return;
+    }
   };
 
   handleClose = () => {
     this.setState({
-      show: false
+      showCreateTaskModal: false,
+      showInviteMembersModal: false,
+      showPromoteDemoteModal: false,
+      showApproveTasksModal: false
     });
   };
 
@@ -116,12 +148,41 @@ class Circle extends React.Component {
             <br />
           </div>
           <div className="createTaskButton">
-            <Button onClick={this.handleClick}>Create Task</Button>
-            &nbsp;<Button onClick={this.handleClick}>Invite Members</Button>
-            &nbsp;<Button onClick={this.handleClick}>Promote/Demote</Button>
-            &nbsp;<Button onClick={this.handleClick}>Approve Tasks</Button>
+            <Button name="createTaskButton" onClick={this.handleClick}>
+              Create Task
+            </Button>
+            &nbsp;
+            <Button name="inviteMembersButton" onClick={this.handleClick}>
+              Invite Members
+            </Button>
+            &nbsp;
+            <Button name="promoteDemoteButton" onClick={this.handleClick}>
+              Promote/Demote
+            </Button>
+            &nbsp;
+            <Button name="approveTasksButton" onClick={this.handleClick}>
+              Approve Tasks
+            </Button>
           </div>
-          <Modal show={this.state.show} onHide={this.handleClose}>
+          <ApproveTasksModal
+            showApproveTasksModal={this.state.showApproveTasksModal}
+            handleClose={this.handleClose}
+            allTasks={allTasks}
+            handleMoveTasks={this.handleMoveTasks}
+            userID={userID}
+          ></ApproveTasksModal>
+          <InviteMembersModal
+            showInviteMembersModal={this.state.showInviteMembersModal}
+            handleClose={this.handleClose}
+          ></InviteMembersModal>
+          <PromoteDemoteModal
+            showPromoteDemoteModal={this.state.showPromoteDemoteModal}
+            handleClose={this.handleClose}
+          ></PromoteDemoteModal>
+          <Modal
+            show={this.state.showCreateTaskModal}
+            onHide={this.handleClose}
+          >
             <Modal.Header>
               <Modal.Title>Create a New Task</Modal.Title>
             </Modal.Header>
