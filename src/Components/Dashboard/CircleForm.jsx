@@ -115,21 +115,25 @@ class CircleForm extends React.Component {
   createCircle(e) {
     e.preventDefault();
     console.log("creating");
-    var newMemberList = [];
-    var newLeaderList = [];
+    var newMemberList = {};
+    var newLeaderList = {};
 
-    this.state.currentMembersOfNewCircle.map(member =>
-      newMemberList.push({ [member.userID]: member.name })
+    this.state.currentMembersOfNewCircle.map(
+      member => (newMemberList[member.userID] = member.name)
     );
-    this.state.currentLeadersOfNewCircle.map(leader =>
-      newLeaderList.push({ [leader.userID]: leader.name })
+    this.state.currentLeadersOfNewCircle.map(
+      leader => (newLeaderList[leader.userID] = leader.name)
     );
+
+    console.log(Object.keys(newLeaderList));
+
     var circleDetails = {
       circleName: this.state.newCircleName,
       circleDescription: this.state.newCircleDescription,
       memberList: newMemberList,
       leaderList: newLeaderList,
-      numberOfPeople: newMemberList.length + newLeaderList.length
+      numberOfPeople:
+        Object.keys(newMemberList).length + Object.keys(newLeaderList).length
     };
     console.log(circleDetails);
     this.props.createCircleDispatch(circleDetails);

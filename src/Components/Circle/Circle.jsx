@@ -11,6 +11,7 @@ import {
   moveTask,
   deleteTask
 } from "../../Store/Actions/TaskActions";
+import { updateCircleMembers } from "../../Store/Actions/CircleActions";
 import { firestoreConnect } from "react-redux-firebase"; // so this allows us to connect this component to a firebase collection
 import { compose } from "redux";
 import { Redirect } from "react-router-dom";
@@ -39,6 +40,9 @@ class Circle extends React.Component {
 
     //methods for moving tasks from toDo => pending => completed
     this.handleMoveTasks = this.handleMoveTasks.bind(this);
+
+    //methods for updating the circle with members or leaders from the modals
+    this.handleUpdateCircleMembers = this.handleUpdateCircleMembers.bind(this);
   }
 
   deleteTask = taskId => {
@@ -48,18 +52,42 @@ class Circle extends React.Component {
 
   //event handler for change in input form local state
   handleChangeInput(e) {
+    if (e.target.type === "number") {
+      var value = parseInt(e.target.value);
+      var newValue = isNaN(value) ? "" : value;
+      this.setState({
+        [e.target.name]: newValue
+      });
+      return;
+    }
     this.setState({
-      [e.target.name]:
-        e.target.type === "number" ? parseInt(e.target.value) : e.target.value
+      [e.target.name]: e.target.value
     });
   }
 
   //event handler for creating a task
   handleCreateTask(e) {
     e.preventDefault();
-
+    if (
+      this.state.taskName === "" ||
+      this.state.assignedForID === "" ||
+      this.state.taskDescription === "" ||
+      this.state.completeBy === "" ||
+      this.state.reward === ""
+    ) {
+      alert("All fields are required");
+      return;
+    }
     //dispatch creation of task data object
-    this.props.dispatchCreateTask(this.state);
+    var taskDetails = {
+      circleID: this.state.circleID,
+      taskName: this.state.taskName,
+      assignedForID: this.state.assignedForID,
+      taskDescription: this.state.taskDescription,
+      completeBy: this.state.completeBy,
+      reward: this.state.reward === "" ? 0 : this.state.reward
+    };
+    this.props.dispatchCreateTask(taskDetails);
 
     //find form
     var frm = document.getElementsByName("TaskForm")[0];
@@ -69,7 +97,7 @@ class Circle extends React.Component {
       assignedForID: "",
       taskDescription: "",
       completeBy: "",
-      reward: "",
+      reward: 0,
       showCreateTaskModal: false,
       showInviteMembersModal: false,
       showPromoteDemoteModal: false,
@@ -83,9 +111,13 @@ class Circle extends React.Component {
     this.props.dispatchMoveTask(task, userID);
   }
 
+  handleUpdateCircleMembers(newCircleDetails) {
+    console.log("updating circle");
+    this.props.dispatchUpdateCircleMembers(newCircleDetails);
+  }
+
   // For showing modal (creating new task)
   handleClick = e => {
-    console.log(e.target.name);
     switch (e.target.name) {
       case "createTaskButton":
         this.setState({
@@ -127,6 +159,7 @@ class Circle extends React.Component {
     var currentCircle;
     if (this.props.firestoreCircleRedux) {
       currentCircle = this.props.firestoreCircleRedux[0];
+      console.log(currentCircle);
     }
 
     //if not logged in, then redirect to signin page
@@ -178,6 +211,7 @@ class Circle extends React.Component {
             handleClose={this.handleClose}
             allUsers={allUsers}
             currentCircle={currentCircle}
+            handleUpdateCircleMembers={this.handleUpdateCircleMembers}
           ></InviteMembersModal>
           <PromoteDemoteModal
             showPromoteDemoteModal={this.state.showPromoteDemoteModal}
@@ -191,6 +225,7 @@ class Circle extends React.Component {
               <Modal.Title>Create a New Task</Modal.Title>
             </Modal.Header>
             <Modal.Body>
+              <h3>All inputs are required</h3>
               <TaskForm
                 handleCreateTask={this.handleCreateTask}
                 handleChangeInput={this.handleChangeInput}
@@ -255,7 +290,9 @@ const mapDispatchToProps = dispatch => {
   return {
     dispatchCreateTask: task => dispatch(createTask(task)),
     dispatchMoveTask: (task, userID) => dispatch(moveTask(task, userID)),
-    dispatchDeleteTask: taskId => dispatch(deleteTask(taskId))
+    dispatchDeleteTask: taskId => dispatch(deleteTask(taskId)),
+    dispatchUpdateCircleMembers: newCircleDetails =>
+      dispatch(updateCircleMembers(newCircleDetails))
   };
 };
 

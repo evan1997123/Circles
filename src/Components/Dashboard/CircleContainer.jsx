@@ -27,9 +27,7 @@ const mapStateToProps = (state, ownProps) => {
     var firebaseProfile = state.firebase.profile;
     var myCirclesIDs = [];
     if (firebaseProfile.circleList) {
-      firebaseProfile.circleList.map(idAndName =>
-        myCirclesIDs.push(Object.keys(idAndName)[0])
-      );
+      myCirclesIDs = Object.keys(firebaseProfile.circleList);
     }
     return myCirclesIDs;
   }

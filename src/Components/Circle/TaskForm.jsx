@@ -14,13 +14,8 @@ class TaskForm extends Component {
 
     if (allUsers && currentCircle) {
       //get all member and leader objects
-      var allPeopleInCircle = currentCircle.leaderList.concat(
-        currentCircle.memberList
-      );
-
-      // get just their id's
-      var allIDInCircle = allPeopleInCircle.map(
-        idAndName => Object.keys(idAndName)[0]
+      var allIDInCircle = Object.keys(currentCircle.leaderList).concat(
+        Object.keys(currentCircle.memberList)
       );
 
       //filter allUsers to only have those in the given circle
@@ -52,6 +47,7 @@ class TaskForm extends Component {
           <Form.Group>
             <Form.Label>Task Name</Form.Label>
             <Form.Control
+              required={true}
               type="text"
               name="taskName"
               placeholder="Finish Homework 0"
@@ -63,6 +59,7 @@ class TaskForm extends Component {
           <Form.Group>
             <Form.Label>Assigned For</Form.Label>
             <Form.Control
+              required={true}
               as="select"
               name="assignedForID"
               onChange={handleChangeInput}
@@ -75,6 +72,7 @@ class TaskForm extends Component {
           <Form.Group>
             <Form.Label>Complete By</Form.Label>
             <Form.Control
+              required={true}
               type="date"
               name="completeBy"
               placeholder="2020-01-01"
@@ -86,6 +84,7 @@ class TaskForm extends Component {
           <Form.Group>
             <Form.Label>Reward</Form.Label>
             <Form.Control
+              required
               type="number"
               name="reward"
               placeholder="10"
@@ -97,6 +96,7 @@ class TaskForm extends Component {
           <Form.Group>
             <Form.Label>Task Description</Form.Label>
             <Form.Control
+              required
               type="text"
               name="taskDescription"
               placeholder="Task Description"

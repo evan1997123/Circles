@@ -12,6 +12,7 @@ class InviteMembersModal extends Component {
     this.handleAddingToList = this.handleAddingToList.bind(this);
     this.handleRemovingFromList = this.handleRemovingFromList.bind(this);
     this.swapForms = this.swapForms.bind(this);
+    this.handleUpdate = this.handleUpdate.bind(this);
   }
 
   swapForms() {
@@ -93,25 +94,71 @@ class InviteMembersModal extends Component {
     }
   }
 
+  handleUpdate(e) {
+    //event handler for updating the circle in this.props.currentCircle
+    e.preventDefault();
+    if (
+      this.state.membersToAdd.length === 0 &&
+      this.state.membersToRemove.length === 0
+    ) {
+      return;
+    }
+
+    // dispatch update to circle
+    // just all the members
+
+    var newMembersList = { ...this.props.currentCircle.memberList };
+
+    //removeing anyone that is in our membersToRemove with Map.delete()
+    this.state.membersToRemove.map(nameAndUser => {
+      delete newMembersList[nameAndUser.userID];
+    });
+
+    // add users specified in membersToAdd
+    this.state.membersToAdd.map(
+      nameAndID => (newMembersList[nameAndID.userID] = nameAndID.name)
+    );
+
+    // update total number of people in the circle
+    var newNumberOfPeople =
+      Object.keys(this.props.currentCircle.leaderList).length +
+      Object.keys(newMembersList).length;
+
+    var newCircleDetails = {
+      memberList: newMembersList,
+      numberOfPeople: newNumberOfPeople,
+      circleID: this.props.currentCircle.circleID,
+      circleName: this.props.currentCircle.circleName,
+      membersToRemove: this.state.membersToRemove,
+      membersToAdd: this.state.membersToAdd
+    };
+
+    this.props.handleUpdateCircleMembers(newCircleDetails);
+
+    //find form
+    var frm = document.getElementsByName("InviteMembersForm")[0];
+    frm.reset();
+    this.setState({
+      membersToAdd: [],
+      membersToRemove: [],
+      currentForm: "adding"
+    });
+  }
   render() {
     let { allUsers, currentCircle } = this.props;
+    //currentCircle is object from firestore
     var listOfUsersForAdding;
     var listOfUsersForRemoving;
     if (allUsers && currentCircle) {
       // get For membersToAdd List
-      //get all member and leader objects
-      var allPeopleInCircle = currentCircle.leaderList.concat(
-        currentCircle.memberList
-      );
-
-      // get just their id's
-      var allIDInCircle = allPeopleInCircle.map(
-        idAndName => Object.keys(idAndName)[0]
+      //get all member and leader ID's
+      var allIdInCircle = Object.keys(currentCircle.leaderList).concat(
+        Object.keys(currentCircle.memberList)
       );
 
       //filter allUsers to only have those NOT in the given circle
       var allUsersFiltered = allUsers.filter(
-        user => !allIDInCircle.includes(user.id)
+        user => !allIdInCircle.includes(user.id)
       );
 
       listOfUsersForAdding = [
@@ -127,20 +174,13 @@ class InviteMembersModal extends Component {
         ))
       ];
 
-      // get list for membersToRemove
-      var allPeopleInCircle = currentCircle.leaderList.concat(
-        currentCircle.memberList
-      );
+      //get All leaders ID's
+      var allLeadersID = Object.keys(this.props.currentCircle.leaderList);
 
-      // get just their id's
-      var allIDInCircle = allPeopleInCircle.map(
-        idAndName => Object.keys(idAndName)[0]
-      );
-
-      //filter allUsers to only have those NOT in the given circle
-      var allUsersFiltered = allUsers.filter(user =>
-        allIDInCircle.includes(user.id)
-      );
+      //filter allUsers to only have those in the given circle
+      var allUsersFiltered = allUsers
+        .filter(user => allIdInCircle.includes(user.id))
+        .filter(user => !allLeadersID.includes(user.id));
 
       listOfUsersForRemoving = [
         allUsersFiltered.map((user, index) => (
@@ -155,7 +195,6 @@ class InviteMembersModal extends Component {
         ))
       ];
     }
-    console.log(this.state);
     var currentlySelectedMembersToAdd = this.state.membersToAdd.map(
       (member, index) => (
         <button
@@ -187,6 +226,7 @@ class InviteMembersModal extends Component {
           show={this.props.showInviteMembersModal}
           onHide={this.props.handleClose}
         >
+          You may only either Add or Remove at one click.
           <div
             style={{
               display: "flex",
@@ -201,7 +241,7 @@ class InviteMembersModal extends Component {
             )}
           </div>
           {this.state.currentForm === "adding" ? (
-            <Form>
+            <Form name="InviteMembersForm" onSubmit={this.handleUpdate}>
               <Modal.Header>
                 <Modal.Title>Invite Members</Modal.Title>
               </Modal.Header>
@@ -229,10 +269,11 @@ class InviteMembersModal extends Component {
               </Modal.Body>
               <Modal.Footer>
                 <Button onClick={this.props.handleClose}> Close </Button>
+                <Button onClick={this.handleUpdate}>Submit</Button>
               </Modal.Footer>
             </Form>
           ) : (
-            <Form>
+            <Form name="InviteMembersForm" onSubmit={this.handleUpdate}>
               <Modal.Header>
                 <Modal.Title>Remove Members</Modal.Title>
               </Modal.Header>
@@ -246,7 +287,7 @@ class InviteMembersModal extends Component {
                     <Col id="flexColBig">
                       <Dropdown onSelect={this.handleAddingToList}>
                         <Dropdown.Toggle variant="success">
-                          Select new members
+                          Select members
                         </Dropdown.Toggle>
 
                         <Dropdown.Menu>{listOfUsersForRemoving}</Dropdown.Menu>
@@ -260,6 +301,7 @@ class InviteMembersModal extends Component {
               </Modal.Body>
               <Modal.Footer>
                 <Button onClick={this.props.handleClose}> Close </Button>
+                <Button onClick={this.handleUpdate}>Submit</Button>
               </Modal.Footer>
             </Form>
           )}

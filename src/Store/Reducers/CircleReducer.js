@@ -52,6 +52,31 @@ const CircleReducer = (state = initState, action) => {
           action.circle.circleID
       );
       return state;
+    case "UPDATE_CIRCLE_MEMBER_SUCCESS":
+      console.log(
+        "updated circle:" +
+          action.update.circleID +
+          "to have memberList of" +
+          action.update.memberList +
+          " and " +
+          action.update.numberOfPeople +
+          " number of people"
+      );
+      return state;
+    case "UPDATE_CIRCLE_MEMBER_ERROR":
+      console.log("Error updating circle members " + action.err);
+      return state;
+    case "INVITED_MEMBER_UPDATE_CIRCLELIST":
+      console.log(
+        "updated user " +
+          action.userID +
+          "to have circleList " +
+          action.updatedCircleList
+      );
+      return state;
+    case "ERROR_INVITED_MEMBER_UPDATE_CIRCLELIST":
+      console.log("error updating circle members " + action.err);
+      return state;
     default:
       return state;
   }

@@ -43,7 +43,7 @@ export const signUp = newUser => {
             initials: (
               newUser.firstName[0] + newUser.lastName[0]
             ).toUpperCase(),
-            circleList: []
+            circleList: {}
           });
       })
       .then(() => {
