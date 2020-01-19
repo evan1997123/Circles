@@ -3,15 +3,16 @@ import { Modal, Button } from "react-bootstrap";
 import CircleColumn from "./CircleColumn";
 
 class ApproveTasksModal extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
-    var rTasks = this.props.allTasks.filter(
-      task =>
-        task.taskStage === "pending" && task.assignedByID === this.props.userID
-    );
+    var rTasks;
+    if (this.props.allTasks) {
+      rTasks = this.props.allTasks.filter(
+        task =>
+          task.taskStage === "pending" &&
+          task.assignedByID === this.props.userID
+      );
+    }
+
     return (
       <div>
         <Modal

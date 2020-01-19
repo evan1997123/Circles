@@ -4,7 +4,7 @@
   /* justify-content: space-between; */
 }
 
-.createTaskButton {
+.topButtons {
   display: flex;
   justify-content: center;
   padding: 20px;

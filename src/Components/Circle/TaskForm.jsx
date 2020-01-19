@@ -8,12 +8,28 @@ class TaskForm extends Component {
       handleCreateTask,
       handleChangeInput,
       formData,
-      allUsers
+      allUsers,
+      currentCircle
     } = this.props;
 
-    if (allUsers) {
+    if (allUsers && currentCircle) {
+      //get all member and leader objects
+      var allPeopleInCircle = currentCircle.leaderList.concat(
+        currentCircle.memberList
+      );
+
+      // get just their id's
+      var allIDInCircle = allPeopleInCircle.map(
+        idAndName => Object.keys(idAndName)[0]
+      );
+
+      //filter allUsers to only have those in the given circle
+      var allUsersFiltered = allUsers.filter(user =>
+        allIDInCircle.includes(user.id)
+      );
+
       var listOfUsers = [
-        allUsers.map((user, index) => (
+        allUsersFiltered.map((user, index) => (
           <option value={user.id} key={index}>
             {user.firstName} {user.lastName}
           </option>

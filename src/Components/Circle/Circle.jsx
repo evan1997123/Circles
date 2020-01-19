@@ -107,6 +107,8 @@ class Circle extends React.Component {
           showApproveTasksModal: true
         });
         return;
+      default:
+        return;
     }
   };
 
@@ -147,7 +149,7 @@ class Circle extends React.Component {
             Number of people: &nbsp;{currentCircle.numberOfPeople}
             <br />
           </div>
-          <div className="createTaskButton">
+          <div className="topButtons">
             <Button name="createTaskButton" onClick={this.handleClick}>
               Create Task
             </Button>
@@ -174,6 +176,8 @@ class Circle extends React.Component {
           <InviteMembersModal
             showInviteMembersModal={this.state.showInviteMembersModal}
             handleClose={this.handleClose}
+            allUsers={allUsers}
+            currentCircle={currentCircle}
           ></InviteMembersModal>
           <PromoteDemoteModal
             showPromoteDemoteModal={this.state.showPromoteDemoteModal}
@@ -193,6 +197,7 @@ class Circle extends React.Component {
                 formData={this.state}
                 allUsers={allUsers}
                 userID={userID}
+                currentCircle={currentCircle}
               />
             </Modal.Body>
             <Modal.Footer>
