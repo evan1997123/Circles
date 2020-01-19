@@ -177,10 +177,11 @@ class InviteMembersModal extends Component {
       //get All leaders ID's
       var allLeadersID = Object.keys(this.props.currentCircle.leaderList);
 
-      //filter allUsers to only have those in the given circle
+      //filter allUsers to only have those in the given circle, and not leaders, and not myself
       var allUsersFiltered = allUsers
         .filter(user => allIdInCircle.includes(user.id))
-        .filter(user => !allLeadersID.includes(user.id));
+        .filter(user => !allLeadersID.includes(user.id))
+        .filter(user => user.id !== this.props.currentUserID);
 
       listOfUsersForRemoving = [
         allUsersFiltered.map((user, index) => (

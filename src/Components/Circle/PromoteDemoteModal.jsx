@@ -137,6 +137,11 @@ class PromoteDemoteModal extends Component {
       }
     });
 
+    //must have atleast 1 leader left over
+    if (Object.keys(newLeaderList).length <= 0) {
+      return;
+    }
+
     var newCircleDetails = {
       circleID: this.props.currentCircle.circleID,
       memberList: newMemberList,
@@ -226,6 +231,8 @@ class PromoteDemoteModal extends Component {
           onHide={this.props.handleClose}
         >
           You may only either Promote or Demote at one click.
+          <br />
+          There must always be atleast leader.
           <div
             style={{
               display: "flex",

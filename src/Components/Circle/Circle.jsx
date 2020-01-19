@@ -168,8 +168,12 @@ class Circle extends React.Component {
     const auth = this.props.firebaseAuthRedux;
     const userID = auth.uid;
     var currentCircle;
+    var isLeader = false;
     if (this.props.firestoreCircleRedux) {
       currentCircle = this.props.firestoreCircleRedux[0];
+      isLeader = Object.keys(currentCircle.leaderList).includes(userID)
+        ? true
+        : false;
     }
 
     //if not logged in, then redirect to signin page
@@ -195,20 +199,27 @@ class Circle extends React.Component {
           <div className="topButtons">
             <Button name="createTaskButton" onClick={this.handleClick}>
               Create Task
-            </Button>
+            </Button>{" "}
             &nbsp;
-            <Button name="inviteMembersButton" onClick={this.handleClick}>
-              Invite Members
-            </Button>
-            &nbsp;
-            <Button name="promoteDemoteButton" onClick={this.handleClick}>
-              Promote/Demote
-            </Button>
-            &nbsp;
-            <Button name="approveTasksButton" onClick={this.handleClick}>
-              Approve Tasks
-            </Button>
+            {isLeader ? (
+              <div>
+                <Button name="inviteMembersButton" onClick={this.handleClick}>
+                  Invite Members
+                </Button>
+                &nbsp;
+                <Button name="promoteDemoteButton" onClick={this.handleClick}>
+                  Promote/Demote
+                </Button>
+                &nbsp;
+                <Button name="approveTasksButton" onClick={this.handleClick}>
+                  Approve Tasks
+                </Button>
+              </div>
+            ) : (
+              ""
+            )}
           </div>
+
           <ApproveTasksModal
             showApproveTasksModal={this.state.showApproveTasksModal}
             handleClose={this.handleClose}
@@ -220,12 +231,14 @@ class Circle extends React.Component {
             showInviteMembersModal={this.state.showInviteMembersModal}
             handleClose={this.handleClose}
             allUsers={allUsers}
+            currentUserID={userID}
             currentCircle={currentCircle}
             handleUpdateCircleMembers={this.handleUpdateCircleMembers}
           ></InviteMembersModal>
           <PromoteDemoteModal
             showPromoteDemoteModal={this.state.showPromoteDemoteModal}
             handleClose={this.handleClose}
+            currentUserID={userID}
             currentCircle={currentCircle}
             handlePromoteDemote={this.handlePromoteDemote}
           ></PromoteDemoteModal>
