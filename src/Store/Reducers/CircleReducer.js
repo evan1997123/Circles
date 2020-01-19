@@ -77,6 +77,20 @@ const CircleReducer = (state = initState, action) => {
     case "ERROR_INVITED_MEMBER_UPDATE_CIRCLELIST":
       console.log("error updating circle members " + action.err);
       return state;
+
+    case "UPDATE_CIRCLE_PROMOTE_DEMOTE_SUCCESS":
+      console.log(
+        "updated circle: " +
+          action.update.circleID +
+          "to have new member and leader lists" +
+          action.update.leaderList +
+          action.update.memberList
+      );
+      return state;
+
+    case "UPDATE_CIRCLE_PROMOTE_DEMOTE_ERROR":
+      console.log("error promoting or demoting: " + action.err);
+      return state;
     default:
       return state;
   }

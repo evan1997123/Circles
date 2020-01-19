@@ -196,3 +196,29 @@ export const updateCircleMembers = newCircleDetails => {
       });
   };
 };
+
+export const updateCirclePromoteDemote = newCircleDetails => {
+  return (dispatch, getState, { getFirebase, getFirestore }) => {
+    //pause dispatch
+    //do async calls to Database
+    const firestore = getFirestore();
+
+    console.log(newCircleDetails);
+    firestore
+      .collection("circles")
+      .doc(newCircleDetails.circleID)
+      .update(newCircleDetails)
+      .then(() => {
+        dispatch({
+          type: "UPDATE_CIRCLE_PROMOTE_DEMOTE_SUCCESS",
+          update: newCircleDetails
+        });
+      })
+      .catch(err => {
+        dispatch({
+          type: "UPDATE_CIRCLE_PROMOTE_DEMOTE_ERROR",
+          err: err
+        });
+      });
+  };
+};
