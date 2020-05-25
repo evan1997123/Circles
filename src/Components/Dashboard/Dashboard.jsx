@@ -32,7 +32,7 @@ class Dashboard extends React.Component {
     var auth = this.props.firebaseAuthRedux;
     var userID = auth.uid;
     if (allTasks) {
-      allTasks.filter((task) => {
+      allTasks.filter(task => {
         if (
           task.taskStage === "toDo" &&
           task.dismissed == false &&
@@ -56,13 +56,13 @@ class Dashboard extends React.Component {
     return (
       <div className="dashboard">
         <div className="panelContainer">
-          <div className="panelItem">
+          <div className="panelItem" style={{ flex: "6" }}>
             <CircleContainer
               data={data}
               friendsList={this.props.firebaseProfileRedux.friendsList}
             />
           </div>
-          <div className="panelItem">
+          <div className="panelItem" style={{ flex: "3", padding: "0" }}>
             <Notification
               notifications={toDoTasks}
               circleNames={mapCircleIDToNames}
@@ -80,23 +80,26 @@ const mapStateToProps = (state, ownProps) => {
     firestoreTasksRedux: state.firestore.ordered.tasks,
     firebaseAuthRedux: state.firebase.auth,
     firestoreCircleRedux: state.firestore.ordered.circles,
-    firebaseProfileRedux: state.firebase.profile,
+    firebaseProfileRedux: state.firebase.profile
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
-    dispatchDismissTask: (task) => dispatch(dismissTask(task)),
+    dispatchDismissTask: task => dispatch(dismissTask(task))
   };
 };
 
 export default compose(
-  connect(mapStateToProps, mapDispatchToProps),
-  firestoreConnect((props) => {
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  ),
+  firestoreConnect(props => {
     return [
       {
-        collection: "tasks",
-      },
+        collection: "tasks"
+      }
     ];
   })
 )(Dashboard);

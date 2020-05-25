@@ -259,7 +259,7 @@ class Landing extends React.Component {
               </div>
               <div className="buttonContainerLogin">
                 <div className="forButtonLogin">
-                  <button className="buttonText">Sign Up</button>
+                  <button className="buttonText">Log In</button>
                 </div>
               </div>
               {this.state.authError ? (
