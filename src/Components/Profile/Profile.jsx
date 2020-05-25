@@ -7,7 +7,7 @@ import { compose } from "redux";
 import {
   sendFriendRequest,
   cancelFriendRequest,
-  acceptFriendRequest,
+  acceptFriendRequest
 } from "../../Store/Actions/FriendActions";
 //
 import Picture from "./Picture";
@@ -34,7 +34,7 @@ class Profile extends Component {
     switch (e.target.name) {
       case "friendOptionsButton":
         this.setState({
-          showFriendOptionsModal: true,
+          showFriendOptionsModal: true
         });
         return;
       default:
@@ -43,7 +43,7 @@ class Profile extends Component {
   }
   handleClose() {
     this.setState({
-      showFriendOptionsModal: false,
+      showFriendOptionsModal: false
     });
   }
 
@@ -78,27 +78,26 @@ class Profile extends Component {
       var incomingFriendRequests;
       if (this.props.firestoreFriendRequestsRedux) {
         myFriendRequests = this.props.firestoreFriendRequestsRedux.filter(
-          (friendRequest) => friendRequest.from === userID
+          friendRequest => friendRequest.from === userID
         );
         incomingFriendRequests = this.props.firestoreFriendRequestsRedux.filter(
-          (friendRequest) => friendRequest.to === userID
+          friendRequest => friendRequest.to === userID
         );
         allLoaded = true;
       }
       var myFriends;
       if (profileData && profileData.friendsList) {
-        console.log(profileData.friendsList);
         myFriends = Object.entries(profileData.friendsList).map(
-          (friendIDAndName) => {
-            console.log(friendIDAndName);
+          (friendIDAndName, index) => {
             return (
               <Card
                 id="task-card"
                 style={{
                   width: "100%!important",
                   margin: "auto",
-                  marginBottom: "10px",
+                  marginBottom: "10px"
                 }}
+                key={index}
                 className="card flex-row"
                 // key={index}
               >
@@ -108,12 +107,12 @@ class Profile extends Component {
                     width: 450,
                     display: "flex",
                     justifyContent: "space-between",
-                    alignItems: "center",
+                    alignItems: "center"
                   }}
                 >
                   <Card.Title
                     style={{
-                      margin: 0,
+                      margin: 0
                     }}
                   >
                     {friendIDAndName[1]}
@@ -173,6 +172,7 @@ class Profile extends Component {
               myIncomingFriendRequests={incomingFriendRequests}
               handleCancelFriendRequest={this.handleCancelFriendRequest}
               handleAcceptFriendRequest={this.handleAcceptFriendRequest}
+              firebase={this.props.firebase}
             />
           </div>
         </div>
@@ -187,23 +187,27 @@ const mapStateToProps = (state, ownProps) => {
     firebaseProfileRedux: state.firebase.profile,
     firestoreUsersRedux: state.firestore.ordered.users,
     firestoreFriendRequestsRedux: state.firestore.ordered.friendRequests,
+    firebase: state.firebase
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
-    dispatchSendFriendRequest: (friendInfo) =>
+    dispatchSendFriendRequest: friendInfo =>
       dispatch(sendFriendRequest(friendInfo)),
-    dispatchCancelFriendRequest: (friendRequestDocumentID) =>
+    dispatchCancelFriendRequest: friendRequestDocumentID =>
       dispatch(cancelFriendRequest(friendRequestDocumentID)),
-    dispatchAcceptFriendRequest: (friendRequest) =>
-      dispatch(acceptFriendRequest(friendRequest)),
+    dispatchAcceptFriendRequest: friendRequest =>
+      dispatch(acceptFriendRequest(friendRequest))
   };
 };
 
 export default compose(
-  connect(mapStateToProps, mapDispatchToProps),
-  firestoreConnect((props) => {
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  ),
+  firestoreConnect(props => {
     if (props.firebaseAuthRedux.uid) {
       return [
         { collection: "circles" },
@@ -211,17 +215,17 @@ export default compose(
         {
           collection: "friendRequests",
           where: [
-            ["allUsersRelated", "array-contains", props.firebaseAuthRedux.uid],
-          ],
-        },
+            ["allUsersRelated", "array-contains", props.firebaseAuthRedux.uid]
+          ]
+        }
       ];
     } else {
       return [
         { collection: "circles" },
         { collection: "users" },
         {
-          collection: "friendRequests",
-        },
+          collection: "friendRequests"
+        }
       ];
     }
   })

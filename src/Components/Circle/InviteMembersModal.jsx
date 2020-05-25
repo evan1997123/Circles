@@ -447,6 +447,19 @@ const CustomMenu = React.forwardRef(
   ({ children, style, className, "aria-labelledby": labeledBy }, ref) => {
     const [value, setValue] = useState("");
 
+    var allShow = React.Children.toArray(children).filter(
+      child =>
+        !value ||
+        child.props.children
+          .toString()
+          .toLowerCase()
+          .startsWith(value, 1)
+    );
+    var toShow = allShow;
+    if (allShow.length > 10) {
+      toShow = allShow.slice(0, 10);
+    }
+
     return (
       <div
         ref={ref}
@@ -462,16 +475,7 @@ const CustomMenu = React.forwardRef(
           onChange={e => setValue(e.target.value)}
           value={value}
         />
-        <ul className="list-unstyled">
-          {React.Children.toArray(children).filter(
-            child =>
-              !value ||
-              child.props.children
-                .toString()
-                .toLowerCase()
-                .startsWith(value, 1)
-          )}
-        </ul>
+        <ul className="list-unstyled">{toShow}</ul>
       </div>
     );
   }

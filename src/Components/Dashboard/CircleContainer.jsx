@@ -8,7 +8,7 @@ import "./CircleContainer.css";
 
 class CircleContainer extends React.Component {
   render() {
-    var circles = this.props.allCirclesRedux;
+    var circles = this.props.myCirclesRedux;
     return (
       <div className="column">
         <div className="circle">
@@ -42,7 +42,7 @@ const mapStateToProps = (state, ownProps) => {
   var myCirclesID = getMyCircleIds();
   if (state.firestore.ordered.circles) {
     return {
-      allCirclesRedux: state.firestore.ordered.circles
+      myCirclesRedux: state.firestore.ordered.circles
         .filter(circle => myCirclesID.includes(circle.id))
         .sort(circleNameSort),
       firebaseProfileRedux: state.firebase.profile

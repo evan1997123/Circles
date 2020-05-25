@@ -56,6 +56,10 @@ class Task extends React.Component {
     );
     var difference = completeByDate.getTime() - currentDate.getTime();
     numDaysLeft = Math.ceil(difference / (1000 * 60 * 60 * 24));
+
+    // if (numDaysLeft < 0) {
+    //   return null;
+    // }
     // Display the Circle name if for notification
     // Use different styling if this task is for notifications
     var displayCircleName;

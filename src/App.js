@@ -83,8 +83,8 @@ class App extends React.Component {
 
           {/* <Route path="/circle" component={Circle} /> */}
           <Route path="/circle/:id" component={Circle} />
-          <Route path="/signin" component={SignInPage} />
-          <Route path="/signup" component={SignUpPage} />
+          {/* <Route path="/signin" component={SignInPage} />
+          <Route path="/signup" component={SignUpPage} /> */}
 
           {/*<Route path="/testing" component={CircleColumn} >*/}
           {/* <Route path="/circle/:id" component={Circle} /> */}

@@ -15,7 +15,7 @@ class Picture extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      source: defaultPic,
+      source: defaultPic
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -54,7 +54,7 @@ class Picture extends Component {
     let storageRef = this.props.firebase
       .storage()
       .ref(this.props.auth.uid + "/" + "profilepic");
-    storageRef.getDownloadURL().then((url) => this.setState({ source: url }));
+    storageRef.getDownloadURL().then(url => this.setState({ source: url }));
   }
 
   render() {
@@ -69,7 +69,7 @@ class Picture extends Component {
         style={{
           border: "1px solid #ddd",
           padding: "5%",
-          borderRadius: "4px",
+          borderRadius: "4px"
         }}
       >
         <div style={{ textAlign: "center" }}>
@@ -100,8 +100,11 @@ class Picture extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    firebase: state.firebase,
+    firebase: state.firebase
   };
 };
 
-export default compose(connect(mapStateToProps), firebaseConnect())(Picture);
+export default compose(
+  connect(mapStateToProps),
+  firebaseConnect()
+)(Picture);

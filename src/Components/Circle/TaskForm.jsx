@@ -9,7 +9,7 @@ class TaskForm extends Component {
       handleChangeInput,
       formData,
       allUsers,
-      currentCircle,
+      currentCircle
     } = this.props;
 
     if (allUsers && currentCircle) {
@@ -19,7 +19,7 @@ class TaskForm extends Component {
       );
 
       //filter allUsers to only have those in the given circle
-      var allUsersFiltered = allUsers.filter((user) =>
+      var allUsersFiltered = allUsers.filter(user =>
         allIDInCircle.includes(user.id)
       );
 
@@ -28,7 +28,7 @@ class TaskForm extends Component {
           <option value={user.id} key={index}>
             {user.firstName} {user.lastName}
           </option>
-        )),
+        ))
       ];
       listOfUsers.unshift(
         <option
@@ -56,6 +56,21 @@ class TaskForm extends Component {
               placeholder="Finish Homework 0"
               onChange={handleChangeInput}
               value={formData.taskName}
+            />
+          </Form.Group>
+
+          <Form.Group>
+            <Form.Label>Task Description</Form.Label>
+            <Form.Control
+              required
+              type="text"
+              name="taskDescription"
+              placeholder="Task Description"
+              onChange={handleChangeInput}
+              // style={{
+              //   width: 500
+              // }}
+              value={formData.taskDescription}
             />
           </Form.Group>
 
@@ -93,21 +108,6 @@ class TaskForm extends Component {
               placeholder="10"
               onChange={handleChangeInput}
               value={formData.reward}
-            />
-          </Form.Group>
-
-          <Form.Group>
-            <Form.Label>Task Description</Form.Label>
-            <Form.Control
-              required
-              type="text"
-              name="taskDescription"
-              placeholder="Task Description"
-              onChange={handleChangeInput}
-              // style={{
-              //   width: 500
-              // }}
-              value={formData.taskDescription}
             />
           </Form.Group>
         </Form>
