@@ -1,0 +1,30 @@
+@import url('https://fonts.googleapis.com/css2?family=Jost:wght@400;700&display=swap');
+
+.centered {
+  display: flex;
+  flex-direction: row;
+  margin-top: 25px;
+}
+
+.topButtons {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+
+.buttonMargin {
+  margin: 10px;
+}
+
+* {
+  font-family: "Jost", sans-serif;
+}
+
+.circle-name {
+  font-size: 3.5rem;
+  padding-top: 20px;
+}
+
+.circle-info {
+  font-size: 1.5rem;
+}

@@ -1,0 +1,9 @@
+.columns {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 10px;
+  margin-right: 0.25%;
+  margin-left: 0.25%;
+}

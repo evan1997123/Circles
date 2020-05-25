@@ -1,0 +1,64 @@
+.activeCircle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: calc(100% * (1 / 4));
+  /* height: 0px; */
+  /* padding-bottom: calc(100% * (1 / 4)); */
+}
+
+.rowButtons {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+}
+
+.myButton {
+  /* position: absolute;
+  top: 0;
+  left: 0; */
+  border-radius: 50% !important;
+  width: 80px !important;
+  height: 80px !important;
+  margin-bottom: 2% !important;
+}
+
+.myButtonWrapper {
+  /* position: relative;
+  width: 80%; */
+}
+
+#add {
+  display: flex;
+  flex: 1;
+}
+
+#remove {
+  display: flex;
+  flex: 1;
+}
+
+#flexRow {
+  display: flex;
+  flex-direction: row;
+}
+
+#flexColSmall {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+}
+
+#flexColBig {
+  display: flex;
+  flex: 4;
+  justify-content: center;
+  align-items: center;
+}
+
+#myButton {
+  margin-left: 5px;
+  margin-bottom: 5px;
+}

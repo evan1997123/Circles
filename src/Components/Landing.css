@@ -1,0 +1,184 @@
+.myContainer {
+  /* background-color: lightblue; */
+  background-image: url("../Assets/Images/landingBackground.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: flex;
+  font-family: "Poppins", sans-serif;
+}
+
+.leftContainer {
+  /* background-color: red; */
+  flex: 5;
+}
+
+.rightContainer {
+  /* background-color: blue; */
+  display: flex;
+  flex: 4;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.doubleFormContainer {
+  display: flex;
+  flex-direction: row;
+  height: 70%;
+  width: 70%;
+}
+.formContainer {
+  display: flex;
+  flex-direction: column;
+  /* align-items: center; */
+  justify-content: space-around;
+  background-color: white;
+  height: 70%;
+  width: 70%;
+  border-radius: 24px;
+}
+
+.titleContainer {
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  flex: 1;
+  margin-top: 5%;
+}
+.titleContainerLogin {
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  margin-top: 5%;
+}
+.titleText {
+  color: #d83fdd;
+  font-size: 32px;
+}
+.forLabel {
+  margin-bottom: 0;
+  padding-top: 1%;
+}
+.inputContainer {
+  display: flex;
+  flex: 13;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.inputContainerLogin {
+  display: flex;
+  flex: 3;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.emailUsernamePasswordInputContainer {
+  width: 75%;
+}
+.firstLastRowContainer {
+  display: flex;
+  width: 75%;
+  flex-direction: row;
+  justify-content: space-around;
+  width: 75%;
+}
+
+.firstLastInputContainer {
+  width: 50%;
+}
+
+.forInputFirstLast {
+  outline: 0;
+  border-width: 0 0 2px;
+  border-color: lightblue;
+  width: 75%;
+}
+.forInputFirstLast:focus {
+  border-color: lightpink;
+}
+.forInput {
+  outline: 0;
+  border-width: 0 0 2px;
+  border-color: lightblue;
+  width: 100%;
+}
+.forInput:focus {
+  border-color: lightpink;
+}
+.password {
+  letter-spacing: 4px;
+  /* font-size: 24px; */
+}
+
+.buttonContainer {
+  width: 100%;
+  display: flex;
+  flex: 2;
+  justify-content: center;
+  align-items: center;
+}
+
+.buttonContainerLogin {
+  width: 100%;
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+}
+
+.forButton {
+  width: 30%;
+  height: 90%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 12px;
+}
+.forButtonLogin {
+  width: 30%;
+  height: 60%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 12px;
+}
+.buttonText {
+  width: 100%;
+  height: 100%;
+  color: #e8edff;
+  background-color: #d83fdd;
+  border-radius: 12px;
+  font-family: "Poppins", sans-serif;
+  font-weight: 1000;
+  font-size: 18px;
+}
+
+.orLogIn {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  align-items: initial;
+}
+
+.orLogInText {
+  font-size: 16px;
+  text-decoration: underline;
+  color: lightskyblue;
+}
+
+.orLogInText:hover {
+  color: blue;
+}
+
+.authErrorContainer {
+  display: flex;
+  justify-content: center;
+  padding: 1% 5% 1% 5%;
+}
