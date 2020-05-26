@@ -452,7 +452,6 @@ class Circle extends React.Component {
             <Dropdown>
               <Dropdown.Toggle
                 style={{ margin: "7.5px", height: "100%" }}
-                size="lg"
                 variant="success"
                 id="dropdown-basic"
                 variant="outline-primary"
@@ -465,7 +464,6 @@ class Circle extends React.Component {
                   name="createTaskButton"
                   onClick={this.handleClick}
                   style={{ width: "100%", borderColor: "white" }}
-                  size="lg"
                   variant="outline-primary"
                 >
                   Create Task
@@ -475,7 +473,6 @@ class Circle extends React.Component {
                     name="approveTasksButton"
                     onClick={this.handleClick}
                     style={{ width: "100%", borderColor: "white" }}
-                    size="lg"
                     variant="outline-primary"
                   >
                     Approve Tasks
@@ -488,7 +485,6 @@ class Circle extends React.Component {
               <Dropdown>
                 <Dropdown.Toggle
                   style={{ margin: "7.5px", height: "100%" }}
-                  size="lg"
                   variant="success"
                   id="dropdown-basic"
                   variant="outline-primary"
@@ -500,7 +496,6 @@ class Circle extends React.Component {
                     name="inviteMembersButton"
                     onClick={this.handleClick}
                     style={{ width: "100%", borderColor: "white" }}
-                    size="lg"
                     variant="outline-primary"
                   >
                     Invite Members
@@ -509,7 +504,6 @@ class Circle extends React.Component {
                     name="promoteDemoteButton"
                     onClick={this.handleClick}
                     style={{ width: "100%", borderColor: "white" }}
-                    size="lg"
                     variant="outline-primary"
                   >
                     Promote/Demote
@@ -522,7 +516,6 @@ class Circle extends React.Component {
               <Dropdown>
                 <Dropdown.Toggle
                   style={{ margin: "7.5px", height: "100%" }}
-                  size="lg"
                   variant="success"
                   id="dropdown-basic"
                   variant="outline-primary"
@@ -535,7 +528,6 @@ class Circle extends React.Component {
                     name="createRewardsButton"
                     onClick={this.handleClick}
                     style={{ width: "100%", borderColor: "white" }}
-                    size="lg"
                     variant="outline-primary"
                   >
                     Create Rewards
@@ -546,7 +538,6 @@ class Circle extends React.Component {
             {!isLeader && (
               <Button
                 variant="outline-danger"
-                size="lg"
                 style={{ margin: "7.5px" }}
                 onClick={this.handleClick}
                 name="leaveCircleButton"

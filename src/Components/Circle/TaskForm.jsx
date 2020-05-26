@@ -117,10 +117,10 @@ class TaskForm extends Component {
               Would you like to add a penalty to this task when it becomes
               overdue?
             </Form.Label>
-            <Form.Select>
+            <Form.Control as="select">
               <option>Yes</option>
               <option>No</option>
-            </Form.Select>
+            </Form.Control>
           </Form.Group>
         </Form>
       </React.Fragment>
