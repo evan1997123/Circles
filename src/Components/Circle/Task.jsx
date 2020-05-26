@@ -15,8 +15,11 @@ class Task extends React.Component {
       forNotification,
       circleName,
       handleDismiss,
-      handleDisapproveTask
+      handleDisapproveTask,
+      isLeader,
+      handleEditTask,
     } = this.props;
+    console.log(handleEditTask);
     var ifExists = handleMoveTasks
       ? () => handleMoveTasks(task, userID)
       : () => "do nothing";
@@ -56,11 +59,7 @@ class Task extends React.Component {
     );
     var difference = completeByDate.getTime() - currentDate.getTime();
     numDaysLeft = Math.ceil(difference / (1000 * 60 * 60 * 24));
-
-    // if (numDaysLeft < 0) {
-    //   return null;
-    // }
-    // Display the Circle name if for notification
+    // Display the Circle name if for notification purposes
     // Use different styling if this task is for notifications
     var displayCircleName;
     var classForTask = "task";
@@ -90,7 +89,7 @@ class Task extends React.Component {
               </Card.Text>
             )}
             <Card.Text>
-              <strong>Complete By</strong>: {task.completeBy}
+              <strong>Complete By</strong>: {completeByDate.toDateString()}
             </Card.Text>
             <Card.Text>
               <strong>Points</strong>: {task.reward}
@@ -114,7 +113,15 @@ class Task extends React.Component {
                 Disapprove
               </Button>
             )}
-            {!forNotification && deleteButton}
+            {!forNotification && isLeader && deleteButton}
+            {!forNotification && (
+              <Button
+                variant="outline-info"
+                onClick={() => handleEditTask(task.taskID)}
+              >
+                Edit Task
+              </Button>
+            )}
             {forNotification && (
               <Button
                 variant="outline-warning"

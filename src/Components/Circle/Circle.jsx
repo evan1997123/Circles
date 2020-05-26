@@ -12,6 +12,7 @@ import {
   moveTask,
   deleteTask,
   disapproveTask,
+  editTask,
 } from "../../Store/Actions/TaskActions";
 import {
   updateCircleMembers,
@@ -27,6 +28,7 @@ import {
   claimReward,
   deleteReward,
 } from "../../Store/Actions/RewardActions";
+import ViewMembersModal from "./ViewMembersModal";
 
 class Circle extends React.Component {
   constructor(props) {
@@ -44,11 +46,14 @@ class Circle extends React.Component {
       showApproveTasksModal: false,
       showCreateRewardsModal: false,
       showLeaveCircleModal: false,
+      showViewMembersModal: false,
+      showEditTaskModal: false,
       rewardTitle: "",
       rewardDescription: "",
       rewardPoints: "",
       leftCircle: false,
       recurringReward: "Yes", // All rewards are recurring by default
+      editingTaskID: "",
     };
 
     //input form local state
@@ -70,6 +75,8 @@ class Circle extends React.Component {
     this.handleDeleteRewards = this.handleDeleteRewards.bind(this);
     this.handleLeaveCircle = this.handleLeaveCircle.bind(this);
     this.handleDisapproveTask = this.handleDisapproveTask.bind(this);
+    this.handleEditTask = this.handleEditTask.bind(this);
+    this.handleSubmitEditedTask = this.handleSubmitEditedTask.bind(this);
   }
 
   deleteTask = (taskId) => {
@@ -131,6 +138,8 @@ class Circle extends React.Component {
       showInviteMembersModal: false,
       showPromoteDemoteModal: false,
       showApproveTasksModal: false,
+      showViewMembersModal: false,
+      showEditTaskModal: false,
     });
 
     // After creating the task, also create the notification
@@ -154,6 +163,7 @@ class Circle extends React.Component {
 
   // For showing modal (creating new task)
   handleClick = (e) => {
+    console.log("handle click");
     switch (e.target.name) {
       case "createTaskButton":
         this.setState({
@@ -185,6 +195,11 @@ class Circle extends React.Component {
           showLeaveCircleModal: true,
         });
         return;
+      case "viewMembersButton":
+        this.setState({
+          showViewMembersModal: true,
+        });
+        return;
       default:
         return;
     }
@@ -198,6 +213,8 @@ class Circle extends React.Component {
       showApproveTasksModal: false,
       showCreateRewardsModal: false,
       showLeaveCircleModal: false,
+      showViewMembersModal: false,
+      showEditTaskModal: false,
       rewardTitle: "",
       rewardDescription: "",
       rewardPoints: "",
@@ -286,7 +303,77 @@ class Circle extends React.Component {
     this.props.dispatchDisapproveTask(taskID);
   }
 
+  // When click on the edit button inside the task
+  // Using this function to set the state so that the form autofills the information from before
+  handleEditTask(taskID) {
+    console.log("edit task");
+    // Edit the state of the Circle component to the current task info
+    var allTasks = this.props.firestoreTasksRedux;
+    var editTask;
+    // Find the current task in the list of all tasks
+    for (var i = 0; i < allTasks.length; i++) {
+      var currentTask = allTasks[i];
+      if (currentTask.taskID === taskID) {
+        editTask = currentTask;
+      }
+    }
+    console.log(editTask);
+    this.setState({
+      taskName: editTask.taskName,
+      taskDescription: editTask.taskDescription,
+      assignedForID: editTask.assignedForID,
+      reward: editTask.reward,
+      showEditTaskModal: true,
+      completeBy: editTask.completeBy,
+      editingTaskID: editTask.taskID,
+    });
+  }
+
+  // When submit the new edit
+  handleSubmitEditedTask(e) {
+    e.preventDefault();
+    console.log("submit edited task");
+    // Make sure all fields are filled out
+    if (
+      this.state.taskName === "" ||
+      this.state.assignedForID === "" ||
+      this.state.taskDescription === "" ||
+      this.state.completeBy === "" ||
+      this.state.reward === ""
+    ) {
+      alert("All fields are required");
+      return;
+    }
+    var newTaskDetails = {
+      circleID: this.state.circleID,
+      taskName: this.state.taskName,
+      assignedForID: this.state.assignedForID,
+      taskDescription: this.state.taskDescription,
+      reward: this.state.reward === "" ? 0 : this.state.reward,
+      taskID: this.state.editingTaskID,
+    };
+    this.props.dispatchEditTask(newTaskDetails);
+    // Find the form and reset form inputs
+    var frm = document.getElementsByName("TaskForm")[0];
+    frm.reset();
+    this.setState({
+      taskName: "",
+      assignedForID: "",
+      taskDescription: "",
+      completeBy: "",
+      reward: 0,
+      editingTaskID: "",
+      showCreateTaskModal: false,
+      showInviteMembersModal: false,
+      showPromoteDemoteModal: false,
+      showApproveTasksModal: false,
+      showViewMembersModal: false,
+      showEditTaskModal: false,
+    });
+  }
+
   render() {
+    console.log(this.state);
     const auth = this.props.firebaseAuthRedux;
     const userID = auth.uid;
     var currentCircle;
@@ -327,15 +414,26 @@ class Circle extends React.Component {
       allUsersCurrentCircle.map(
         (user) => (allUsersCurrentCircleMap[user.id] = user)
       );
+
       return (
         <div className="overallContainer">
           <div className="text-center">
             <div className="circle-name">{currentCircle.circleName}</div>
             <br />
             <div className="circle-info">
-              Number of People: {currentCircle.numberOfPeople}
-              <br />
-              Current Points: {currentCircle.points[userID]}
+              Number of People: {currentCircle.numberOfPeople} <br />
+              Current Points: {currentCircle.points[userID]} <br />
+              <Button
+                variant="outline-primary"
+                style={{ margin: "7.5px" }}
+                onClick={this.handleClick}
+                name="viewMembersButton"
+              >
+                View Leaders & Members
+              </Button>
+              <Button variant="outline-primary" style={{ margin: "7.5px" }}>
+                View Rewards History
+              </Button>
             </div>
           </div>
           <div className="topButtons">
@@ -347,8 +445,17 @@ class Circle extends React.Component {
               variant="outline-primary"
             >
               Create Task
-            </Button>{" "}
+            </Button>
             &nbsp;
+            <Button
+              name="createRewardsButton"
+              onClick={this.handleClick}
+              style={{ margin: "7.5px" }}
+              size="lg"
+              variant="outline-primary"
+            >
+              Create Rewards
+            </Button>
             {isLeader ? (
               <div>
                 <Button
@@ -380,16 +487,6 @@ class Circle extends React.Component {
                 >
                   Approve Tasks
                 </Button>
-                &nbsp;
-                <Button
-                  name="createRewardsButton"
-                  onClick={this.handleClick}
-                  style={{ margin: "7.5px" }}
-                  size="lg"
-                  variant="outline-primary"
-                >
-                  Create Rewards
-                </Button>
               </div>
             ) : (
               ""
@@ -406,7 +503,12 @@ class Circle extends React.Component {
               </Button>
             )}
           </div>
-
+          <ViewMembersModal
+            showViewMembersModal={this.state.showViewMembersModal}
+            leaders={currentCircle.leaderList}
+            members={currentCircle.memberList}
+            handleClose={this.handleClose}
+          ></ViewMembersModal>
           <CreateRewardsModal
             showCreateRewardsModal={this.state.showCreateRewardsModal}
             handleClose={this.handleClose}
@@ -460,6 +562,33 @@ class Circle extends React.Component {
               <Button onClick={this.handleCreateTask}>Submit</Button>
             </Modal.Footer>
           </Modal>
+          <Modal show={this.state.showEditTaskModal} onHide={this.handleClose}>
+            <Modal.Header>
+              <Modal.Title>Edit a Task</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <TaskForm
+                handleCreateTask={this.handleCreateTask}
+                handleChangeInput={this.handleChangeInput}
+                formData={this.state}
+                allUsers={allUsers}
+                userID={userID}
+                currentCircle={currentCircle}
+                editingTask={true}
+              />
+            </Modal.Body>
+            <Modal.Footer>
+              <Button onClick={this.handleClose} variant="outline-primary">
+                Close
+              </Button>
+              <Button
+                onClick={this.handleSubmitEditedTask}
+                variant="outline-primary"
+              >
+                Submit Edits
+              </Button>
+            </Modal.Footer>
+          </Modal>
 
           <Modal
             show={this.state.showLeaveCircleModal}
@@ -502,6 +631,8 @@ class Circle extends React.Component {
               allRewards={currentCircle.rewardsList}
               handleClaimRewards={this.handleClaimRewards}
               handleDeleteRewards={this.handleDeleteRewards}
+              isLeader={isLeader}
+              handleEditTask={this.handleEditTask}
             />
           </div>
         </div>
@@ -558,6 +689,7 @@ const mapDispatchToProps = (dispatch) => {
     dispatchLeaveCircle: (circleID, userID) =>
       dispatch(leaveCircle(circleID, userID)),
     dispatchDisapproveTask: (taskID) => dispatch(disapproveTask(taskID)),
+    dispatchEditTask: (newTaskDetails) => dispatch(editTask(newTaskDetails)),
   };
 };
 

@@ -24,7 +24,8 @@ class CircleColumn extends React.Component {
       title,
       deleteTask,
       forRewards,
-      handleDisapproveTask
+      handleDisapproveTask,
+      handleEditTask,
     } = this.props;
 
     if (!(typeof tasks === "undefined")) {
@@ -40,6 +41,8 @@ class CircleColumn extends React.Component {
           deleteTask={deleteTask}
           forNotification={false}
           handleDisapproveTask={handleDisapproveTask}
+          isLeader={this.props.isLeader}
+          handleEditTask={handleEditTask}
         ></Task>
       ));
     }
@@ -66,6 +69,7 @@ class CircleColumn extends React.Component {
             key={index}
             handleClaimRewards={this.props.handleClaimRewards}
             handleDeleteRewards={this.props.handleDeleteRewards}
+            isLeader={this.props.isLeader}
           ></Reward>
         ));
         return (

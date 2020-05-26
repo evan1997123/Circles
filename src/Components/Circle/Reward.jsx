@@ -31,18 +31,20 @@ class Reward extends Component {
             >
               Claim
             </Button>
-            <Button
-              style={{ marginRight: "10px" }}
-              onClick={() =>
-                this.props.handleDeleteRewards(
-                  this.props.reward.rewardID,
-                  this.props.reward.circleID
-                )
-              }
-              variant="outline-danger"
-            >
-              Delete
-            </Button>
+            {this.props.isLeader && (
+              <Button
+                style={{ marginRight: "10px" }}
+                onClick={() =>
+                  this.props.handleDeleteRewards(
+                    this.props.reward.rewardID,
+                    this.props.reward.circleID
+                  )
+                }
+                variant="outline-danger"
+              >
+                Delete
+              </Button>
+            )}
           </Card.Body>
         </Card>
       </div>
