@@ -333,7 +333,7 @@ class InviteMembersModal extends Component {
           {this.state.currentForm === "adding" ? (
             <Form name="InviteMembersForm" onSubmit={this.handleUpdate}>
               <Modal.Header>
-                <Modal.Title>Invite Members</Modal.Title>
+                <Modal.Title>Add/Remove</Modal.Title>
               </Modal.Header>
               <Modal.Body>
                 <Form.Label style={{ color: "red" }}>
