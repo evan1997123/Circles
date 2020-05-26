@@ -8,9 +8,8 @@ class NavigationBar extends Component {
     let homePage = this.props.isAuthed ? "/dashboard" : "/";
     const profileCircle = (
       <Nav.Link href="/profile">
-        {" "}
         {this.props.profile.initials &&
-          this.props.profile.initials.toUpperCase()}{" "}
+          this.props.profile.initials.toUpperCase()}
       </Nav.Link>
     );
     let profilePage = this.props.isAuthed ? profileCircle : null;

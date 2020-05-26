@@ -191,26 +191,29 @@ class InviteMembersModal extends Component {
       this.props.myIncomingFriendRequests
     ) {
       allUsersNotFriendsNotMe = allUsers.filter(this.filterAddFriend);
+
       // allUsersNotFriendsNotMe = allUsersNotFriendsNotMe.slice(0, 5);
 
       var dropDownNotFriendsNotMe = allUsersNotFriendsNotMe.map(
-        (user, index) => (
-          <Dropdown.Item
-            user={user.id}
-            eventKey={user.id}
-            key={index}
-            name="adding"
-          >
-            {/* {user.firstName} {user.lastName} */}
-            {"@" +
-              user.username +
-              " [" +
-              user.firstName +
-              " " +
-              user.lastName +
-              "]"}
-          </Dropdown.Item>
-        )
+        (user, index) => {
+          return (
+            <Dropdown.Item
+              user={user.id}
+              eventKey={user.id}
+              key={index}
+              name="adding"
+            >
+              {/* {user.firstName} {user.lastName} */}
+              {"@" +
+                user.username +
+                " [" +
+                user.firstName +
+                " " +
+                user.lastName +
+                "]"}
+            </Dropdown.Item>
+          );
+        }
       );
 
       var myFriendRequestsSent;
@@ -481,13 +484,49 @@ const CustomMenu = React.forwardRef(
   ({ children, style, className, "aria-labelledby": labeledBy }, ref) => {
     const [value, setValue] = useState("");
 
+    if (value === "") {
+      return (
+        <div
+          ref={ref}
+          style={style}
+          className={className}
+          aria-labelledby={labeledBy}
+          style={{ maxHeight: "1000%", overflowY: "auto" }}
+        >
+          <Form.Control
+            autoFocus
+            className="mx-3 my-2 w-auto"
+            placeholder="Enter username"
+            onChange={e => setValue(e.target.value)}
+            value={value}
+          />
+          <ul className="list-unstyled">{null}</ul>
+        </div>
+      );
+    }
+
+    var allShow = React.Children.toArray(children).filter(
+      child =>
+        !value ||
+        child.props.children
+          .toString()
+          .toLowerCase()
+          .startsWith(value, 1)
+    );
+
+    allShow.sort(function(user1, user2) {
+      var user1Name = user1.props.children;
+      var user2Name = user2.props.children;
+      return user1Name.localeCompare(user2Name);
+    });
+
     return (
       <div
         ref={ref}
         style={style}
         className={className}
         aria-labelledby={labeledBy}
-        style={{ maxHeight: "1000%", overflowY: "auto" }}
+        style={{ maxHeight: "1000%", overflowY: "auto", width: "auto" }}
       >
         <Form.Control
           autoFocus
@@ -496,16 +535,7 @@ const CustomMenu = React.forwardRef(
           onChange={e => setValue(e.target.value)}
           value={value}
         />
-        <ul className="list-unstyled">
-          {React.Children.toArray(children).filter(
-            child =>
-              !value ||
-              child.props.children
-                .toString()
-                .toLowerCase()
-                .startsWith(value, 1)
-          )}
-        </ul>
+        <ul className="list-unstyled">{allShow}</ul>
       </div>
     );
   }

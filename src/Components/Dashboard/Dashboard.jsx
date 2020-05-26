@@ -25,7 +25,6 @@ class Dashboard extends React.Component {
     if (!this.props.isAuthed) {
       return <Redirect to="/" />;
     }
-    var data = "";
     // Figure out which tasks are still to be complete and haven't been dismissed yet
     var allTasks = this.props.firestoreTasksRedux;
     var toDoTasks = [];
@@ -58,7 +57,6 @@ class Dashboard extends React.Component {
         <div className="panelContainer" style={{ padding: "0 10%" }}>
           <div className="panelItem" style={{ flex: "6", padding: "1%" }}>
             <CircleContainer
-              data={data}
               friendsList={this.props.firebaseProfileRedux.friendsList}
             />
           </div>

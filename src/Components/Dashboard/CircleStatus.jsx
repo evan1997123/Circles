@@ -73,7 +73,7 @@ class CircleStatus extends React.Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    allCirclesRedux: state.firestore.ordered.circles
+    // allCirclesRedux: state.firestore.ordered.circles
     // firebaseProfileRedux: state.firebase.profile
   };
 };
