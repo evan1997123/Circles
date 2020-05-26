@@ -88,19 +88,17 @@ class TaskForm extends Component {
             </Form.Control>
           </Form.Group>
 
-          {!editingTask && (
-            <Form.Group>
-              <Form.Label>Complete By</Form.Label>
-              <Form.Control
-                required={true}
-                type="date"
-                name="completeBy"
-                placeholder="2020-01-01"
-                onChange={handleChangeInput}
-                value={formData.completeBy}
-              ></Form.Control>
-            </Form.Group>
-          )}
+          <Form.Group>
+            <Form.Label>Complete By</Form.Label>
+            <Form.Control
+              required={true}
+              type="date"
+              name="completeBy"
+              placeholder="2020-01-01"
+              onChange={handleChangeInput}
+              value={formData.completeBy}
+            ></Form.Control>
+          </Form.Group>
 
           <Form.Group>
             <Form.Label>Reward</Form.Label>
@@ -112,6 +110,17 @@ class TaskForm extends Component {
               onChange={handleChangeInput}
               value={formData.reward}
             />
+          </Form.Group>
+
+          <Form.Group>
+            <Form.Label>
+              Would you like to add a penalty to this task when it becomes
+              overdue?
+            </Form.Label>
+            <Form.Select>
+              <option>Yes</option>
+              <option>No</option>
+            </Form.Select>
           </Form.Group>
         </Form>
       </React.Fragment>

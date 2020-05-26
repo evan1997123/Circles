@@ -303,7 +303,8 @@ export const editTask = newTaskDetails => {
         taskName: newTaskDetails.taskName,
         assignedForID: newTaskDetails.assignedForID,
         taskDescription: newTaskDetails.taskDescription,
-        reward: newTaskDetails.reward
+        reward: newTaskDetails.reward,
+        completeBy: newTaskDetails.completeBy
       })
       .then(() => {
         dispatch({

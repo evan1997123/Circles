@@ -114,7 +114,7 @@ class Task extends React.Component {
               </Button>
             )}
             {!forNotification && isLeader && deleteButton}
-            {!forNotification && (
+            {!forNotification && isLeader && (
               <Button
                 variant="outline-info"
                 onClick={() => handleEditTask(task.taskID)}

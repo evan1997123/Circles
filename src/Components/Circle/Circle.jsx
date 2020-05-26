@@ -339,7 +339,8 @@ class Circle extends React.Component {
       this.state.assignedForID === "" ||
       this.state.taskDescription === "" ||
       this.state.completeBy === "" ||
-      this.state.reward === ""
+      this.state.reward === "" ||
+      this.state.completeBy === ""
     ) {
       alert("All fields are required");
       return;
@@ -351,6 +352,7 @@ class Circle extends React.Component {
       taskDescription: this.state.taskDescription,
       reward: this.state.reward === "" ? 0 : this.state.reward,
       taskID: this.state.editingTaskID,
+      completeBy: this.state.completeBy,
     };
     this.props.dispatchEditTask(newTaskDetails);
     // Find the form and reset form inputs
