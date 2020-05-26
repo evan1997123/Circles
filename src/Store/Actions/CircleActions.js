@@ -1,7 +1,12 @@
-import { all } from "q";
+import {
+  all
+} from "q";
 
 export const createCircle = circleDetails => {
-  return (dispatch, getState, { getFirebase, getFirestore }) => {
+  return (dispatch, getState, {
+    getFirebase,
+    getFirestore
+  }) => {
     //pause dispatch
     //do async calls to Database
     const firestore = getFirestore();
@@ -17,7 +22,7 @@ export const createCircle = circleDetails => {
       createdAt: new Date(),
       creator: fullName,
       creatorID: assignedByID,
-      rewardsList: []
+      rewardsList: {}
     };
 
     var allUsersToUpdate = Object.keys(newCircleDetails.memberList).concat(
@@ -35,36 +40,36 @@ export const createCircle = circleDetails => {
 
     allUsersToUpdate.map(userID =>
       firestore
-        .collection("users")
-        .doc(userID)
-        .get()
-        .then(doc => {
-          var updatingUser = doc.data();
+      .collection("users")
+      .doc(userID)
+      .get()
+      .then(doc => {
+        var updatingUser = doc.data();
 
-          var updatedCircleList = updatingUser.circleList;
+        var updatedCircleList = updatingUser.circleList;
 
-          updatedCircleList[uuid] = newCircleDetails.circleName;
-          firestore
-            .collection("users")
-            .doc(userID)
-            .update({
-              circleList: updatedCircleList
-            })
-            .then(() => {
-              console.log("updated");
-              dispatch({
-                type: "UPDATED_USER_CIRCLELIST",
-                circle: newCircleDetails,
-                userID: userID
-              });
+        updatedCircleList[uuid] = newCircleDetails.circleName;
+        firestore
+          .collection("users")
+          .doc(userID)
+          .update({
+            circleList: updatedCircleList
+          })
+          .then(() => {
+            console.log("updated");
+            dispatch({
+              type: "UPDATED_USER_CIRCLELIST",
+              circle: newCircleDetails,
+              userID: userID
             });
-        })
-        .catch(err => {
-          dispatch({
-            type: "ERROR_UPDATING_USER_CIRCLELIST",
-            err: err
           });
-        })
+      })
+      .catch(err => {
+        dispatch({
+          type: "ERROR_UPDATING_USER_CIRCLELIST",
+          err: err
+        });
+      })
     );
 
     console.log("creating circle");
@@ -88,7 +93,10 @@ export const createCircle = circleDetails => {
 };
 
 export const updateCircleMembers = newCircleDetails => {
-  return (dispatch, getState, { getFirebase, getFirestore }) => {
+  return (dispatch, getState, {
+    getFirebase,
+    getFirestore
+  }) => {
     //pause dispatch
     //do async calls to Database
     const firestore = getFirestore();
@@ -109,77 +117,77 @@ export const updateCircleMembers = newCircleDetails => {
 
     allUsersToAdd.map(userID =>
       firestore
-        .collection("users")
-        .doc(userID)
-        .get()
-        .then(doc => {
-          var updatingUser = doc.data();
+      .collection("users")
+      .doc(userID)
+      .get()
+      .then(doc => {
+        var updatingUser = doc.data();
 
-          //get the circleList and add the new circleID
-          var updatedCircleList = {
-            ...updatingUser.circleList,
-            [newCircleDetails.circleID]: newCircleDetails.circleName
-          };
+        //get the circleList and add the new circleID
+        var updatedCircleList = {
+          ...updatingUser.circleList,
+          [newCircleDetails.circleID]: newCircleDetails.circleName
+        };
 
-          firestore
-            .collection("users")
-            .doc(userID)
-            .update({
-              circleList: updatedCircleList
-            })
-            .then(() => {
-              console.log("updated");
-              dispatch({
-                type: "INVITED_MEMBER_UPDATE_CIRCLELIST",
-                updatedCircleList: updatedCircleList,
-                userID: userID
-              });
+        firestore
+          .collection("users")
+          .doc(userID)
+          .update({
+            circleList: updatedCircleList
+          })
+          .then(() => {
+            console.log("updated");
+            dispatch({
+              type: "INVITED_MEMBER_UPDATE_CIRCLELIST",
+              updatedCircleList: updatedCircleList,
+              userID: userID
             });
-        })
-        .catch(err => {
-          dispatch({
-            type: "ERROR_INVITED_MEMBER_UPDATE_CIRCLELIST",
-            err: err
           });
-        })
+      })
+      .catch(err => {
+        dispatch({
+          type: "ERROR_INVITED_MEMBER_UPDATE_CIRCLELIST",
+          err: err
+        });
+      })
     );
 
     allUsersToRemove.map(userID =>
       firestore
-        .collection("users")
-        .doc(userID)
-        .get()
-        .then(doc => {
-          var updatingUser = doc.data();
+      .collection("users")
+      .doc(userID)
+      .get()
+      .then(doc => {
+        var updatingUser = doc.data();
 
-          //get the circleList
-          var updatedCircleList = {
-            ...updatingUser.circleList
-          };
+        //get the circleList
+        var updatedCircleList = {
+          ...updatingUser.circleList
+        };
 
-          //delete the current circleID
-          delete updatedCircleList[newCircleDetails.circleID];
-          firestore
-            .collection("users")
-            .doc(userID)
-            .update({
-              circleList: updatedCircleList
-            })
-            .then(() => {
-              console.log("updated");
-              dispatch({
-                type: "INVITED_MEMBER_UPDATE_CIRCLELIST",
-                updatedCircleList: updatedCircleList,
-                userID: userID
-              });
+        //delete the current circleID
+        delete updatedCircleList[newCircleDetails.circleID];
+        firestore
+          .collection("users")
+          .doc(userID)
+          .update({
+            circleList: updatedCircleList
+          })
+          .then(() => {
+            console.log("updated");
+            dispatch({
+              type: "INVITED_MEMBER_UPDATE_CIRCLELIST",
+              updatedCircleList: updatedCircleList,
+              userID: userID
             });
-        })
-        .catch(err => {
-          dispatch({
-            type: "ERROR_INVITED_MEMBER_UPDATE_CIRCLELIST",
-            err: err
           });
-        })
+      })
+      .catch(err => {
+        dispatch({
+          type: "ERROR_INVITED_MEMBER_UPDATE_CIRCLELIST",
+          err: err
+        });
+      })
     );
     firestore
       .collection("circles")
@@ -201,7 +209,10 @@ export const updateCircleMembers = newCircleDetails => {
 };
 
 export const updateCirclePromoteDemote = newCircleDetails => {
-  return (dispatch, getState, { getFirebase, getFirestore }) => {
+  return (dispatch, getState, {
+    getFirebase,
+    getFirestore
+  }) => {
     //pause dispatch
     //do async calls to Database
     const firestore = getFirestore();
@@ -227,7 +238,10 @@ export const updateCirclePromoteDemote = newCircleDetails => {
 };
 
 export const leaveCircle = (circleID, userID) => {
-  return (dispatch, getState, { getFirebase, getFirestore }) => {
+  return (dispatch, getState, {
+    getFirebase,
+    getFirestore
+  }) => {
     const firestore = getFirestore();
     firestore
       .collection("circles")

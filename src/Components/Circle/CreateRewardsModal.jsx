@@ -47,6 +47,20 @@ class CreateRewardsModal extends Component {
                 onChange={this.props.handleChangeInput}
               />
             </Form.Group>
+            <Form.Group controlId="recurringReward">
+              <Form.Label>
+                Would you like to make this a recurring reward?
+              </Form.Label>
+              <Form.Control
+                as="select"
+                onChange={this.props.handleChangeInput}
+                name="recurringReward"
+                value={this.props.rewardsFormData.recurringReward}
+              >
+                <option>Yes</option>
+                <option>No</option>
+              </Form.Control>
+            </Form.Group>
           </Form>
         </Modal.Body>
 

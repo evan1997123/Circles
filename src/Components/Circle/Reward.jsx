@@ -15,12 +15,16 @@ class Reward extends Component {
             <Card.Text>
               <strong>Cost</strong>: {this.props.reward.rewardPoints}{" "}
             </Card.Text>
+            <Card.Text>
+              <strong>Recurring</strong>: {this.props.reward.recurringReward}
+            </Card.Text>
             <Button
               style={{ marginRight: "10px" }}
               onClick={() =>
                 this.props.handleClaimRewards(
                   this.props.reward.rewardID,
-                  this.props.reward.circleID
+                  this.props.reward.circleID,
+                  this.props.reward.recurringReward
                 )
               }
               variant="outline-success"
