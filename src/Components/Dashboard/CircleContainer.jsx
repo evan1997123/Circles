@@ -11,9 +11,9 @@ class CircleContainer extends React.Component {
     var circles = this.props.myCirclesRedux;
     return (
       <div className="column">
-        <div className="circle">
+        {/* <div className="circle">
           <CircleStatus myCircles={circles} />
-        </div>
+        </div> */}
         <div className="circle">
           <ActiveCircles
             myCircles={circles}
@@ -43,9 +43,9 @@ const mapStateToProps = (state, ownProps) => {
   if (state.firestore.ordered.circles) {
     return {
       myCirclesRedux: state.firestore.ordered.circles
-        .filter(circle => myCirclesID.includes(circle.id))
+        .filter((circle) => myCirclesID.includes(circle.id))
         .sort(circleNameSort),
-      firebaseProfileRedux: state.firebase.profile
+      firebaseProfileRedux: state.firebase.profile,
     };
   } else {
     return {};
