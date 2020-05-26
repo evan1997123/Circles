@@ -21,7 +21,7 @@ import {
 import { firestoreConnect } from "react-redux-firebase"; // so this allows us to connect this component to a firebase collection
 import { compose } from "redux";
 import { Redirect } from "react-router-dom";
-import { Button, Modal } from "react-bootstrap";
+import { Button, Modal, Dropdown } from "react-bootstrap";
 import {
   createReward,
   claimReward,
@@ -329,7 +329,7 @@ class Circle extends React.Component {
             </div>
           </div>
           <div className="topButtons">
-            <Button
+            {/* <Button
               name="createTaskButton"
               onClick={this.handleClick}
               style={{ margin: "7.5px" }}
@@ -337,53 +337,102 @@ class Circle extends React.Component {
               variant="outline-primary"
             >
               Create Task
-            </Button>{" "}
+            </Button> */}
+            &nbsp;
+            <Dropdown>
+              <Dropdown.Toggle
+                style={{ margin: "7.5px", height: "100%" }}
+                size="lg"
+                variant="success"
+                id="dropdown-basic"
+                variant="outline-primary"
+              >
+                Manage Tasks
+              </Dropdown.Toggle>
+
+              <Dropdown.Menu style={{ width: "100%" }}>
+                <Button
+                  name="createTaskButton"
+                  onClick={this.handleClick}
+                  style={{ width: "100%", borderColor: "white" }}
+                  size="lg"
+                  variant="outline-primary"
+                >
+                  Create Task
+                </Button>
+                {isLeader ? (
+                  <Button
+                    name="approveTasksButton"
+                    onClick={this.handleClick}
+                    style={{ width: "100%", borderColor: "white" }}
+                    size="lg"
+                    variant="outline-primary"
+                  >
+                    Approve Tasks
+                  </Button>
+                ) : null}
+              </Dropdown.Menu>
+            </Dropdown>
             &nbsp;
             {isLeader ? (
-              <div>
-                <Button
-                  name="inviteMembersButton"
-                  onClick={this.handleClick}
-                  style={{ margin: "7.5px" }}
+              <Dropdown>
+                <Dropdown.Toggle
+                  style={{ margin: "7.5px", height: "100%" }}
                   size="lg"
+                  variant="success"
+                  id="dropdown-basic"
                   variant="outline-primary"
                 >
-                  Invite Members
-                </Button>
-                &nbsp;
-                <Button
-                  name="promoteDemoteButton"
-                  onClick={this.handleClick}
-                  style={{ margin: "7.5px" }}
+                  Manage Users
+                </Dropdown.Toggle>
+                <Dropdown.Menu style={{ width: "100%" }}>
+                  <Button
+                    name="inviteMembersButton"
+                    onClick={this.handleClick}
+                    style={{ width: "100%", borderColor: "white" }}
+                    size="lg"
+                    variant="outline-primary"
+                  >
+                    Invite Members
+                  </Button>
+                  <Button
+                    name="promoteDemoteButton"
+                    onClick={this.handleClick}
+                    style={{ width: "100%", borderColor: "white" }}
+                    size="lg"
+                    variant="outline-primary"
+                  >
+                    Promote/Demote
+                  </Button>
+                </Dropdown.Menu>
+              </Dropdown>
+            ) : null}
+            &nbsp;
+            {isLeader ? (
+              <Dropdown>
+                <Dropdown.Toggle
+                  style={{ margin: "7.5px", height: "100%" }}
                   size="lg"
+                  variant="success"
+                  id="dropdown-basic"
                   variant="outline-primary"
                 >
-                  Promote/Demote
-                </Button>
-                &nbsp;
-                <Button
-                  name="approveTasksButton"
-                  onClick={this.handleClick}
-                  style={{ margin: "7.5px" }}
-                  size="lg"
-                  variant="outline-primary"
-                >
-                  Approve Tasks
-                </Button>
-                &nbsp;
-                <Button
-                  name="createRewardsButton"
-                  onClick={this.handleClick}
-                  style={{ margin: "7.5px" }}
-                  size="lg"
-                  variant="outline-primary"
-                >
-                  Create Rewards
-                </Button>
-              </div>
-            ) : (
-              ""
-            )}
+                  Manage Rewards
+                </Dropdown.Toggle>
+
+                <Dropdown.Menu style={{ width: "100%" }}>
+                  <Button
+                    name="createRewardsButton"
+                    onClick={this.handleClick}
+                    style={{ width: "100%", borderColor: "white" }}
+                    size="lg"
+                    variant="outline-primary"
+                  >
+                    Create Rewards
+                  </Button>
+                </Dropdown.Menu>
+              </Dropdown>
+            ) : null}
             {!isLeader && (
               <Button
                 variant="outline-danger"
