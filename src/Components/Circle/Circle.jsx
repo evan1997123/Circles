@@ -316,6 +316,7 @@ class Circle extends React.Component {
     console.log("edit task");
     // Edit the state of the Circle component to the current task info
     var allTasks = this.props.firestoreTasksRedux;
+    const profileData = this.props.firebaseProfileRedux;
     var editTask;
     // Find the current task in the list of all tasks
     for (var i = 0; i < allTasks.length; i++) {
@@ -382,8 +383,8 @@ class Circle extends React.Component {
   }
 
   render() {
-    console.log(this.state);
     const auth = this.props.firebaseAuthRedux;
+    const profileData = this.props.firebaseProfileRedux;
     const userID = auth.uid;
     var currentCircle;
     var isLeader = false;
@@ -417,6 +418,9 @@ class Circle extends React.Component {
       //   console.log(Object.keys(user.circleList).includes(currentCircle.id));
       // });
       var allUsersCurrentCircle = allUsers.filter((user) => {
+        if (!user) {
+          return false;
+        }
         return Object.keys(user.circleList).includes(currentCircle.id);
       });
       var allUsersCurrentCircleMap = {};
@@ -613,6 +617,7 @@ class Circle extends React.Component {
             showInviteMembersModal={this.state.showInviteMembersModal}
             handleClose={this.handleClose}
             allUsers={allUsers}
+            profileData = {profileData}
             currentUserID={userID}
             currentCircle={currentCircle}
             handleUpdateCircleMembers={this.handleUpdateCircleMembers}
@@ -752,6 +757,7 @@ const mapStateToProps = (state, ownProps) => {
     firestoreUsersRedux: state.firestore.ordered.users,
     firestoreCircleRedux: state.firestore.ordered.circles,
     firebaseAuthRedux: state.firebase.auth,
+    firebaseProfileRedux: state.firebase.profile,
   };
 };
 
@@ -787,7 +793,7 @@ export default compose(
   //whenever database for this collection is changed, it will induce the firestoreReducer, which will sync store state
   // and then this component will "hear" that because we connected that. Then state will change for the store
   firestoreConnect((props) => {
-    console.log(props);
+    // console.log(props);
     return [
       {
         collection: "tasks",

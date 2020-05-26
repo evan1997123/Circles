@@ -39,7 +39,6 @@ class PromoteDemoteModal extends Component {
     var checkDemoteList;
     var copyList;
 
-    console.log(e.target);
     if (promoteOrDemote === "promoteMembers") {
       checkPromoteList = this.state.membersToPromote.filter(
         member => member.userID === userID
@@ -107,9 +106,6 @@ class PromoteDemoteModal extends Component {
     ) {
       return;
     }
-
-    console.log(this.state.membersToPromote);
-
     //update the state lists to not include usernames
     this.state.membersToPromote.map((member, index) => {
       var leftBracket = member.name.indexOf("[");
@@ -201,6 +197,10 @@ class PromoteDemoteModal extends Component {
         return false;
       }
     }
+    //if undefined or null
+    if (!currentUser){
+      return false;
+    }
     // Neither leader nor member
     return true;
   }
@@ -215,12 +215,9 @@ class PromoteDemoteModal extends Component {
       var allMemberIDs = Object.keys(currentCircle.memberList);
 
       var allMemberUsers = [];
-      console.log(allMemberIDs);
-      console.log(allUsersCurrentCircleMap);
       allMemberIDs.map(userID =>
         allMemberUsers.push(allUsersCurrentCircleMap[userID])
       );
-      console.log(allMemberUsers);
 
       // listOfUsersToPromote = [
       //   allMemberIDs.map((userID, index) => (
@@ -239,34 +236,36 @@ class PromoteDemoteModal extends Component {
         this.filterAlreadySelected
       );
 
-      var dropDownMembersUsers = allMemberUsersFiltered.map((user, index) => (
-        <Dropdown.Item
-          user={user.id}
-          eventKey={user.id}
-          key={index}
-          name="promoteMembers"
-        >
-          {/* {user.firstName} {user.lastName} */}
-          {"@" +
-            user.username +
-            " [" +
-            user.firstName +
-            " " +
-            user.lastName +
-            "]"}
-        </Dropdown.Item>
-      ));
+      var dropDownMembersUsers;
+
+      if(allMemberUsersFiltered.length>0){
+          dropDownMembersUsers = allMemberUsersFiltered.map((user, index) => (
+          <Dropdown.Item
+            user={user.id}
+            eventKey={user.id}
+            key={index}
+            name="promoteMembers"
+          >
+            {/* {user.firstName} {user.lastName} */}
+            {"@" +
+              user.username +
+              " [" +
+              user.firstName +
+              " " +
+              user.lastName +
+              "]"}
+          </Dropdown.Item>
+            
+          ));
+      }
 
       //get All leaders ID's
       var allLeaderIDs = Object.keys(currentCircle.leaderList);
 
       var allLeaderUsers = [];
-      console.log(allLeaderIDs);
-      console.log(allUsersCurrentCircleMap);
       allLeaderIDs.map(userID =>
         allLeaderUsers.push(allUsersCurrentCircleMap[userID])
       );
-      console.log(allLeaderUsers);
 
       var allLeaderUsersFiltered = allLeaderUsers.filter(
         this.filterAlreadySelected

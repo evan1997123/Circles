@@ -208,6 +208,10 @@ class CircleForm extends React.Component {
     var yourID = auth.uid;
     var friendsListID = Object.keys(this.props.friendsList);
     var isFriend = false;
+
+    if(!currentUser) {
+      return false;
+    }
     for (var i = 0; i < friendsListID.length; i++) {
       if (friendsListID[i] === currentUser.id) {
         isFriend = true;
