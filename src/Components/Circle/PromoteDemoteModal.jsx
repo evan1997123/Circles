@@ -464,27 +464,6 @@ const CustomMenu = React.forwardRef(
   ({ children, style, className, "aria-labelledby": labeledBy }, ref) => {
     const [value, setValue] = useState("");
 
-    if (value === "") {
-      return (
-        <div
-          ref={ref}
-          style={style}
-          className={className}
-          aria-labelledby={labeledBy}
-          style={{ maxHeight: "1000%", overflowY: "auto" }}
-        >
-          <Form.Control
-            autoFocus
-            className="mx-3 my-2 w-auto"
-            placeholder="Enter username"
-            onChange={e => setValue(e.target.value)}
-            value={value}
-          />
-          <ul className="list-unstyled">{null}</ul>
-        </div>
-      );
-    }
-
     var allShow = React.Children.toArray(children).filter(
       child =>
         !value ||
