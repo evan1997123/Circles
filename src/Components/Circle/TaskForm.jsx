@@ -9,7 +9,8 @@ class TaskForm extends Component {
       handleChangeInput,
       formData,
       allUsers,
-      currentCircle
+      currentCircle,
+      editingTask,
     } = this.props;
 
     if (allUsers && currentCircle) {
@@ -19,7 +20,7 @@ class TaskForm extends Component {
       );
 
       //filter allUsers to only have those in the given circle
-      var allUsersFiltered = allUsers.filter(user =>
+      var allUsersFiltered = allUsers.filter((user) =>
         allIDInCircle.includes(user.id)
       );
 
@@ -28,7 +29,7 @@ class TaskForm extends Component {
           <option value={user.id} key={index}>
             {user.firstName} {user.lastName}
           </option>
-        ))
+        )),
       ];
       listOfUsers.unshift(
         <option
@@ -87,17 +88,19 @@ class TaskForm extends Component {
             </Form.Control>
           </Form.Group>
 
-          <Form.Group>
-            <Form.Label>Complete By</Form.Label>
-            <Form.Control
-              required={true}
-              type="date"
-              name="completeBy"
-              placeholder="2020-01-01"
-              onChange={handleChangeInput}
-              value={formData.completeBy}
-            ></Form.Control>
-          </Form.Group>
+          {!editingTask && (
+            <Form.Group>
+              <Form.Label>Complete By</Form.Label>
+              <Form.Control
+                required={true}
+                type="date"
+                name="completeBy"
+                placeholder="2020-01-01"
+                onChange={handleChangeInput}
+                value={formData.completeBy}
+              ></Form.Control>
+            </Form.Group>
+          )}
 
           <Form.Group>
             <Form.Label>Reward</Form.Label>

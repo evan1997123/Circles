@@ -13,7 +13,7 @@ class ActiveCircles extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      show: false
+      show: false,
     };
     this.showModal = this.showModal.bind(this);
     this.hideModal = this.hideModal.bind(this);
@@ -23,13 +23,13 @@ class ActiveCircles extends React.Component {
 
   showModal() {
     this.setState({
-      show: true
+      show: true,
     });
   }
 
   hideModal() {
     this.setState({
-      show: false
+      show: false,
     });
   }
   render() {
@@ -61,8 +61,12 @@ class ActiveCircles extends React.Component {
           <div className="rowButtons">{circles}</div>
           <div className="rowButtons">
             <div className="activeCircle">
-              <Button className="myButton" onClick={this.showModal}></Button>
-              <h6>Add New Circle</h6>
+              <Button
+                className="myButton"
+                onClick={this.showModal}
+                variant="outline-primary"
+              ></Button>
+              <h6>Add a New Circle</h6>
             </div>
           </div>
         </Card>
