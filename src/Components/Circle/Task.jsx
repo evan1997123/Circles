@@ -18,6 +18,7 @@ class Task extends React.Component {
       handleDisapproveTask,
       isLeader,
       handleEditTask,
+      forLeaderEdits,
     } = this.props;
     console.log(handleEditTask);
     var ifExists = handleMoveTasks
@@ -67,6 +68,9 @@ class Task extends React.Component {
       displayCircleName = <Card.Text>Circle: {circleName}</Card.Text>;
       classForTask = "notification-task";
     }
+    // Check if this task is assigned by yourself
+    var assignedByMe = task.assignedByID === userID;
+    console.log(assignedByMe);
 
     return (
       <div className={classForTask} style={{ width: "100%" }}>
@@ -79,8 +83,11 @@ class Task extends React.Component {
                 Assigned By: {task.assignedBy}
               </Card.Subtitle>
             )}
-            {task.taskStage === "pending" && buttonText === "Approve" && (
-              <Card.Text>Assigned For: {task.assignedFor}</Card.Text>
+            {((task.taskStage === "pending" && buttonText === "Approve") ||
+              forLeaderEdits) && (
+              <Card.Subtitle className="mb-2 text-muted">
+                Assigned For: {task.assignedFor}
+              </Card.Subtitle>
             )}
             {forNotification && displayCircleName}
             {!forNotification && (
@@ -95,9 +102,9 @@ class Task extends React.Component {
               <strong>Points</strong>: {task.reward}
             </Card.Text>
 
-            {!forNotification && (
+            {!forNotification && !forLeaderEdits && (
               <Button
-                variant={color}
+                variant={"outline-primary"}
                 onClick={ifExists}
                 style={{ marginRight: "10px" }}
               >
@@ -113,8 +120,8 @@ class Task extends React.Component {
                 Disapprove
               </Button>
             )}
-            {!forNotification && isLeader && deleteButton}
-            {!forNotification && isLeader && (
+            {!forNotification && deleteButton}
+            {!forNotification && (assignedByMe || forLeaderEdits) && (
               <Button
                 variant="outline-info"
                 onClick={() => handleEditTask(task.taskID)}

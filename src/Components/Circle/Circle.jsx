@@ -29,6 +29,7 @@ import {
   deleteReward,
 } from "../../Store/Actions/RewardActions";
 import ViewMembersModal from "./ViewMembersModal";
+import LeaderEditTasksModal from "./LeaderEditTasksModal";
 
 class Circle extends React.Component {
   constructor(props) {
@@ -48,6 +49,7 @@ class Circle extends React.Component {
       showLeaveCircleModal: false,
       showViewMembersModal: false,
       showEditTaskModal: false,
+      showLeaderEditTasksModal: false,
       rewardTitle: "",
       rewardDescription: "",
       rewardPoints: "",
@@ -200,6 +202,10 @@ class Circle extends React.Component {
           showViewMembersModal: true,
         });
         return;
+      case "editTasksButton":
+        this.setState({
+          showLeaderEditTasksModal: true,
+        });
       default:
         return;
     }
@@ -215,6 +221,7 @@ class Circle extends React.Component {
       showLeaveCircleModal: false,
       showViewMembersModal: false,
       showEditTaskModal: false,
+      showLeaderEditTasksModal: false,
       rewardTitle: "",
       rewardDescription: "",
       rewardPoints: "",
@@ -416,6 +423,19 @@ class Circle extends React.Component {
       allUsersCurrentCircle.map(
         (user) => (allUsersCurrentCircleMap[user.id] = user)
       );
+      // Figure out which tasks were assigned by you (the leader)
+      if (isLeader) {
+        var tasksAssignedByMe = allTasks.filter((task) => {
+          // Only need to edit the task if it is in the to-do stage
+          if (task.taskStage !== "toDo") {
+            return false;
+          } else if (task.assignedByID !== userID) {
+            return false;
+          } else {
+            return true;
+          }
+        });
+      }
 
       return (
         <div className="overallContainer">
@@ -425,21 +445,10 @@ class Circle extends React.Component {
             <div className="circle-info">
               Number of People: {currentCircle.numberOfPeople} <br />
               Current Points: {currentCircle.points[userID]} <br />
-              <Button
-                variant="outline-primary"
-                style={{ margin: "7.5px" }}
-                onClick={this.handleClick}
-                name="viewMembersButton"
-              >
-                View Leaders & Members
-              </Button>
-              <Button variant="outline-primary" style={{ margin: "7.5px" }}>
-                View Rewards History
-              </Button>
             </div>
           </div>
           <div className="topButtons">
-            {/* <Button
+            <Button
               name="createTaskButton"
               onClick={this.handleClick}
               style={{ margin: "7.5px" }}
@@ -447,37 +456,41 @@ class Circle extends React.Component {
               variant="outline-primary"
             >
               Create Task
-            </Button> */}
+            </Button>
             &nbsp;
             <Dropdown>
               <Dropdown.Toggle
                 style={{ margin: "7.5px", height: "100%" }}
+                size="lg"
                 variant="success"
                 id="dropdown-basic"
                 variant="outline-primary"
               >
                 Manage Tasks
               </Dropdown.Toggle>
-
               <Dropdown.Menu style={{ width: "100%" }}>
-                <Button
-                  name="createTaskButton"
-                  onClick={this.handleClick}
-                  style={{ width: "100%", borderColor: "white" }}
-                  variant="outline-primary"
-                >
-                  Create Task
-                </Button>
                 {isLeader ? (
                   <Button
                     name="approveTasksButton"
                     onClick={this.handleClick}
                     style={{ width: "100%", borderColor: "white" }}
+                    size="lg"
                     variant="outline-primary"
                   >
                     Approve Tasks
                   </Button>
                 ) : null}
+                {isLeader && (
+                  <Button
+                    name="editTasksButton"
+                    onClick={this.handleClick}
+                    style={{ width: "100%", borderColor: "white" }}
+                    size="lg"
+                    variant="outline-primary"
+                  >
+                    Edit Tasks
+                  </Button>
+                )}
               </Dropdown.Menu>
             </Dropdown>
             &nbsp;
@@ -485,6 +498,7 @@ class Circle extends React.Component {
               <Dropdown>
                 <Dropdown.Toggle
                   style={{ margin: "7.5px", height: "100%" }}
+                  size="lg"
                   variant="success"
                   id="dropdown-basic"
                   variant="outline-primary"
@@ -493,9 +507,19 @@ class Circle extends React.Component {
                 </Dropdown.Toggle>
                 <Dropdown.Menu style={{ width: "100%" }}>
                   <Button
+                    variant="outline-primary"
+                    style={{ width: "100%", borderColor: "white" }}
+                    onClick={this.handleClick}
+                    name="viewMembersButton"
+                    size="lg"
+                  >
+                    View Members
+                  </Button>
+                  <Button
                     name="inviteMembersButton"
                     onClick={this.handleClick}
                     style={{ width: "100%", borderColor: "white" }}
+                    size="lg"
                     variant="outline-primary"
                   >
                     Invite Members
@@ -504,6 +528,7 @@ class Circle extends React.Component {
                     name="promoteDemoteButton"
                     onClick={this.handleClick}
                     style={{ width: "100%", borderColor: "white" }}
+                    size="lg"
                     variant="outline-primary"
                   >
                     Promote/Demote
@@ -516,6 +541,7 @@ class Circle extends React.Component {
               <Dropdown>
                 <Dropdown.Toggle
                   style={{ margin: "7.5px", height: "100%" }}
+                  size="lg"
                   variant="success"
                   id="dropdown-basic"
                   variant="outline-primary"
@@ -525,9 +551,17 @@ class Circle extends React.Component {
 
                 <Dropdown.Menu style={{ width: "100%" }}>
                   <Button
+                    variant="outline-primary"
+                    style={{ width: "100%", borderColor: "white" }}
+                    size="lg"
+                  >
+                    Rewards History
+                  </Button>
+                  <Button
                     name="createRewardsButton"
                     onClick={this.handleClick}
                     style={{ width: "100%", borderColor: "white" }}
+                    size="lg"
                     variant="outline-primary"
                   >
                     Create Rewards
@@ -538,6 +572,7 @@ class Circle extends React.Component {
             {!isLeader && (
               <Button
                 variant="outline-danger"
+                size="lg"
                 style={{ margin: "7.5px" }}
                 onClick={this.handleClick}
                 name="leaveCircleButton"
@@ -546,6 +581,13 @@ class Circle extends React.Component {
               </Button>
             )}
           </div>
+          <LeaderEditTasksModal
+            showLeaderEditTasksModal={this.state.showLeaderEditTasksModal}
+            handleClose={this.handleClose}
+            tasksAssignedByMe={tasksAssignedByMe}
+            handleEditTask={this.handleEditTask}
+            deleteTask={this.deleteTask}
+          ></LeaderEditTasksModal>
           <ViewMembersModal
             showViewMembersModal={this.state.showViewMembersModal}
             leaders={currentCircle.leaderList}
@@ -621,8 +663,8 @@ class Circle extends React.Component {
               />
             </Modal.Body>
             <Modal.Footer>
-              <Button onClick={this.handleClose} variant="outline-primary">
-                Close
+              <Button onClick={this.handleClose} variant="outline-danger">
+                Cancel
               </Button>
               <Button
                 onClick={this.handleSubmitEditedTask}

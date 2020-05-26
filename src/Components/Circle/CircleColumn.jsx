@@ -43,6 +43,7 @@ class CircleColumn extends React.Component {
           handleDisapproveTask={handleDisapproveTask}
           isLeader={this.props.isLeader}
           handleEditTask={handleEditTask}
+          forLeaderEdits={false}
         ></Task>
       ));
     }
