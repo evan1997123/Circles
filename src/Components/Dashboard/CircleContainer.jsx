@@ -11,9 +11,9 @@ class CircleContainer extends React.Component {
     var circles = this.props.myCirclesRedux;
     return (
       <div className="column">
-        <div className="circle">
+        {/* <div className="circle">
           <CircleStatus myCircles={circles} />
-        </div>
+        </div> */}
         <div className="circle">
           <ActiveCircles
             myCircles={circles}
