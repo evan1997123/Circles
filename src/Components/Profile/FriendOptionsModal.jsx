@@ -18,6 +18,7 @@ class InviteMembersModal extends Component {
     this.handleAddingFriend = this.handleAddingFriend.bind(this);
     this.handleCancelFriendRequest = this.handleCancelFriendRequest.bind(this);
     this.handleAcceptFriendRequest = this.handleAcceptFriendRequest.bind(this);
+    this.handleDeletingFriend = this.handleDeletingFriend.bind(this);
   }
 
   swapForms(e) {
@@ -201,6 +202,7 @@ class InviteMembersModal extends Component {
     frm.reset();
     this.setState({
       addFriendList: [],
+      deleteFriendList: [],
       currentForm: "adding"
     });
   }
@@ -219,6 +221,49 @@ class InviteMembersModal extends Component {
     // console.log(request);
 
     this.props.handleAcceptFriendRequest(request);
+  }
+
+  handleDeletingFriend(e) {
+    e.preventDefault();
+
+    if (this.state.deleteFriendList.length === 0) {
+      return;
+    }
+
+    const profileData = this.props.profileData;
+    const userID = this.props.userID;
+
+    var newFriendList = {};
+    this.state.deleteFriendList.map((friend, index) => {
+      var leftBracket = friend.name.indexOf("[");
+      var slicedName = friend.name.slice(
+        leftBracket + 1,
+        friend.name.length - 1
+      );
+      this.state.deleteFriendList[index] = {
+        userID: friend.userID,
+        name: slicedName
+      };
+    });
+
+    this.state.deleteFriendList.map(userIDAndName => {
+      newFriendList[userIDAndName.userID] = userIDAndName.name;
+    });
+    var friendInfo = {
+      from: userID,
+      fromName: profileData.firstName + " " + profileData.lastName,
+      toList: newFriendList
+    };
+    console.log(friendInfo);
+
+    // this.props.handleAddingFriend(friendInfo);
+    var frm = document.getElementsByName("deleteForm")[0];
+    frm.reset();
+    this.setState({
+      addFriendList: [],
+      deleteFriendList: [],
+      currentForm: "adding"
+    });
   }
 
   render() {
@@ -611,7 +656,7 @@ class InviteMembersModal extends Component {
           ) : null}
 
           {this.state.currentForm === "delete" ? (
-            <Form name="deleteForm" onSubmit={this.handleAddingFriend}>
+            <Form name="deleteForm" onSubmit={this.handleDeletingFriend}>
               <Modal.Header>
                 <Modal.Title>Delete Friends</Modal.Title>
               </Modal.Header>
@@ -679,7 +724,7 @@ class InviteMembersModal extends Component {
                 </Button>
 
                 <Button onClick={this.props.handleClose}> Close </Button>
-                <Button onClick={this.handleAddingFriend}>Submit</Button>
+                <Button onClick={this.handleDeletingFriend}>Submit</Button>
               </Modal.Footer>
             </Form>
           ) : null}
