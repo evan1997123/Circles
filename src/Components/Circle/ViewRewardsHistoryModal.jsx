@@ -42,7 +42,7 @@ class ViewRewardsHistoryModal extends Component {
       for (var i = 0; i < displayRewards.length; i += 3) {
         var carouselItem = (
           <Carousel.Item>
-            <div style={{ display: "flex", padding: "0% 5%" }}>
+            <div style={{ display: "flex", padding: "0% 5%", margin: "5% 0%" }}>
               {i < displayRewards.length ? (
                 displayRewards[i]
               ) : (
@@ -77,6 +77,7 @@ class ViewRewardsHistoryModal extends Component {
         <Modal.Body>
           <Carousel
             interval={null}
+            indicators={true}
             nextIcon={
               <span aria-hidden="true" className="carousel-control-next-icon" />
             }

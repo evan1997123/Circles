@@ -11,3 +11,7 @@
     content: "◀";
     color: blue;
 }
+
+.carousel-indicators li {
+    background-color: blue !important;
+}
