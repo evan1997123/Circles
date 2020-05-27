@@ -13,6 +13,8 @@ import Landing from "./Components/Landing";
 import firebase from "./config/firebase.js";
 // import withFirebaseAuth from "react-with-firebase-auth";
 import { connect } from "react-redux";
+import { firestoreConnect } from "react-redux-firebase"; // so this allows us to connect this component to a firebase collection
+import { compose } from "redux";
 import { signOut } from "./Store/Actions/AuthActions";
 
 import SignInPage from "./Components/Auth/SignInPage";
@@ -60,6 +62,7 @@ class App extends React.Component {
     var user;
     const auth = this.props.firebaseAuthRedux;
     const profile = this.props.firebaseProfileRedux;
+    var friendRequests = this.props.firestoreFriendRequestsRedux;
 
     const signInUpOrOut = auth.uid ? (
       <Nav.Link onClick={this.handleLogOut}>Log Out</Nav.Link>
@@ -71,6 +74,7 @@ class App extends React.Component {
             profile={profile}
             signInUpOrOut={signInUpOrOut}
             isAuthed={auth.uid}
+            friendRequests = {friendRequests}
           />
           <Route
             path="/dashboard"
@@ -105,7 +109,8 @@ class App extends React.Component {
 const mapStateToProps = state => {
   return {
     firebaseAuthRedux: state.firebase.auth,
-    firebaseProfileRedux: state.firebase.profile
+    firebaseProfileRedux: state.firebase.profile,
+    firestoreFriendRequestsRedux: state.firestore.ordered.friendRequests
   };
 };
 
@@ -115,7 +120,31 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
+export default compose(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  ),
+  firestoreConnect(props => {
+    if (props.firebaseAuthRedux.uid) {
+      return [
+        { collection: "circles" },
+        { collection: "users" },
+        {
+          collection: "friendRequests",
+          where: [
+            ["allUsersRelated", "array-contains", props.firebaseAuthRedux.uid]
+          ]
+        }
+      ];
+    } else {
+      return [
+        { collection: "circles" },
+        { collection: "users" },
+        {
+          collection: "friendRequests"
+        }
+      ];
+    }
+  })
 )(App);
