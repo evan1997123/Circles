@@ -18,9 +18,8 @@ class Task extends React.Component {
       handleDisapproveTask,
       isLeader,
       handleEditTask,
-      forLeaderEdits,
+      forLeaderEdits
     } = this.props;
-    console.log(handleEditTask);
     var ifExists = handleMoveTasks
       ? () => handleMoveTasks(task, userID)
       : () => "do nothing";
@@ -70,7 +69,6 @@ class Task extends React.Component {
     }
     // Check if this task is assigned by yourself
     var assignedByMe = task.assignedByID === userID;
-    console.log(assignedByMe);
 
     return (
       <div className={classForTask} style={{ width: "100%" }}>

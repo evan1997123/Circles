@@ -27,23 +27,23 @@ class Dashboard extends React.Component {
     }
     // Figure out which tasks are still to be complete and haven't been dismissed yet
     var allTasks = this.props.firestoreTasksRedux;
+    var toDoTasksNotDismissed = [];
     var toDoTasks = [];
     var auth = this.props.firebaseAuthRedux;
     var userID = auth.uid;
     if (allTasks) {
       allTasks.filter(task => {
-        if (
-          task.taskStage === "toDo" &&
-          task.dismissed == false &&
-          task.assignedForID === userID
-        ) {
-          console.log(task);
+        if (task.taskStage === "toDo" && task.assignedForID === userID) {
+          if (task.dismissed == false) {
+            toDoTasksNotDismissed.push(task);
+          }
           toDoTasks.push(task);
         }
       });
     }
     // Get the Circle names
     var allCircles = this.props.firestoreCircleRedux;
+    console.log(allCircles);
     var mapCircleIDToNames = {};
     if (allCircles) {
       for (var i = 0; i < allCircles.length; i++) {
@@ -58,11 +58,12 @@ class Dashboard extends React.Component {
           <div className="panelItem" style={{ flex: "6", padding: "1.5% 1%" }}>
             <CircleContainer
               friendsList={this.props.firebaseProfileRedux.friendsList}
+              toDoTasks={toDoTasks}
             />
           </div>
           <div className="panelItem" style={{ flex: "3", padding: " 1.5% 1%" }}>
             <Notification
-              notifications={toDoTasks}
+              notifications={toDoTasksNotDismissed}
               circleNames={mapCircleIDToNames}
               handleDismiss={this.handleDismiss}
             />

@@ -248,7 +248,7 @@ class Landing extends React.Component {
                   </label>
                   <br />
                   <input
-                    className="forInput"
+                    className="forInput "
                     type="password"
                     id="password"
                     placeholder="Enter your password"

@@ -13,7 +13,7 @@ class ActiveCircles extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      show: false,
+      show: false
     };
     this.showModal = this.showModal.bind(this);
     this.hideModal = this.hideModal.bind(this);
@@ -23,31 +23,47 @@ class ActiveCircles extends React.Component {
 
   showModal() {
     this.setState({
-      show: true,
+      show: true
     });
   }
 
   hideModal() {
     this.setState({
-      show: false,
+      show: false
     });
   }
   render() {
     var circles;
-    if (this.props.myCircles) {
-      circles = this.props.myCircles.map((circle, index) => (
-        <div className="activeCircle" key={index}>
-          <div>
-            <Button
-              variant="primary"
-              className="myButton"
-              // onClick={() => this.setRedirect(circle.id)}
-              onClick={() => this.props.history.push("/circle/" + circle.id)}
-            ></Button>
+    if (this.props.myCircles && this.props.toDoTasks) {
+      console.log(this.props.myCircles);
+      circles = this.props.myCircles.map((circle, index) => {
+        var needsAttention;
+        var className;
+
+        this.props.toDoTasks.forEach(toDoTask => {
+          if (toDoTask.circleID === circle.circleID) {
+            needsAttention = true;
+          }
+        });
+
+        if (needsAttention) {
+          className = "needsAttention";
+        }
+
+        return (
+          <div className="activeCircle" key={index}>
+            <div>
+              <Button
+                variant="primary"
+                className={"myButton " + className}
+                // onClick={() => this.setRedirect(circle.id)}
+                onClick={() => this.props.history.push("/circle/" + circle.id)}
+              ></Button>
+            </div>
+            <h6>{circle.circleName}</h6>
           </div>
-          <h6>{circle.circleName}</h6>
-        </div>
-      ));
+        );
+      });
     }
     return (
       <div>
