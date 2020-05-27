@@ -22,7 +22,8 @@ export const createCircle = circleDetails => {
       createdAt: new Date(),
       creator: fullName,
       creatorID: assignedByID,
-      rewardsList: {}
+      rewardsList: {},
+      rewardsHistoryForUsers: {}
     };
 
     var allUsersToUpdate = Object.keys(newCircleDetails.memberList).concat(

@@ -56,7 +56,8 @@ class Circle extends React.Component {
       rewardPoints: "",
       leftCircle: false,
       recurringReward: "Yes", // All rewards are recurring by default
-      editingTaskID: ""
+      editingTaskID: "",
+      penalty: "" // For overdue tasks
     };
 
     //input form local state
@@ -80,6 +81,10 @@ class Circle extends React.Component {
     this.handleDisapproveTask = this.handleDisapproveTask.bind(this);
     this.handleEditTask = this.handleEditTask.bind(this);
     this.handleSubmitEditedTask = this.handleSubmitEditedTask.bind(this);
+  }
+
+  componentDidMount() {
+    console.log(this.props.firestoreTasksRedux);
   }
 
   deleteTask = taskId => {
@@ -112,7 +117,8 @@ class Circle extends React.Component {
       this.state.assignedForID === "" ||
       this.state.taskDescription === "" ||
       this.state.completeBy === "" ||
-      this.state.reward === ""
+      this.state.reward === "" ||
+      this.state.penalty === ""
     ) {
       alert("All fields are required");
       return;
@@ -124,7 +130,8 @@ class Circle extends React.Component {
       assignedForID: this.state.assignedForID,
       taskDescription: this.state.taskDescription,
       completeBy: this.state.completeBy,
-      reward: this.state.reward === "" ? 0 : this.state.reward
+      reward: this.state.reward === "" ? 0 : this.state.reward,
+      penalty: this.state.penalty === "" ? 0 : this.state.penalty
     };
     this.props.dispatchCreateTask(taskDetails);
 
@@ -610,8 +617,8 @@ class Circle extends React.Component {
             showViewRewardsHistoryModal={this.state.showViewRewardsHistoryModal}
             handleClose={this.handleClose}
             rewardsHistory={
-              currentUser
-                ? currentUser.claimedRewardsByCircle[currentCircle.circleID]
+              currentCircle.rewardsHistoryForUsers
+                ? currentCircle.rewardsHistoryForUsers[userID]
                 : null
             }
             allRewards={currentCircle.rewardsList}

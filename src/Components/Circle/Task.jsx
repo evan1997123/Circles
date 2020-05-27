@@ -101,6 +101,9 @@ class Task extends React.Component {
             <Card.Text>
               <strong>Points</strong>: {task.reward}
             </Card.Text>
+            <Card.Text>
+              <strong>Penalty</strong>: {task.penalty}
+            </Card.Text>
 
             {!forNotification && !forLeaderEdits && (
               <Button

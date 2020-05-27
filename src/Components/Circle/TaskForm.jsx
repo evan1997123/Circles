@@ -10,7 +10,7 @@ class TaskForm extends Component {
       formData,
       allUsers,
       currentCircle,
-      editingTask
+      editingTask,
     } = this.props;
 
     if (allUsers && currentCircle) {
@@ -20,7 +20,7 @@ class TaskForm extends Component {
       );
 
       //filter allUsers to only have those in the given circle
-      var allUsersFiltered = allUsers.filter(user =>
+      var allUsersFiltered = allUsers.filter((user) =>
         allIDInCircle.includes(user.id)
       );
 
@@ -29,7 +29,7 @@ class TaskForm extends Component {
           <option value={user.id} key={index}>
             {user.firstName} {user.lastName}
           </option>
-        ))
+        )),
       ];
       listOfUsers.unshift(
         <option
@@ -68,9 +68,6 @@ class TaskForm extends Component {
               name="taskDescription"
               placeholder="Task Description"
               onChange={handleChangeInput}
-              // style={{
-              //   width: 500
-              // }}
               value={formData.taskDescription}
             />
           </Form.Group>
@@ -113,14 +110,15 @@ class TaskForm extends Component {
           </Form.Group>
 
           <Form.Group>
-            <Form.Label>
-              Would you like to add a penalty to this task when it becomes
-              overdue?
-            </Form.Label>
-            <Form.Control as="select">
-              <option>Yes</option>
-              <option>No</option>
-            </Form.Control>
+            <Form.Label>Penalty (For Overdue Tasks)</Form.Label>
+            <Form.Control
+              required
+              type="number"
+              placeholder="10"
+              name="penalty"
+              onChange={handleChangeInput}
+              value={formData.penalty}
+            ></Form.Control>
           </Form.Group>
         </Form>
       </React.Fragment>

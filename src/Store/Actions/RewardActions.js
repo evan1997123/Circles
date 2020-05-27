@@ -83,87 +83,40 @@ export const claimReward = (rewardID, userID, circleID) => {
                 ...circleInfo.points,
                 [userID]: circleInfo.points[userID] - reward.rewardPoints
               };
-              console.log(newPointsMap);
+              var rewardsHistoryForUsers = circleInfo.rewardsHistoryForUsers;
+              var rewardHistoryForCurrentUser = rewardsHistoryForUsers[userID];
+              var rewardsInCircle = circleInfo.rewardsList;
+              var ourReward = rewardsInCircle[rewardID];
+              var uuidv4 = require("uuid/v4");
+              var uuid = uuidv4();
+              var newRewardHistory = {
+                ...ourReward,
+                claimedDate: new Date()
+              }
+              var newRewardHistoryForCurrentUser = {
+                ...rewardHistoryForCurrentUser,
+                [uuid]: newRewardHistory
+              }
+              var newRewardsHistoryForUsers = {
+                ...rewardsHistoryForUsers,
+                [userID]: newRewardHistoryForCurrentUser
+              }
               firestore
                 .collection("circles")
                 .doc(circleID)
                 .update({
-                  points: newPointsMap
+                  points: newPointsMap,
+                  rewardsHistoryForUsers: newRewardsHistoryForUsers
                 })
                 .then(() => {
-                  // After updating the user's number of points, add to the history of claimed rewards
-                  // var rewardsInCircle = circleInfo.rewardsList;
-                  // var ourReward = rewardsInCircle[rewardID];
-                  // var uuidv4 = require("uuid/v4");
-                  // var uuid = uuidv4();
-                  // var newlyClaimedReward = {
-                  //   ...ourReward,
-                  //   claimedDate: new Date()
-                  // }
-                  // firestore
-                  //   .collection("claimedRewards")
-                  //   .doc(uuid)
-                  //   .set(newlyClaimedReward)
-                  //   .then(() => {
-                  //     dispatch({
-                  //       type: "CLAIM_POINTS"
-                  //     });
-                  //   })
-                  //   .catch(err => {
-                  //     dispatch({
-                  //       type: "CLAIM_POINTS_ERROR",
-                  //       err: err
-                  //     });
-                  //   })
-
-                  // Keep track of claimed rewards in the user
-                  var rewardsInCircle = circleInfo.rewardsList;
-                  var ourReward = rewardsInCircle[rewardID];
-                  var uuidv4 = require("uuid/v4");
-                  var uuid = uuidv4();
-                  var newlyClaimedReward = {
-                    ...ourReward,
-                    claimedDate: new Date()
-                  }
-                  firestore
-                    .collection("users")
-                    .doc(userID)
-                    .get()
-                    .then(doc => {
-                      var userDetails = doc.data();
-                      var oldClaimedRewardsByCircle = userDetails.claimedRewardsByCircle;
-                      var oldClaimedRewards = oldClaimedRewardsByCircle[circleID];
-                      var newClaimedRewards = {
-                        ...oldClaimedRewards,
-                        [uuid]: newlyClaimedReward
-                      }
-                      var newClaimedRewardsByCircle = {
-                        ...oldClaimedRewardsByCircle,
-                        [circleID]: newClaimedRewards
-                      }
-                      firestore
-                        .collection("users")
-                        .doc(userID)
-                        .update({
-                          claimedRewardsByCircle: newClaimedRewardsByCircle
-                        })
-                        .then(() => {
-                          dispatch({
-                            type: "CLAIM_POINTS"
-                          })
-                        })
-                        .catch(err => {
-                          dispatch({
-                            type: "CLAIM_POINTS_ERROR",
-                            err
-                          })
-                        })
-                    })
+                  dispatch({
+                    type: "CLAIM_POINTS"
+                  })
                 })
                 .catch(err => {
                   dispatch({
                     type: "CLAIM_POINTS_ERROR",
-                    err: err
+                    err
                   })
                 })
             }
@@ -171,9 +124,15 @@ export const claimReward = (rewardID, userID, circleID) => {
           .catch(err => {
             dispatch({
               type: "CLAIM_POINTS_ERROR",
-              err
+              err: err
             })
           })
+      })
+      .catch(err => {
+        dispatch({
+          type: "CLAIM_POINTS_ERROR",
+          err: err
+        })
       })
   }
 }
