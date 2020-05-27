@@ -30,6 +30,7 @@ import {
 } from "../../Store/Actions/RewardActions";
 import ViewMembersModal from "./ViewMembersModal";
 import LeaderEditTasksModal from "./LeaderEditTasksModal";
+import ViewRewardsHistoryModal from "./ViewRewardsHistoryModal";
 
 class Circle extends React.Component {
   constructor(props) {
@@ -206,6 +207,10 @@ class Circle extends React.Component {
         this.setState({
           showLeaderEditTasksModal: true,
         });
+      case "viewRewardsHistory":
+        this.setState({
+          showViewRewardsHistoryModal: true,
+        });
       default:
         return;
     }
@@ -222,6 +227,7 @@ class Circle extends React.Component {
       showViewMembersModal: false,
       showEditTaskModal: false,
       showLeaderEditTasksModal: false,
+      showViewRewardsHistoryModal: false,
       rewardTitle: "",
       rewardDescription: "",
       rewardPoints: "",
@@ -409,6 +415,18 @@ class Circle extends React.Component {
     var allTasks = this.props.firestoreTasksRedux;
     var allUsers = this.props.firestoreUsersRedux;
 
+    // Find current user information
+    if (allUsers) {
+      console.log(allUsers);
+      var currentUser;
+      for (var i = 0; i < allUsers.length; i++) {
+        if (allUsers[i].id === userID) {
+          currentUser = allUsers[i];
+        }
+      }
+      console.log(currentUser);
+    }
+
     if (currentCircle && currentCircle.points) {
       // all users in current circle
       // all users, where their circleList include this circle
@@ -437,6 +455,7 @@ class Circle extends React.Component {
         });
       }
 
+      console.log(currentCircle.rewardsList);
       return (
         <div className="overallContainer">
           <div className="text-center">
@@ -554,6 +573,8 @@ class Circle extends React.Component {
                     variant="outline-primary"
                     style={{ width: "100%", borderColor: "white" }}
                     size="lg"
+                    name="viewRewardsHistory"
+                    onClick={this.handleClick}
                   >
                     Rewards History
                   </Button>
@@ -581,6 +602,14 @@ class Circle extends React.Component {
               </Button>
             )}
           </div>
+          <ViewRewardsHistoryModal
+            showViewRewardsHistoryModal={this.state.showViewRewardsHistoryModal}
+            handleClose={this.handleClose}
+            rewardsHistory={
+              currentUser.claimedRewardsByCircle[currentCircle.circleID]
+            }
+            allRewards={currentCircle.rewardsList}
+          ></ViewRewardsHistoryModal>
           <LeaderEditTasksModal
             showLeaderEditTasksModal={this.state.showLeaderEditTasksModal}
             handleClose={this.handleClose}

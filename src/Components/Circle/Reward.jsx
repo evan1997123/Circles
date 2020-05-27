@@ -4,6 +4,9 @@ import Button from "react-bootstrap/Button";
 
 class Reward extends Component {
   render() {
+    if (this.props.claimedDate) {
+      console.log(this.props.claimedDate.toDate().toDateString());
+    }
     return (
       <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
         <Card>
@@ -18,19 +21,27 @@ class Reward extends Component {
             <Card.Text>
               <strong>Recurring</strong>: {this.props.reward.recurringReward}
             </Card.Text>
-            <Button
-              style={{ marginRight: "10px" }}
-              onClick={() =>
-                this.props.handleClaimRewards(
-                  this.props.reward.rewardID,
-                  this.props.reward.circleID,
-                  this.props.reward.recurringReward
-                )
-              }
-              variant="outline-success"
-            >
-              Claim
-            </Button>
+            {this.props.forViewingHistory && this.props.claimedDate && (
+              <Card.Text>
+                <strong>Claimed Date</strong>:{" "}
+                {this.props.claimedDate.toDate().toDateString()}
+              </Card.Text>
+            )}
+            {!this.props.forViewingHistory && (
+              <Button
+                style={{ marginRight: "10px" }}
+                onClick={() =>
+                  this.props.handleClaimRewards(
+                    this.props.reward.rewardID,
+                    this.props.reward.circleID,
+                    this.props.reward.recurringReward
+                  )
+                }
+                variant="outline-success"
+              >
+                Claim
+              </Button>
+            )}
             {this.props.isLeader && (
               <Button
                 style={{ marginRight: "10px" }}

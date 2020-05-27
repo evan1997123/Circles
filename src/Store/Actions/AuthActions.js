@@ -1,32 +1,46 @@
 export const signIn = credentials => {
-  return (dispatch, getState, { getFirebase }) => {
+  return (dispatch, getState, {
+    getFirebase
+  }) => {
     const firebase = getFirebase();
     firebase
       .auth()
       .signInWithEmailAndPassword(credentials.email, credentials.password)
       .then(() => {
-        dispatch({ type: "LOGIN_SUCCESS" });
+        dispatch({
+          type: "LOGIN_SUCCESS"
+        });
       })
       .catch(err => {
-        dispatch({ type: "LOGIN_ERROR", err: err });
+        dispatch({
+          type: "LOGIN_ERROR",
+          err: err
+        });
       });
   };
 };
 
 export const signOut = () => {
-  return (dispatch, getState, { getFirebase }) => {
+  return (dispatch, getState, {
+    getFirebase
+  }) => {
     const firebase = getFirebase();
     firebase
       .auth()
       .signOut()
       .then(() => {
-        dispatch({ type: "SIGN_OUT_SUCCESS" });
+        dispatch({
+          type: "SIGN_OUT_SUCCESS"
+        });
       });
   };
 };
 
 export const signUp = newUser => {
-  return (dispatch, getState, { getFirebase, getFirestore }) => {
+  return (dispatch, getState, {
+    getFirebase,
+    getFirestore
+  }) => {
     const firebase = getFirebase();
     const firestore = getFirestore();
 
@@ -42,7 +56,9 @@ export const signUp = newUser => {
     ) {
       dispatch({
         type: "SIGN_UP_ERROR",
-        err: { message: "Please fill out all fields" }
+        err: {
+          message: "Please fill out all fields"
+        }
       });
       return;
     }
@@ -51,7 +67,9 @@ export const signUp = newUser => {
     if (newUser.passwordConfirmation !== newUser.password) {
       dispatch({
         type: "SIGN_UP_ERROR",
-        err: { message: "Passwords do not match" }
+        err: {
+          message: "Passwords do not match"
+        }
       });
       return;
     }
@@ -67,7 +85,9 @@ export const signUp = newUser => {
         if (snapshot.empty == false) {
           dispatch({
             type: "SIGN_UP_ERROR",
-            err: { message: "That username has already been taken." }
+            err: {
+              message: "That username has already been taken."
+            }
           });
         } else {
           firebase
@@ -89,14 +109,20 @@ export const signUp = newUser => {
                     newUser.firstName[0] + newUser.lastName[0]
                   ).toUpperCase(),
                   circleList: {},
-                  friendsList: {}
+                  friendsList: {},
+                  claimedRewardsByCircle: {}
                 });
             })
             .then(() => {
-              dispatch({ type: "SIGN_UP_SUCCESS" });
+              dispatch({
+                type: "SIGN_UP_SUCCESS"
+              });
             })
             .catch(err => {
-              dispatch({ type: "SIGN_UP_ERROR", err: err });
+              dispatch({
+                type: "SIGN_UP_ERROR",
+                err: err
+              });
             });
         }
       });
