@@ -215,3 +215,111 @@ export const acceptFriendRequest = friendRequest => {
       });
   };
 };
+
+export const deleteFriends = deleteInfo => {
+  return (dispatch, getState, { getFirebase, getFirestore }) => {
+    //pause dispatch
+    //do async calls to Database
+    const firestore = getFirestore();
+    // const profile = getState().firebase.profile;
+    // const assignedByID = getState().firebase.auth.uid;
+
+    console.log(deleteInfo);
+    firestore
+      .collection("users")
+      .doc(deleteInfo.myID)
+      .get()
+      .then(doc => {
+        var updatingUser = doc.data();
+
+        // console.log(updatingUser);
+
+        var myCurrentFriendsList = updatingUser.friendsList;
+        console.log(myCurrentFriendsList);
+
+        var updatedFriendsList = { ...myCurrentFriendsList };
+        //friendsToDelete is list of all Id's to delete
+
+        deleteInfo.friendsToDelete.forEach(deleteFriendID => {
+          delete updatedFriendsList[deleteFriendID];
+        });
+
+        var toUse = updatingUser;
+        toUse["friendsList"] = updatedFriendsList;
+
+        firestore
+          .collection("users")
+          .doc(deleteInfo.myID)
+          .set(toUse)
+          .then(() => {
+            dispatch({
+              type: "DELETE_FRIEND_SUCCESS",
+              who: "my friends List"
+            });
+          })
+          .catch(err => {
+            dispatch({
+              type: "DELETE_FRIENDS_ERROR",
+              who: "my friends List",
+              err: err
+            });
+          });
+      })
+      .catch(err => {
+        dispatch({
+          type: "DELETE_FRIENDS_ERROR",
+          who: "my friends list",
+          err: err
+        });
+      });
+
+    // finished deleteing all friends from logged in user
+
+    deleteInfo.friendsToDelete.forEach(userID => {
+      firestore
+        .collection("users")
+        .doc(userID)
+        .get()
+        .then(doc => {
+          var updatingUser = doc.data();
+
+          // console.log(updatingUser);
+
+          var currentUserFriendsList = updatingUser.friendsList;
+          console.log(currentUserFriendsList);
+
+          var updatedFriendsList = { ...currentUserFriendsList };
+
+          delete updatedFriendsList[deleteInfo.myID];
+
+          var toUse = updatingUser;
+          toUse["friendsList"] = updatedFriendsList;
+
+          firestore
+            .collection("users")
+            .doc(userID)
+            .set(toUse)
+            .then(() => {
+              dispatch({
+                type: "DELETE_FRIEND_SUCCESS",
+                who: userID + " friends List"
+              });
+            })
+            .catch(err => {
+              dispatch({
+                type: "DELETE_FRIENDS_ERROR",
+                who: userID + " friends List",
+                err: err
+              });
+            });
+        })
+        .catch(err => {
+          dispatch({
+            type: "DELETE_FRIENDS_ERROR",
+            who: userID + "friends list",
+            err: err
+          });
+        });
+    });
+  };
+};

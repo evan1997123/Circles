@@ -233,30 +233,33 @@ class InviteMembersModal extends Component {
     const profileData = this.props.profileData;
     const userID = this.props.userID;
 
-    var newFriendList = {};
-    this.state.deleteFriendList.map((friend, index) => {
-      var leftBracket = friend.name.indexOf("[");
-      var slicedName = friend.name.slice(
-        leftBracket + 1,
-        friend.name.length - 1
-      );
-      this.state.deleteFriendList[index] = {
-        userID: friend.userID,
-        name: slicedName
-      };
+    var deleteFriendIDs = [];
+    this.state.deleteFriendList.forEach(friend => {
+      deleteFriendIDs.push(friend.userID);
     });
+    // this.state.deleteFriendList.map((friend, index) => {
+    //   var leftBracket = friend.name.indexOf("[");
+    //   var slicedName = friend.name.slice(
+    //     leftBracket + 1,
+    //     friend.name.length - 1
+    //   );
+    //   this.state.deleteFriendList[index] = {
+    //     userID: friend.userID,
+    //     name: slicedName
+    //   };
+    // });
 
-    this.state.deleteFriendList.map(userIDAndName => {
-      newFriendList[userIDAndName.userID] = userIDAndName.name;
-    });
-    var friendInfo = {
-      from: userID,
-      fromName: profileData.firstName + " " + profileData.lastName,
-      toList: newFriendList
+    // this.state.deleteFriendList.map(userIDAndName => {
+    //   newFriendList[userIDAndName.userID] = userIDAndName.name;
+    // });
+    var deleteInfo = {
+      myID: userID,
+      friendsToDelete: deleteFriendIDs
     };
-    console.log(friendInfo);
+    console.log(deleteInfo);
 
-    // this.props.handleAddingFriend(friendInfo);
+    this.props.handleDeleteFriends(deleteInfo);
+
     var frm = document.getElementsByName("deleteForm")[0];
     frm.reset();
     this.setState({

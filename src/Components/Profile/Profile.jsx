@@ -7,7 +7,8 @@ import { compose } from "redux";
 import {
   sendFriendRequest,
   cancelFriendRequest,
-  acceptFriendRequest
+  acceptFriendRequest,
+  deleteFriends
 } from "../../Store/Actions/FriendActions";
 //
 import Picture from "./Picture";
@@ -27,6 +28,7 @@ class Profile extends Component {
     this.handleAddingFriend = this.handleAddingFriend.bind(this);
     this.handleCancelFriendRequest = this.handleCancelFriendRequest.bind(this);
     this.handleAcceptFriendRequest = this.handleAcceptFriendRequest.bind(this);
+    this.handleDeleteFriends = this.handleDeleteFriends.bind(this);
   }
 
   // For showing modal (creating new task)
@@ -64,6 +66,11 @@ class Profile extends Component {
   handleAcceptFriendRequest(friendRequest) {
     console.log("inside Profile: accept", friendRequest);
     this.props.dispatchAcceptFriendRequest(friendRequest);
+  }
+
+  handleDeleteFriends(deleteInfo) {
+    console.log("deleting friends", deleteInfo);
+    this.props.dispatchDeleteFriends(deleteInfo);
   }
 
   render() {
@@ -172,6 +179,7 @@ class Profile extends Component {
               myIncomingFriendRequests={incomingFriendRequests}
               handleCancelFriendRequest={this.handleCancelFriendRequest}
               handleAcceptFriendRequest={this.handleAcceptFriendRequest}
+              handleDeleteFriends={this.handleDeleteFriends}
               firebase={this.props.firebase}
             />
           </div>
@@ -198,7 +206,8 @@ const mapDispatchToProps = dispatch => {
     dispatchCancelFriendRequest: friendRequestDocumentID =>
       dispatch(cancelFriendRequest(friendRequestDocumentID)),
     dispatchAcceptFriendRequest: friendRequest =>
-      dispatch(acceptFriendRequest(friendRequest))
+      dispatch(acceptFriendRequest(friendRequest)),
+    dispatchDeleteFriends: deleteInfo => dispatch(deleteFriends(deleteInfo))
   };
 };
 
