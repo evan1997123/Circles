@@ -394,7 +394,7 @@ class Circle extends React.Component {
     const userID = auth.uid;
     var currentCircle;
     var isLeader = false;
-    if (this.props.firestoreCircleRedux) {
+    if (this.props.firestoreCircleRedux && this.props.firestoreCircleRedux[0]) {
       currentCircle = this.props.firestoreCircleRedux[0];
       isLeader = Object.keys(currentCircle.leaderList).includes(userID)
         ? true
@@ -428,7 +428,7 @@ class Circle extends React.Component {
       console.log(currentUser);
     }
 
-    if (currentCircle && currentCircle.points) {
+    if (currentCircle && currentCircle.points && allUsers) {
       // all users in current circle
       // all users, where their circleList include this circle
       // allUsers.map(user => {
@@ -646,7 +646,7 @@ class Circle extends React.Component {
             showInviteMembersModal={this.state.showInviteMembersModal}
             handleClose={this.handleClose}
             allUsers={allUsers}
-            profileData = {profileData}
+            profileData={profileData}
             currentUserID={userID}
             currentCircle={currentCircle}
             handleUpdateCircleMembers={this.handleUpdateCircleMembers}

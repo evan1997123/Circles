@@ -7,60 +7,64 @@ import "./ViewRewardsHistoryModal.css";
 
 class ViewRewardsHistoryModal extends Component {
   render() {
-    console.log(Object.keys(this.props.rewardsHistory));
-    var sortedRewardsHistory = Object.keys(this.props.rewardsHistory).sort(
-      (rewardOne, rewardTwo) => {
-        if (
-          this.props.rewardsHistory[rewardOne].claimedDate &&
-          this.props.rewardsHistory[rewardTwo].claimedDate
-        ) {
-          return (
-            this.props.rewardsHistory[rewardTwo].claimedDate
-              .toDate()
-              .getTime() -
-            this.props.rewardsHistory[rewardOne].claimedDate.toDate().getTime()
-          );
-        }
-      }
-    );
-    console.log(sortedRewardsHistory);
     var displayRewards;
-    displayRewards = sortedRewardsHistory.map((rewardID, index) => (
-      <div style={{ flex: "1" }}>
-        <Reward
-          reward={this.props.rewardsHistory[rewardID]}
-          key={index}
-          forViewingHistory={true}
-          claimedDate={this.props.rewardsHistory[rewardID].claimedDate}
-        ></Reward>
-      </div>
-    ));
-    // Group into groups of threes and put each group of three in a Carousel.Item component
     var listOfCarouselItems = [];
-    for (var i = 0; i < displayRewards.length; i += 3) {
-      var carouselItem = (
-        <Carousel.Item>
-          <div style={{ display: "flex", padding: "0% 5%" }}>
-            {i < displayRewards.length ? (
-              displayRewards[i]
-            ) : (
-              <div style={{ flex: "1" }}></div>
-            )}
-            {i + 1 < displayRewards.length ? (
-              displayRewards[i + 1]
-            ) : (
-              <div style={{ flex: "1" }}></div>
-            )}
-            {i + 2 < displayRewards.length ? (
-              displayRewards[i + 2]
-            ) : (
-              <div style={{ flex: "1" }}></div>
-            )}
-          </div>
-        </Carousel.Item>
+    if (this.props.rewardsHistory) {
+      var sortedRewardsHistory = Object.keys(this.props.rewardsHistory).sort(
+        (rewardOne, rewardTwo) => {
+          if (
+            this.props.rewardsHistory[rewardOne].claimedDate &&
+            this.props.rewardsHistory[rewardTwo].claimedDate
+          ) {
+            return (
+              this.props.rewardsHistory[rewardTwo].claimedDate
+                .toDate()
+                .getTime() -
+              this.props.rewardsHistory[rewardOne].claimedDate
+                .toDate()
+                .getTime()
+            );
+          }
+        }
       );
-      listOfCarouselItems.push(carouselItem);
+      console.log(sortedRewardsHistory);
+      var displayRewards;
+      displayRewards = sortedRewardsHistory.map((rewardID, index) => (
+        <div style={{ flex: "1" }}>
+          <Reward
+            reward={this.props.rewardsHistory[rewardID]}
+            key={index}
+            forViewingHistory={true}
+            claimedDate={this.props.rewardsHistory[rewardID].claimedDate}
+          ></Reward>
+        </div>
+      ));
+      for (var i = 0; i < displayRewards.length; i += 3) {
+        var carouselItem = (
+          <Carousel.Item>
+            <div style={{ display: "flex", padding: "0% 5%" }}>
+              {i < displayRewards.length ? (
+                displayRewards[i]
+              ) : (
+                <div style={{ flex: "1" }}></div>
+              )}
+              {i + 1 < displayRewards.length ? (
+                displayRewards[i + 1]
+              ) : (
+                <div style={{ flex: "1" }}></div>
+              )}
+              {i + 2 < displayRewards.length ? (
+                displayRewards[i + 2]
+              ) : (
+                <div style={{ flex: "1" }}></div>
+              )}
+            </div>
+          </Carousel.Item>
+        );
+        listOfCarouselItems.push(carouselItem);
+      }
     }
+
     return (
       <Modal
         show={this.props.showViewRewardsHistoryModal}

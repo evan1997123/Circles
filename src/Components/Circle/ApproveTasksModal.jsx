@@ -22,7 +22,7 @@ class ApproveTasksModal extends Component {
           </Modal.Header>
 
           <Modal.Body>
-            {rTasks.length > 0 ? (
+            {rTasks && rTasks.length > 0 ? (
               <CircleColumn
                 title="Requests"
                 color="outline-success"
