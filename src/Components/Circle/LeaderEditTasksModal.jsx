@@ -5,9 +5,13 @@ import Task from "./Task";
 
 class LeaderEditTasksModal extends Component {
   render() {
-    console.log(this.props.tasksAssignedByMe);
-    var tasksAssignedByMe = this.props.tasksAssignedByMe.map((task) => (
+    if (! this.props.tasksAssignedByMe) {
+      return null;
+    }
+    // console.log(this.props.tasksAssignedByMe);
+    var tasksAssignedByMe = this.props.tasksAssignedByMe.map((task, index) => (
       <Task
+        key={index}
         task={task}
         buttonText={"Edit"}
         forLeaderEdits={true}
