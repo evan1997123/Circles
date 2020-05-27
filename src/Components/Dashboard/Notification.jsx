@@ -5,23 +5,17 @@ import "./Notification.css";
 import Task from "../Circle/Task";
 
 class Notification extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  componentDidUpdate() {
+    // Check for overdue tasks here
+    var handleRemoveOverdueTasks = this.props.handleRemoveOverdueTasks;
+    handleRemoveOverdueTasks();
+  }
+
   render() {
-    // let notifications = this.state.listOfNotifications.map(notification => (
-    //   <Toast
-    //     key={notification.id}
-    //     onClose={() => this.removeFromList(notification.id)}
-    //   >
-    //     <Toast.Header>
-    //       {/* <img src="holder.js/20x20?text=%20" className="rounded mr-2" alt="" /> */}
-    //       <strong className="mr-auto">{notification.value}</strong>
-    //       <small>11 mins ago</small>
-    //     </Toast.Header>
-    //     <Toast.Body>
-    //       A task was added, please click on the close button to make it
-    //       disappear!
-    //     </Toast.Body>
-    //   </Toast>
-    // ));
     let { notifications, circleNames, handleDismiss } = this.props;
     // Only display the top four notifications
     var display = notifications.slice(0, 4);

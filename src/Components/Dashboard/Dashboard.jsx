@@ -8,17 +8,65 @@ import { connect } from "react-redux";
 import { firestoreConnect } from "react-redux-firebase";
 import { compose } from "redux";
 import { dismissTask } from "../../Store/Actions/NotificationActions";
+import { removeOverdueTasks } from "../../Store/Actions/TaskActions";
 
 class Dashboard extends React.Component {
   constructor(props) {
     super(props);
     this.handleDismiss = this.handleDismiss.bind(this);
+    this.handleRemoveOverdueTasks = this.handleRemoveOverdueTasks.bind(this);
   }
 
   // Dismiss button removes the notification from the toDoTasks list
   handleDismiss(task) {
     console.log("dismiss");
     this.props.dispatchDismissTask(task);
+  }
+
+  handleRemoveOverdueTasks() {
+    var allTasks = this.props.firestoreTasksRedux;
+    var userID = this.props.firebaseAuthRedux.uid;
+    var circleID;
+    if (this.props.firestoreCircleRedux) {
+      circleID = this.props.firestoreCircleRedux[0].circleID;
+    }
+    if (allTasks) {
+      var tasksToDelete = [];
+      for (var i = 0; i < allTasks.length; i++) {
+        var task = allTasks[i];
+        // console.log(task);
+        // Compare current date with the task's completeBy date
+        var currentDate = new Date();
+        var taskDueDate = task.completeBy;
+        var dueDateYear = taskDueDate.slice(0, taskDueDate.indexOf("-"));
+        taskDueDate = taskDueDate.slice(
+          taskDueDate.indexOf("-") + 1,
+          taskDueDate.length
+        );
+        var dueDateMonth = taskDueDate.slice(0, taskDueDate.indexOf("-"));
+        taskDueDate = taskDueDate.slice(
+          taskDueDate.indexOf("-") + 1,
+          taskDueDate.length
+        );
+        var dueDateDay = taskDueDate;
+        dueDateYear = parseInt(dueDateYear);
+        dueDateMonth = parseInt(dueDateMonth);
+        dueDateDay = parseInt(dueDateDay);
+        taskDueDate = new Date(dueDateYear, dueDateMonth - 1, dueDateDay);
+        console.log(taskDueDate);
+        if (taskDueDate.getTime() - currentDate.getTime() < 0) {
+          tasksToDelete.push(task);
+        }
+      }
+      console.log(tasksToDelete);
+      for (var i = 0; i < tasksToDelete.length; i++) {
+        this.props.dispatchRemoveOverdueTasks(
+          tasksToDelete[i].taskID,
+          userID,
+          circleID
+        );
+      }
+    }
   }
 
   render() {
@@ -32,7 +80,7 @@ class Dashboard extends React.Component {
     var auth = this.props.firebaseAuthRedux;
     var userID = auth.uid;
     if (allTasks) {
-      allTasks.filter(task => {
+      allTasks.filter((task) => {
         if (task.taskStage === "toDo" && task.assignedForID === userID) {
           if (task.dismissed == false) {
             toDoTasksNotDismissed.push(task);
@@ -66,6 +114,7 @@ class Dashboard extends React.Component {
               notifications={toDoTasksNotDismissed}
               circleNames={mapCircleIDToNames}
               handleDismiss={this.handleDismiss}
+              handleRemoveOverdueTasks={this.handleRemoveOverdueTasks}
             />
           </div>
         </div>
@@ -79,26 +128,25 @@ const mapStateToProps = (state, ownProps) => {
     firestoreTasksRedux: state.firestore.ordered.tasks,
     firebaseAuthRedux: state.firebase.auth,
     firestoreCircleRedux: state.firestore.ordered.circles,
-    firebaseProfileRedux: state.firebase.profile
+    firebaseProfileRedux: state.firebase.profile,
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    dispatchDismissTask: task => dispatch(dismissTask(task))
+    dispatchDismissTask: (task) => dispatch(dismissTask(task)),
+    dispatchRemoveOverdueTasks: (deleteThisTaskID, userID, circleID) =>
+      dispatch(removeOverdueTasks(deleteThisTaskID, userID, circleID)),
   };
 };
 
 export default compose(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  ),
-  firestoreConnect(props => {
+  connect(mapStateToProps, mapDispatchToProps),
+  firestoreConnect((props) => {
     return [
       {
-        collection: "tasks"
-      }
+        collection: "tasks",
+      },
     ];
   })
 )(Dashboard);

@@ -7,24 +7,25 @@ class CircleColumns extends Component {
 
   constructor(props) {
     super(props);
-    console.log(this.props.allTasks);
+    // console.log(props.allTasks);
   }
+
   render() {
     let {
       handleMoveTasks,
       allTasks,
       userID,
       deleteTask,
-      handleEditTask
+      handleEditTask,
     } = this.props;
     if (allTasks) {
       //all tasks that the current user has to do
       var tTasks = allTasks.filter(
-        task => task.taskStage === "toDo" && task.assignedForID === userID
+        (task) => task.taskStage === "toDo" && task.assignedForID === userID
       );
       //all tasks that the current user has pending to be checked off by someone else
       var pTasks = allTasks.filter(
-        task => task.taskStage === "pending" && task.assignedForID === userID
+        (task) => task.taskStage === "pending" && task.assignedForID === userID
       );
 
       //all (requested) tasks that the current user can check off for someone else
@@ -34,7 +35,8 @@ class CircleColumns extends Component {
 
       //all tasks that the current user has completed
       var cTasks = allTasks.filter(
-        task => task.taskStage === "completed" && task.assignedForID === userID
+        (task) =>
+          task.taskStage === "completed" && task.assignedForID === userID
       );
     }
 

@@ -27,7 +27,7 @@ class ViewRewardsHistoryModal extends Component {
           }
         }
       );
-      console.log(sortedRewardsHistory);
+      // console.log(sortedRewardsHistory);
       var displayRewards;
       displayRewards = sortedRewardsHistory.map((rewardID, index) => (
         <div style={{ flex: "1" }}>

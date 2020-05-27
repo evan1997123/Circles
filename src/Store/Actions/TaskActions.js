@@ -319,3 +319,79 @@ export const editTask = newTaskDetails => {
       })
   }
 }
+
+export const removeOverdueTasks = (deleteThisTaskID, userID, circleID) => {
+  return (dispatch, getState, {
+    getFirebase,
+    getFirestore
+  }) => {
+    const firestore = getFirestore();
+    // Before removing the task, decrease the user's points
+    firestore
+      .collection("tasks")
+      .doc(deleteThisTaskID)
+      .get()
+      .then(doc => {
+        // Get the penalty associated with this task
+        var taskDetails = doc.data();
+        var penalty = taskDetails.penalty;
+        // Update user's points in the Circle
+        firestore
+          .collection("circles")
+          .doc(circleID)
+          .get()
+          .then(doc => {
+            // Update user's points
+            var circleDetails = doc.data();
+            var oldPoints = circleDetails.points;
+            var newPoints = {
+              ...oldPoints,
+              [userID]: oldPoints[userID] - penalty
+            }
+            // Update the Circle
+            firestore
+              .collection("circles")
+              .doc(circleID)
+              .update({
+                points: newPoints
+              })
+              .then(() => {
+                // Remove task
+                firestore
+                  .collection("tasks")
+                  .doc(deleteThisTaskID)
+                  .delete()
+                  .then(() => {
+                    dispatch({
+                      type: "REMOVE_OVERDUE_TASKS"
+                    })
+                  })
+                  .catch(err => {
+                    dispatch({
+                      type: "REMOVE_OVERDUE_TASKS_ERROR",
+                      err
+                    })
+                  })
+              })
+              .catch(err => {
+                dispatch({
+                  type: "REMOVE_OVERDUE_TASKS_ERROR",
+                  err
+                })
+              })
+          })
+          .catch(err => {
+            dispatch({
+              type: "REMOVE_OVERDUE_TASKS_ERROR",
+              err
+            })
+          })
+      })
+      .catch(err => {
+        dispatch({
+          type: "REMOVE_OVERDUE_TASKS_ERROR",
+          err
+        })
+      })
+  }
+}

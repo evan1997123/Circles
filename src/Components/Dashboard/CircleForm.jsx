@@ -19,7 +19,7 @@ class CircleForm extends React.Component {
       newCircleDescription: "",
       newCircleName: "",
       currentLeadersOfNewCircle: [],
-      filterState: ""
+      filterState: "",
     };
 
     this.createNewCircle = this.createNewCircle.bind(this);
@@ -34,19 +34,19 @@ class CircleForm extends React.Component {
 
   createNewCircle() {
     this.setState({
-      show: true
+      show: true,
     });
   }
 
   hideModal() {
     this.setState({
-      show: false
+      show: false,
     });
   }
 
   handleChanges(e) {
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   }
 
@@ -60,44 +60,44 @@ class CircleForm extends React.Component {
 
     if (newMemberOrLeader === "newMember") {
       checkMembersList = this.state.currentMembersOfNewCircle.filter(
-        member => member.userID === userID
+        (member) => member.userID === userID
       );
       checkLeadersList = this.state.currentLeadersOfNewCircle.filter(
-        leader => leader.userID === userID
+        (leader) => leader.userID === userID
       );
       if (checkMembersList.length !== 0 || checkLeadersList.length !== 0) {
         return;
       }
       copyList = [
         ...this.state.currentMembersOfNewCircle,
-        { userID: userID, name: name }
+        { userID: userID, name: name },
       ];
 
       this.setState({
-        currentMembersOfNewCircle: copyList
+        currentMembersOfNewCircle: copyList,
       });
     } else if (newMemberOrLeader === "newLeader") {
       checkMembersList = this.state.currentMembersOfNewCircle.filter(
-        member => member.userID === userID
+        (member) => member.userID === userID
       );
       checkLeadersList = this.state.currentLeadersOfNewCircle.filter(
-        leader => leader.userID === userID
+        (leader) => leader.userID === userID
       );
       if (checkMembersList.length !== 0 || checkLeadersList.length !== 0) {
         return;
       }
       copyList = [
         ...this.state.currentLeadersOfNewCircle,
-        { userID: userID, name: name }
+        { userID: userID, name: name },
       ];
       this.setState({
-        currentLeadersOfNewCircle: copyList
+        currentLeadersOfNewCircle: copyList,
       });
     }
 
     // Clear filter state
     this.setState({
-      filterState: ""
+      filterState: "",
     });
   }
 
@@ -108,17 +108,17 @@ class CircleForm extends React.Component {
     var copyList;
     if (e.target.name === "deleteMember") {
       copyList = this.state.currentMembersOfNewCircle.filter(
-        nameAndID => nameAndID.userID !== idToDelete
+        (nameAndID) => nameAndID.userID !== idToDelete
       );
       this.setState({
-        currentMembersOfNewCircle: copyList
+        currentMembersOfNewCircle: copyList,
       });
     } else if (newMemberOrLeader === "deleteLeader") {
       copyList = this.state.currentLeadersOfNewCircle.filter(
-        nameAndID => nameAndID.userID !== idToDelete
+        (nameAndID) => nameAndID.userID !== idToDelete
       );
       this.setState({
-        currentLeadersOfNewCircle: copyList
+        currentLeadersOfNewCircle: copyList,
       });
     }
   }
@@ -129,10 +129,10 @@ class CircleForm extends React.Component {
     var yourID = auth.uid;
 
     var allCurrentUsersSelectedID = [];
-    this.state.currentMembersOfNewCircle.forEach(member => {
+    this.state.currentMembersOfNewCircle.forEach((member) => {
       allCurrentUsersSelectedID.push(member.userID);
     });
-    this.state.currentLeadersOfNewCircle.forEach(leader => {
+    this.state.currentLeadersOfNewCircle.forEach((leader) => {
       allCurrentUsersSelectedID.push(leader.userID);
     });
 
@@ -144,6 +144,7 @@ class CircleForm extends React.Component {
       !allCurrentUsersSelectedID.includes(yourID)
     ) {
       console.log("invalid paramaters");
+      alert("All fields are required");
       return;
     }
 
@@ -151,7 +152,7 @@ class CircleForm extends React.Component {
     var newMemberList = {};
     var newLeaderList = {};
 
-    this.state.currentMembersOfNewCircle.map(member => {
+    this.state.currentMembersOfNewCircle.map((member) => {
       var leftBracket = member.name.indexOf("[");
       var slicedName = member.name.slice(
         leftBracket + 1,
@@ -160,7 +161,7 @@ class CircleForm extends React.Component {
       newMemberList[member.userID] = slicedName;
     });
 
-    this.state.currentLeadersOfNewCircle.map(leader => {
+    this.state.currentLeadersOfNewCircle.map((leader) => {
       var leftBracket = leader.name.indexOf("[");
       var slicedName = leader.name.slice(
         leftBracket + 1,
@@ -175,7 +176,7 @@ class CircleForm extends React.Component {
     );
 
     var currentPoints = {};
-    everyone.map(person => {
+    everyone.map((person) => {
       currentPoints[person.userID] = 0;
     });
 
@@ -186,7 +187,7 @@ class CircleForm extends React.Component {
       leaderList: newLeaderList,
       numberOfPeople:
         Object.keys(newMemberList).length + Object.keys(newLeaderList).length,
-      points: currentPoints
+      points: currentPoints,
     };
 
     this.props.createCircleDispatch(circleDetails);
@@ -198,7 +199,7 @@ class CircleForm extends React.Component {
       newCircleDescription: "",
       newCircleName: "",
       currentLeadersOfNewCircle: [],
-      show: false
+      show: false,
     });
   }
 
@@ -209,7 +210,7 @@ class CircleForm extends React.Component {
     var friendsListID = Object.keys(this.props.friendsList);
     var isFriend = false;
 
-    if(!currentUser) {
+    if (!currentUser) {
       return false;
     }
     for (var i = 0; i < friendsListID.length; i++) {
@@ -485,7 +486,7 @@ const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
   <Button
     href=""
     ref={ref}
-    onClick={e => {
+    onClick={(e) => {
       e.preventDefault();
       onClick(e);
     }}
@@ -505,15 +506,12 @@ const CustomMenu = React.forwardRef(
     const [value, setValue] = useState("");
 
     var allShow = React.Children.toArray(children).filter(
-      child =>
+      (child) =>
         !value ||
-        child.props.children
-          .toString()
-          .toLowerCase()
-          .startsWith(value, 1)
+        child.props.children.toString().toLowerCase().startsWith(value, 1)
     );
 
-    allShow.sort(function(user1, user2) {
+    allShow.sort(function (user1, user2) {
       var user1Name = user1.props.children;
       var user2Name = user2.props.children;
       return user1Name.localeCompare(user2Name);
@@ -531,7 +529,7 @@ const CustomMenu = React.forwardRef(
           autoFocus
           className="mx-3 my-2 w-auto"
           placeholder="Enter username"
-          onChange={e => setValue(e.target.value)}
+          onChange={(e) => setValue(e.target.value)}
           value={value}
         />
         <ul className="list-unstyled">{allShow}</ul>
@@ -543,22 +541,19 @@ const CustomMenu = React.forwardRef(
 const mapStateToProps = (state, ownProps) => {
   return {
     allUsersRedux: state.firestore.ordered.users,
-    firebaseAuthRedux: state.firebase.auth
+    firebaseAuthRedux: state.firebase.auth,
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     //this takes in a task ( which we pass in above) and calls dispatch which just calls a function on createTask
     // creatTask is created from above import, and that  takes us to TaskActions.js
-    createCircleDispatch: circle => dispatch(createCircle(circle))
+    createCircleDispatch: (circle) => dispatch(createCircle(circle)),
   };
 };
 export default compose(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  ),
+  connect(mapStateToProps, mapDispatchToProps),
   //firestoreConnect takes in an array of of objects that say which collection you want to connect to
   //whenever database for this collection is changed, it will induce the firestoreReducer, which will sync store state
   // and then this component will "hear" that because we connected that. Then state will change for the store

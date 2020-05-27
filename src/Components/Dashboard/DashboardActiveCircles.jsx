@@ -13,7 +13,7 @@ class ActiveCircles extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      show: false
+      show: false,
     };
     this.showModal = this.showModal.bind(this);
     this.hideModal = this.hideModal.bind(this);
@@ -23,24 +23,24 @@ class ActiveCircles extends React.Component {
 
   showModal() {
     this.setState({
-      show: true
+      show: true,
     });
   }
 
   hideModal() {
     this.setState({
-      show: false
+      show: false,
     });
   }
   render() {
     var circles;
     if (this.props.myCircles && this.props.toDoTasks) {
-      console.log(this.props.myCircles);
+      // console.log(this.props.myCircles);
       circles = this.props.myCircles.map((circle, index) => {
         var needsAttention;
         var className;
 
-        this.props.toDoTasks.forEach(toDoTask => {
+        this.props.toDoTasks.forEach((toDoTask) => {
           if (toDoTask.circleID === circle.circleID) {
             needsAttention = true;
           }
