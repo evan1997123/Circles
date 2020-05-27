@@ -10,7 +10,7 @@ class TaskForm extends Component {
       formData,
       allUsers,
       currentCircle,
-      editingTask,
+      editingTask
     } = this.props;
 
     if (allUsers && currentCircle) {
@@ -20,7 +20,7 @@ class TaskForm extends Component {
       );
 
       //filter allUsers to only have those in the given circle
-      var allUsersFiltered = allUsers.filter((user) =>
+      var allUsersFiltered = allUsers.filter(user =>
         allIDInCircle.includes(user.id)
       );
 
@@ -29,7 +29,7 @@ class TaskForm extends Component {
           <option value={user.id} key={index}>
             {user.firstName} {user.lastName}
           </option>
-        )),
+        ))
       ];
       listOfUsers.unshift(
         <option
