@@ -55,7 +55,11 @@ class Dashboard extends React.Component {
     return (
       <div className="dashboard">
         <div className="panelContainer" style={{ padding: "0 10%" }}>
+<<<<<<< HEAD
           <div className="panelItem" style={{ flex: "6", padding: " 1.5% 1%" }}>
+=======
+          <div className="panelItem" style={{ flex: "6", padding: "1.5% 1%" }}>
+>>>>>>> e490fb5984f206161c41d5fd1872c7aaad5a4392
             <CircleContainer
               friendsList={this.props.firebaseProfileRedux.friendsList}
             />

@@ -29,6 +29,8 @@ import {
   deleteReward,
 } from "../../Store/Actions/RewardActions";
 import ViewMembersModal from "./ViewMembersModal";
+import LeaderEditTasksModal from "./LeaderEditTasksModal";
+import ViewRewardsHistoryModal from "./ViewRewardsHistoryModal";
 
 class Circle extends React.Component {
   constructor(props) {
@@ -48,6 +50,7 @@ class Circle extends React.Component {
       showLeaveCircleModal: false,
       showViewMembersModal: false,
       showEditTaskModal: false,
+      showLeaderEditTasksModal: false,
       rewardTitle: "",
       rewardDescription: "",
       rewardPoints: "",
@@ -200,6 +203,14 @@ class Circle extends React.Component {
           showViewMembersModal: true,
         });
         return;
+      case "editTasksButton":
+        this.setState({
+          showLeaderEditTasksModal: true,
+        });
+      case "viewRewardsHistory":
+        this.setState({
+          showViewRewardsHistoryModal: true,
+        });
       default:
         return;
     }
@@ -215,6 +226,8 @@ class Circle extends React.Component {
       showLeaveCircleModal: false,
       showViewMembersModal: false,
       showEditTaskModal: false,
+      showLeaderEditTasksModal: false,
+      showViewRewardsHistoryModal: false,
       rewardTitle: "",
       rewardDescription: "",
       rewardPoints: "",
@@ -309,6 +322,7 @@ class Circle extends React.Component {
     console.log("edit task");
     // Edit the state of the Circle component to the current task info
     var allTasks = this.props.firestoreTasksRedux;
+    const profileData = this.props.firebaseProfileRedux;
     var editTask;
     // Find the current task in the list of all tasks
     for (var i = 0; i < allTasks.length; i++) {
@@ -375,8 +389,8 @@ class Circle extends React.Component {
   }
 
   render() {
-    console.log(this.state);
     const auth = this.props.firebaseAuthRedux;
+    const profileData = this.props.firebaseProfileRedux;
     const userID = auth.uid;
     var currentCircle;
     var isLeader = false;
@@ -402,6 +416,18 @@ class Circle extends React.Component {
     var allTasks = this.props.firestoreTasksRedux;
     var allUsers = this.props.firestoreUsersRedux;
 
+    // Find current user information
+    if (allUsers) {
+      console.log(allUsers);
+      var currentUser;
+      for (var i = 0; i < allUsers.length; i++) {
+        if (allUsers[i].id === userID) {
+          currentUser = allUsers[i];
+        }
+      }
+      console.log(currentUser);
+    }
+
     if (currentCircle && currentCircle.points) {
       // all users in current circle
       // all users, where their circleList include this circle
@@ -410,13 +436,30 @@ class Circle extends React.Component {
       //   console.log(Object.keys(user.circleList).includes(currentCircle.id));
       // });
       var allUsersCurrentCircle = allUsers.filter((user) => {
+        if (!user) {
+          return false;
+        }
         return Object.keys(user.circleList).includes(currentCircle.id);
       });
       var allUsersCurrentCircleMap = {};
       allUsersCurrentCircle.map(
         (user) => (allUsersCurrentCircleMap[user.id] = user)
       );
+      // Figure out which tasks were assigned by you (the leader)
+      if (isLeader) {
+        var tasksAssignedByMe = allTasks.filter((task) => {
+          // Only need to edit the task if it is in the to-do stage
+          if (task.taskStage !== "toDo") {
+            return false;
+          } else if (task.assignedByID !== userID) {
+            return false;
+          } else {
+            return true;
+          }
+        });
+      }
 
+      console.log(currentCircle.rewardsList);
       return (
         <div className="overallContainer">
           <div className="text-center">
@@ -425,21 +468,10 @@ class Circle extends React.Component {
             <div className="circle-info">
               Number of People: {currentCircle.numberOfPeople} <br />
               Current Points: {currentCircle.points[userID]} <br />
-              <Button
-                variant="outline-primary"
-                style={{ margin: "7.5px" }}
-                onClick={this.handleClick}
-                name="viewMembersButton"
-              >
-                View Leaders & Members
-              </Button>
-              <Button variant="outline-primary" style={{ margin: "7.5px" }}>
-                View Rewards History
-              </Button>
             </div>
           </div>
           <div className="topButtons">
-            {/* <Button
+            <Button
               name="createTaskButton"
               onClick={this.handleClick}
               style={{ margin: "7.5px" }}
@@ -447,37 +479,41 @@ class Circle extends React.Component {
               variant="outline-primary"
             >
               Create Task
-            </Button> */}
+            </Button>
             &nbsp;
             <Dropdown>
               <Dropdown.Toggle
                 style={{ margin: "7.5px", height: "100%" }}
+                size="lg"
                 variant="success"
                 id="dropdown-basic"
                 variant="outline-primary"
               >
                 Manage Tasks
               </Dropdown.Toggle>
-
               <Dropdown.Menu style={{ width: "100%" }}>
-                <Button
-                  name="createTaskButton"
-                  onClick={this.handleClick}
-                  style={{ width: "100%", borderColor: "white" }}
-                  variant="outline-primary"
-                >
-                  Create Task
-                </Button>
                 {isLeader ? (
                   <Button
                     name="approveTasksButton"
                     onClick={this.handleClick}
                     style={{ width: "100%", borderColor: "white" }}
+                    size="lg"
                     variant="outline-primary"
                   >
                     Approve Tasks
                   </Button>
                 ) : null}
+                {isLeader && (
+                  <Button
+                    name="editTasksButton"
+                    onClick={this.handleClick}
+                    style={{ width: "100%", borderColor: "white" }}
+                    size="lg"
+                    variant="outline-primary"
+                  >
+                    Edit Tasks
+                  </Button>
+                )}
               </Dropdown.Menu>
             </Dropdown>
             &nbsp;
@@ -485,6 +521,7 @@ class Circle extends React.Component {
               <Dropdown>
                 <Dropdown.Toggle
                   style={{ margin: "7.5px", height: "100%" }}
+                  size="lg"
                   variant="success"
                   id="dropdown-basic"
                   variant="outline-primary"
@@ -493,9 +530,19 @@ class Circle extends React.Component {
                 </Dropdown.Toggle>
                 <Dropdown.Menu style={{ width: "100%" }}>
                   <Button
+                    variant="outline-primary"
+                    style={{ width: "100%", borderColor: "white" }}
+                    onClick={this.handleClick}
+                    name="viewMembersButton"
+                    size="lg"
+                  >
+                    View Members
+                  </Button>
+                  <Button
                     name="inviteMembersButton"
                     onClick={this.handleClick}
                     style={{ width: "100%", borderColor: "white" }}
+                    size="lg"
                     variant="outline-primary"
                   >
                     Invite Members
@@ -504,6 +551,7 @@ class Circle extends React.Component {
                     name="promoteDemoteButton"
                     onClick={this.handleClick}
                     style={{ width: "100%", borderColor: "white" }}
+                    size="lg"
                     variant="outline-primary"
                   >
                     Promote/Demote
@@ -516,6 +564,7 @@ class Circle extends React.Component {
               <Dropdown>
                 <Dropdown.Toggle
                   style={{ margin: "7.5px", height: "100%" }}
+                  size="lg"
                   variant="success"
                   id="dropdown-basic"
                   variant="outline-primary"
@@ -525,9 +574,19 @@ class Circle extends React.Component {
 
                 <Dropdown.Menu style={{ width: "100%" }}>
                   <Button
+                    variant="outline-primary"
+                    style={{ width: "100%", borderColor: "white" }}
+                    size="lg"
+                    name="viewRewardsHistory"
+                    onClick={this.handleClick}
+                  >
+                    Rewards History
+                  </Button>
+                  <Button
                     name="createRewardsButton"
                     onClick={this.handleClick}
                     style={{ width: "100%", borderColor: "white" }}
+                    size="lg"
                     variant="outline-primary"
                   >
                     Create Rewards
@@ -538,6 +597,7 @@ class Circle extends React.Component {
             {!isLeader && (
               <Button
                 variant="outline-danger"
+                size="lg"
                 style={{ margin: "7.5px" }}
                 onClick={this.handleClick}
                 name="leaveCircleButton"
@@ -546,6 +606,21 @@ class Circle extends React.Component {
               </Button>
             )}
           </div>
+          <ViewRewardsHistoryModal
+            showViewRewardsHistoryModal={this.state.showViewRewardsHistoryModal}
+            handleClose={this.handleClose}
+            rewardsHistory={
+              currentUser.claimedRewardsByCircle[currentCircle.circleID]
+            }
+            allRewards={currentCircle.rewardsList}
+          ></ViewRewardsHistoryModal>
+          <LeaderEditTasksModal
+            showLeaderEditTasksModal={this.state.showLeaderEditTasksModal}
+            handleClose={this.handleClose}
+            tasksAssignedByMe={tasksAssignedByMe}
+            handleEditTask={this.handleEditTask}
+            deleteTask={this.deleteTask}
+          ></LeaderEditTasksModal>
           <ViewMembersModal
             showViewMembersModal={this.state.showViewMembersModal}
             leaders={currentCircle.leaderList}
@@ -571,6 +646,7 @@ class Circle extends React.Component {
             showInviteMembersModal={this.state.showInviteMembersModal}
             handleClose={this.handleClose}
             allUsers={allUsers}
+            profileData = {profileData}
             currentUserID={userID}
             currentCircle={currentCircle}
             handleUpdateCircleMembers={this.handleUpdateCircleMembers}
@@ -621,8 +697,8 @@ class Circle extends React.Component {
               />
             </Modal.Body>
             <Modal.Footer>
-              <Button onClick={this.handleClose} variant="outline-primary">
-                Close
+              <Button onClick={this.handleClose} variant="outline-danger">
+                Cancel
               </Button>
               <Button
                 onClick={this.handleSubmitEditedTask}
@@ -710,6 +786,7 @@ const mapStateToProps = (state, ownProps) => {
     firestoreUsersRedux: state.firestore.ordered.users,
     firestoreCircleRedux: state.firestore.ordered.circles,
     firebaseAuthRedux: state.firebase.auth,
+    firebaseProfileRedux: state.firebase.profile,
   };
 };
 
@@ -745,7 +822,7 @@ export default compose(
   //whenever database for this collection is changed, it will induce the firestoreReducer, which will sync store state
   // and then this component will "hear" that because we connected that. Then state will change for the store
   firestoreConnect((props) => {
-    console.log(props);
+    // console.log(props);
     return [
       {
         collection: "tasks",

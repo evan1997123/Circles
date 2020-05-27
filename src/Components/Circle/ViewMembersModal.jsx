@@ -6,11 +6,11 @@ class ViewMembersModal extends Component {
   render() {
     var leaders = this.props.leaders;
     var members = this.props.members;
-    var displayLeaders = Object.keys(leaders).map((leaderID) => (
-      <ListGroup.Item>{leaders[leaderID]}</ListGroup.Item>
+    var displayLeaders = Object.keys(leaders).map((leaderID,index) => (
+      <ListGroup.Item key={index}>{leaders[leaderID]}</ListGroup.Item>
     ));
-    var displayMembers = Object.keys(members).map((memberID) => (
-      <ListGroup.Item>{members[memberID]}</ListGroup.Item>
+    var displayMembers = Object.keys(members).map((memberID,index) => (
+      <ListGroup.Item key={index}>{members[memberID]}</ListGroup.Item>
     ));
     return (
       <Modal

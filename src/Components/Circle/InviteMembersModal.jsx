@@ -14,6 +14,7 @@ class InviteMembersModal extends Component {
     this.swapForms = this.swapForms.bind(this);
     this.handleUpdate = this.handleUpdate.bind(this);
     this.filterAlreadySelected = this.filterAlreadySelected.bind(this);
+    this.filterFriendsOnly = this.filterFriendsOnly.bind(this);
   }
 
   swapForms() {
@@ -177,6 +178,9 @@ class InviteMembersModal extends Component {
   }
 
   filterAlreadySelected(currentUser) {
+    if( !currentUser) {
+      return false;
+    }
     for (var i = 0; i < this.state.membersToAdd.length; i++) {
       if (this.state.membersToAdd[i].userID === currentUser.id) {
         return false;
@@ -192,8 +196,18 @@ class InviteMembersModal extends Component {
     return true;
   }
 
+  filterFriendsOnly(currentUser) {
+    if(this.props.profileData){
+      var friendsListIDs = Object.keys(this.props.profileData.friendsList);
+      if (friendsListIDs.includes(currentUser.id)){
+        return true;
+      }
+    }
+    return false;
+  }
+
   render() {
-    let { allUsers, currentCircle } = this.props;
+    let { allUsers, currentCircle} = this.props;
     //currentCircle is object from firestore
     var listOfUsersForAdding;
     var listOfUsersForRemoving;
@@ -207,7 +221,8 @@ class InviteMembersModal extends Component {
       //filter allUsers to only have those NOT in the given circle and not already selected
       var allUsersFiltered = allUsers
         .filter(user => !allIdInCircle.includes(user.id))
-        .filter(this.filterAlreadySelected);
+        .filter(this.filterAlreadySelected)
+        .filter(this.filterFriendsOnly);
 
       listOfUsersForAdding = [
         allUsersFiltered.map((user, index) => (
@@ -318,7 +333,7 @@ class InviteMembersModal extends Component {
           {this.state.currentForm === "adding" ? (
             <Form name="InviteMembersForm" onSubmit={this.handleUpdate}>
               <Modal.Header>
-                <Modal.Title>Invite Members</Modal.Title>
+                <Modal.Title>Add/Remove</Modal.Title>
               </Modal.Header>
               <Modal.Body>
                 <Form.Label style={{ color: "red" }}>

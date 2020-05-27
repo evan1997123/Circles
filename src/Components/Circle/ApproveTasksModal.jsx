@@ -6,7 +6,9 @@ class ApproveTasksModal extends Component {
   render() {
     var rTasks;
     if (this.props.allTasks) {
-      rTasks = this.props.allTasks.filter(task => task.taskStage === "pending");
+      rTasks = this.props.allTasks.filter(
+        (task) => task.taskStage === "pending"
+      );
     }
 
     return (
@@ -20,15 +22,21 @@ class ApproveTasksModal extends Component {
           </Modal.Header>
 
           <Modal.Body>
-            <CircleColumn
-              title="Requests"
-              color="outline-success"
-              buttonText="Approve"
-              tasks={rTasks}
-              handleMoveTasks={this.props.handleMoveTasks}
-              userID={this.props.userID}
-              handleDisapproveTask={this.props.handleDisapproveTask}
-            ></CircleColumn>
+            {rTasks.length > 0 ? (
+              <CircleColumn
+                title="Requests"
+                color="outline-success"
+                buttonText="Approve"
+                tasks={rTasks}
+                handleMoveTasks={this.props.handleMoveTasks}
+                userID={this.props.userID}
+                handleDisapproveTask={this.props.handleDisapproveTask}
+              ></CircleColumn>
+            ) : (
+              <p>
+                You don't have any requests yet, maybe try assigning more tasks?
+              </p>
+            )}
           </Modal.Body>
           <Modal.Footer>
             <Button onClick={this.props.handleClose}>Close</Button>

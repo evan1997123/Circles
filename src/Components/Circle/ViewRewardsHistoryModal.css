@@ -1,0 +1,13 @@
+.modal-60w {
+    min-width: 60%;
+}
+
+.carousel-control-next-icon:after {
+    content: "▶";
+    color: blue;
+}
+
+.carousel-control-prev-icon:after {
+    content: "◀";
+    color: blue;
+}
