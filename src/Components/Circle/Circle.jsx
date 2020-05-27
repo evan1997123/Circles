@@ -610,7 +610,9 @@ class Circle extends React.Component {
             showViewRewardsHistoryModal={this.state.showViewRewardsHistoryModal}
             handleClose={this.handleClose}
             rewardsHistory={
-              currentUser.claimedRewardsByCircle[currentCircle.circleID]
+              currentUser
+                ? currentUser.claimedRewardsByCircle[currentCircle.circleID]
+                : null
             }
             allRewards={currentCircle.rewardsList}
           ></ViewRewardsHistoryModal>
