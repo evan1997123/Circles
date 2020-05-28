@@ -84,7 +84,7 @@ class Dashboard extends React.Component {
     var auth = this.props.firebaseAuthRedux;
     var userID = auth.uid;
     if (allTasks) {
-      allTasks.filter(task => {
+      allTasks.filter((task) => {
         if (task.taskStage === "toDo" && task.assignedForID === userID) {
           if (task.dismissed == false) {
             toDoTasksNotDismissed.push(task);
@@ -131,6 +131,35 @@ class Dashboard extends React.Component {
       }
       console.log(circleIDToNumTasksLeftMap);
     }
+    // Figure out list of Circles that this user is a leader of
+    var userInfo = this.props.firebaseAuthRedux;
+    var userID = userInfo.uid;
+    var leaderInTheseCircles = [];
+    if (allCircles) {
+      for (var i = 0; i < allCircles.length; i++) {
+        var circleInfo = allCircles[i];
+        var leaders = circleInfo.leaderList;
+        console.log(leaders);
+        if (leaders[userID]) {
+          leaderInTheseCircles.push(circleInfo.circleID);
+        }
+      }
+    }
+    // For each Circle that you're a leader of, figure out number of
+    // tasks that still need to be approved
+    console.log(leaderInTheseCircles);
+    var circleIDToNumPendingTasks = {};
+    allTasks = this.props.firestoreTasksRedux;
+    if (allTasks) {
+      for (var i = 0; i < leaderInTheseCircles.length; i++) {
+        var circleID = leaderInTheseCircles[i];
+        circleIDToNumPendingTasks[circleID] = allTasks.filter((task) => {
+          console.log(task.taskStage);
+          return task.circleID === circleID && task.taskStage === "pending";
+        }).length;
+      }
+    }
+    console.log(circleIDToNumPendingTasks);
 
     return (
       <div className="dashboard">
@@ -140,6 +169,7 @@ class Dashboard extends React.Component {
               friendsList={this.props.firebaseProfileRedux.friendsList}
               toDoTasks={toDoTasks}
               circleIDToNumTasksLeftMap={circleIDToNumTasksLeftMap}
+              circleIDToNumPendingTasks={circleIDToNumPendingTasks}
             />
           </div>
           <div className="panelItem" style={{ flex: "3", padding: " 1.5% 1%" }}>
@@ -161,28 +191,25 @@ const mapStateToProps = (state, ownProps) => {
     firestoreTasksRedux: state.firestore.ordered.tasks,
     firebaseAuthRedux: state.firebase.auth,
     firestoreCircleRedux: state.firestore.ordered.circles,
-    firebaseProfileRedux: state.firebase.profile
+    firebaseProfileRedux: state.firebase.profile,
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    dispatchDismissTask: task => dispatch(dismissTask(task)),
+    dispatchDismissTask: (task) => dispatch(dismissTask(task)),
     dispatchRemoveOverdueTasks: (deleteThisTaskID, userID, circleID) =>
-      dispatch(removeOverdueTasks(deleteThisTaskID, userID, circleID))
+      dispatch(removeOverdueTasks(deleteThisTaskID, userID, circleID)),
   };
 };
 
 export default compose(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  ),
-  firestoreConnect(props => {
+  connect(mapStateToProps, mapDispatchToProps),
+  firestoreConnect((props) => {
     return [
       {
-        collection: "tasks"
-      }
+        collection: "tasks",
+      },
     ];
   })
 )(Dashboard);

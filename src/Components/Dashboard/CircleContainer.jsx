@@ -21,6 +21,7 @@ class CircleContainer extends React.Component {
             toDoTasks={toDoTasks}
             friendsList={this.props.friendsList}
             circleIDToNumTasksLeftMap={this.props.circleIDToNumTasksLeftMap}
+            circleIDToNumPendingTasks={this.props.circleIDToNumPendingTasks}
           />
         </div>
       </div>

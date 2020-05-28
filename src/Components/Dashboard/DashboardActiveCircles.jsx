@@ -13,7 +13,7 @@ class ActiveCircles extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      show: false
+      show: false,
     };
     this.showModal = this.showModal.bind(this);
     this.hideModal = this.hideModal.bind(this);
@@ -24,13 +24,13 @@ class ActiveCircles extends React.Component {
 
   showModal() {
     this.setState({
-      show: true
+      show: true,
     });
   }
 
   hideModal() {
     this.setState({
-      show: false
+      show: false,
     });
   }
 
@@ -52,7 +52,7 @@ class ActiveCircles extends React.Component {
         var needsAttention;
         var className;
 
-        this.props.toDoTasks.forEach(toDoTask => {
+        this.props.toDoTasks.forEach((toDoTask) => {
           if (toDoTask.circleID === circle.circleID) {
             needsAttention = true;
           }
@@ -66,7 +66,17 @@ class ActiveCircles extends React.Component {
         var numTasksLeft = 0;
         if (this.props.circleIDToNumTasksLeftMap) {
           numTasksLeft = this.props.circleIDToNumTasksLeftMap[circle.circleID];
-          console.log(numTasksLeft);
+          // console.log(numTasksLeft);
+        }
+
+        var numPendingTasks = -1;
+        if (
+          this.props.circleIDToNumPendingTasks &&
+          this.props.circleIDToNumPendingTasks[circle.circleID]
+        ) {
+          numPendingTasks = this.props.circleIDToNumPendingTasks[
+            circle.circleID
+          ];
         }
 
         return (
@@ -86,8 +96,10 @@ class ActiveCircles extends React.Component {
                   // onClick={() =>
                   //   this.props.history.push("/circle/" + circle.id)
                   // }
-                  onMouseEnter={e => this.changeVisibility(e.target.name, true)}
-                  onMouseLeave={e =>
+                  onMouseEnter={(e) =>
+                    this.changeVisibility(e.target.name, true)
+                  }
+                  onMouseLeave={(e) =>
                     this.changeVisibility(e.target.name, false)
                   }
                   name={circle.circleID}
@@ -96,29 +108,45 @@ class ActiveCircles extends React.Component {
                     <span
                       style={{
                         visibility: "hidden",
-                        width: "160px",
+                        width: "180px",
                         backgroundColor: "grey",
                         color: "#fff",
-                        textAlign: "center",
-                        padding: "7.5px",
+                        textAlign: "left",
+                        padding: "15px",
                         borderRadius: "6px",
                         position: "absolute",
                         zIndex: "1",
                         top: "75px",
                         // left: "50%",
-                        marginLeft: "-80px"
+                        marginLeft: "-90px",
                       }}
                       id={circle.circleID}
                     >
                       {numTasksLeft !== 0 ? (
                         <div>
-                          <strong>Remaining Tasks</strong>: {numTasksLeft} Let's
-                          go complete some tasks! 💪
+                          <div>
+                            <div>
+                              <strong>Remaining Tasks</strong>: {numTasksLeft}
+                            </div>
+                            <div>Let's go complete some tasks! 💪</div>
+                          </div>
+                          {numPendingTasks !== -1 && (
+                            <hr style={{ backgroundColor: "white" }}></hr>
+                          )}
+                          {numPendingTasks !== -1 ? (
+                            <div>
+                              <div>
+                                <strong>Pending Tasks</strong>:{" "}
+                                {numPendingTasks}
+                              </div>
+                              <div>Let's go approve some tasks! ✅</div>
+                            </div>
+                          ) : null}
                         </div>
                       ) : (
                         <div>
                           You've completed all of your assigned tasks in this
-                          Circle! 🤗
+                          Circle! 🤗 Let's go add some more tasks!
                         </div>
                       )}
                     </span>
