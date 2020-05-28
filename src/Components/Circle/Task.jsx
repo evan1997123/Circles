@@ -18,7 +18,7 @@ class Task extends React.Component {
       handleDisapproveTask,
       isLeader,
       handleEditTask,
-      forLeaderEdits
+      forLeaderEdits,
     } = this.props;
     var ifExists = handleMoveTasks
       ? () => handleMoveTasks(task, userID)
@@ -121,15 +121,17 @@ class Task extends React.Component {
                 Disapprove
               </Button>
             )}
-            {!forNotification && deleteButton}
-            {!forNotification && (assignedByMe || forLeaderEdits) && (
-              <Button
-                variant="outline-info"
-                onClick={() => handleEditTask(task.taskID)}
-              >
-                Edit Task
-              </Button>
-            )}
+            {!forNotification && (isLeader || assignedByMe) && deleteButton}
+            {!forNotification &&
+              (assignedByMe || forLeaderEdits) &&
+              task.taskStage === "toDo" && (
+                <Button
+                  variant="outline-info"
+                  onClick={() => handleEditTask(task.taskID)}
+                >
+                  Edit Task
+                </Button>
+              )}
             {forNotification && (
               <Button
                 variant="outline-warning"

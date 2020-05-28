@@ -91,13 +91,41 @@ class Dashboard extends React.Component {
     }
     // Get the Circle names
     var allCircles = this.props.firestoreCircleRedux;
-    console.log(allCircles);
     var mapCircleIDToNames = {};
     if (allCircles) {
       for (var i = 0; i < allCircles.length; i++) {
         var circle = allCircles[i];
         mapCircleIDToNames[circle.circleID] = circle.circleName;
       }
+    }
+    // Tasks that are still to be done and are assigned to me
+    allTasks = this.props.firestoreTasksRedux;
+    console.log(allCircles);
+    if (allTasks) {
+      allTasks = allTasks.filter((task) => {
+        if (task.assignedForID === userID && task.taskStage === "toDo") {
+          return true;
+        }
+        return false;
+      });
+      // Figure out the number of tasks remaining for each Circle (for you specifically)
+      var circleIDToTasksMap = {};
+      for (var i = 0; i < allCircles.length; i++) {
+        // For each Circle, find the number of tasks that are still left to do
+        var myCircle = allCircles[i];
+        var myCircleID = myCircle.circleID;
+        circleIDToTasksMap[myCircleID] = allTasks.filter((task) => {
+          return task.circleID === myCircleID;
+        });
+      }
+      console.log(circleIDToTasksMap);
+      var circleIDToNumTasksLeftMap = {};
+      for (var i = 0; i < allCircles.length; i++) {
+        var myCircle = allCircles[i];
+        var numTasksLeft = circleIDToTasksMap[myCircle.circleID].length;
+        circleIDToNumTasksLeftMap[myCircle.circleID] = numTasksLeft;
+      }
+      console.log(circleIDToNumTasksLeftMap);
     }
 
     return (
@@ -107,6 +135,7 @@ class Dashboard extends React.Component {
             <CircleContainer
               friendsList={this.props.firebaseProfileRedux.friendsList}
               toDoTasks={toDoTasks}
+              circleIDToNumTasksLeftMap={circleIDToNumTasksLeftMap}
             />
           </div>
           <div className="panelItem" style={{ flex: "3", padding: " 1.5% 1%" }}>

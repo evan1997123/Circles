@@ -69,7 +69,7 @@ class ViewRewardsHistoryModal extends Component {
       <Modal
         show={this.props.showViewRewardsHistoryModal}
         onHide={this.props.handleClose}
-        dialogClassName="modal-60w"
+        dialogClassName="modal-80w"
       >
         <Modal.Header closeButton>
           <Modal.Title>View Your Rewards History</Modal.Title>
