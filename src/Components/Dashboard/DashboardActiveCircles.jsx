@@ -13,7 +13,7 @@ class ActiveCircles extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      show: false,
+      show: false
     };
     this.showModal = this.showModal.bind(this);
     this.hideModal = this.hideModal.bind(this);
@@ -24,13 +24,13 @@ class ActiveCircles extends React.Component {
 
   showModal() {
     this.setState({
-      show: true,
+      show: true
     });
   }
 
   hideModal() {
     this.setState({
-      show: false,
+      show: false
     });
   }
 
@@ -52,7 +52,7 @@ class ActiveCircles extends React.Component {
         var needsAttention;
         var className;
 
-        this.props.toDoTasks.forEach((toDoTask) => {
+        this.props.toDoTasks.forEach(toDoTask => {
           if (toDoTask.circleID === circle.circleID) {
             needsAttention = true;
           }
@@ -78,48 +78,53 @@ class ActiveCircles extends React.Component {
                   className={"myButton btn btn-primary " + className}
                 ></button>
               </form> */}
-              <Button
-                className={"myButton btn btn-primary " + className}
-                // onClick={() => this.setRedirect(circle.id)}
-                onClick={() => this.props.history.push("/circle/" + circle.id)}
-                onMouseEnter={(e) => this.changeVisibility(e.target.name, true)}
-                onMouseLeave={(e) =>
-                  this.changeVisibility(e.target.name, false)
-                }
-                name={circle.circleID}
-              >
-                <div style={{ position: "relative", display: "inlineBlock" }}>
-                  <span
-                    style={{
-                      visibility: "hidden",
-                      width: "160px",
-                      backgroundColor: "grey",
-                      color: "#fff",
-                      textAlign: "center",
-                      padding: "7.5px",
-                      borderRadius: "6px",
-                      position: "absolute",
-                      zIndex: "1",
-                      top: "75px",
-                      // left: "50%",
-                      marginLeft: "-80px",
-                    }}
-                    id={circle.circleID}
-                  >
-                    {numTasksLeft !== 0 ? (
-                      <div>
-                        <strong>Remaining Tasks</strong>: {numTasksLeft} Let's
-                        go complete some tasks! 💪
-                      </div>
-                    ) : (
-                      <div>
-                        You've completed all of your assigned tasks in this
-                        Circle! 🤗
-                      </div>
-                    )}
-                  </span>
-                </div>
-              </Button>
+              <form action={"/circle/" + circle.id}>
+                <button
+                  type="submit"
+                  className={"myButton btn btn-primary " + className}
+                  // onClick={() => this.setRedirect(circle.id)}
+                  // onClick={() =>
+                  //   this.props.history.push("/circle/" + circle.id)
+                  // }
+                  onMouseEnter={e => this.changeVisibility(e.target.name, true)}
+                  onMouseLeave={e =>
+                    this.changeVisibility(e.target.name, false)
+                  }
+                  name={circle.circleID}
+                >
+                  <div style={{ position: "relative", display: "inlineBlock" }}>
+                    <span
+                      style={{
+                        visibility: "hidden",
+                        width: "160px",
+                        backgroundColor: "grey",
+                        color: "#fff",
+                        textAlign: "center",
+                        padding: "7.5px",
+                        borderRadius: "6px",
+                        position: "absolute",
+                        zIndex: "1",
+                        top: "75px",
+                        // left: "50%",
+                        marginLeft: "-80px"
+                      }}
+                      id={circle.circleID}
+                    >
+                      {numTasksLeft !== 0 ? (
+                        <div>
+                          <strong>Remaining Tasks</strong>: {numTasksLeft} Let's
+                          go complete some tasks! 💪
+                        </div>
+                      ) : (
+                        <div>
+                          You've completed all of your assigned tasks in this
+                          Circle! 🤗
+                        </div>
+                      )}
+                    </span>
+                  </div>
+                </button>
+              </form>
             </div>
             <h6>{circle.circleName}</h6>
           </div>
