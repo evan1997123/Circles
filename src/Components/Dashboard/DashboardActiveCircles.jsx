@@ -13,7 +13,7 @@ class ActiveCircles extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      show: false,
+      show: false
     };
     this.showModal = this.showModal.bind(this);
     this.hideModal = this.hideModal.bind(this);
@@ -23,13 +23,13 @@ class ActiveCircles extends React.Component {
 
   showModal() {
     this.setState({
-      show: true,
+      show: true
     });
   }
 
   hideModal() {
     this.setState({
-      show: false,
+      show: false
     });
   }
   render() {
@@ -40,7 +40,7 @@ class ActiveCircles extends React.Component {
         var needsAttention;
         var className;
 
-        this.props.toDoTasks.forEach((toDoTask) => {
+        this.props.toDoTasks.forEach(toDoTask => {
           if (toDoTask.circleID === circle.circleID) {
             needsAttention = true;
           }
@@ -50,15 +50,31 @@ class ActiveCircles extends React.Component {
           className = "needsAttention";
         }
 
+        // return (
+        //   <div className="activeCircle" key={index}>
+        //     <div>
+        //       <Button
+        //         variant="primary"
+        //         className={"myButton " + className}
+        //         // onClick={() => this.setRedirect(circle.id)}
+        //         onClick={() => this.props.history.push("/circle/" + circle.id)}
+        //       ></Button>
+        //     </div>
+        //     <h6>{circle.circleName}</h6>
+        //   </div>
+        // );
         return (
           <div className="activeCircle" key={index}>
             <div>
-              <Button
-                variant="primary"
-                className={"myButton " + className}
+              <form action={"/circle/" + circle.id}>
+                <button
+                  type="submit"
+                  className={"myButton btn btn-primary " + className}
+                ></button>
+              </form>
+              {/* className={"myButton btn btn-primary " + className}
                 // onClick={() => this.setRedirect(circle.id)}
-                onClick={() => this.props.history.push("/circle/" + circle.id)}
-              ></Button>
+                onClick={() => this.props.history.push("/circle/" + circle.id)} */}
             </div>
             <h6>{circle.circleName}</h6>
           </div>

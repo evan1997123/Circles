@@ -15,7 +15,8 @@ class Picture extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      source: defaultPic
+      source: defaultPic,
+      loading: false
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -29,6 +30,7 @@ class Picture extends Component {
   handleSubmit(e) {
     e.preventDefault();
     //profile pic ref
+    console.log("clicked Change Photo");
     let storageRef = this.props.firebase
       .storage()
       .ref(this.props.auth.uid + "/" + "profilepic");
@@ -38,7 +40,15 @@ class Picture extends Component {
     if (!file) {
       alert("File not selected");
     } else if (this.isFileImage(file)) {
-      storageRef.put(file).then(() => this.handleUpdateProfile());
+      this.setState({ loading: true });
+      storageRef.put(file).then(() => {
+        console.log("HELLO");
+        alert("You have changed the profile picture");
+        this.props.handleNavBarUpdateProfile();
+        this.handleUpdateProfile();
+        this.setState({ loading: false });
+      });
+      // also call handleNavBarUpdateProfile
     } else {
       alert("File is not an image");
     }
@@ -89,9 +99,21 @@ class Picture extends Component {
             ref={this.fileInput}
           />
           <br />
-          <Button type="submit" onClick={this.handleUpload}>
-            {buttonText}
-          </Button>
+          <div style={{ margin: "auto" }}>
+            <Button type="submit" onClick={this.handleUpload}>
+              {buttonText}
+            </Button>
+            &nbsp;
+            {this.state.loading ? (
+              <div
+                className="spinner-border"
+                role="status"
+                style={{ verticalAlign: "middle" }}
+              >
+                <span className="sr-only">Loading...</span>
+              </div>
+            ) : null}
+          </div>
         </Form>
       </div>
     );
