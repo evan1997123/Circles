@@ -349,9 +349,9 @@ class CircleForm extends React.Component {
             <Modal.Title>Create a New Circle</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <p>
-              You must include a name, description, at least one leader, and you
-              must be a part of the circle
+            <p style={{ color: "red" }}>
+              Note: you must include a name, description, at least one leader,
+              and you must be a part of the circle.
             </p>
             <Form name="newCircleForm">
               <Form.Group>
@@ -421,7 +421,7 @@ class CircleForm extends React.Component {
                         as={CustomToggle}
                         id="dropdown-custom-components"
                       >
-                        Select Leaders
+                        Select Leaders{" "}
                       </Dropdown.Toggle>
 
                       <Dropdown.Menu as={CustomMenu}>
@@ -456,7 +456,7 @@ class CircleForm extends React.Component {
                         as={CustomToggle}
                         id="dropdown-custom-components"
                       >
-                        Select Members
+                        Select Members{" "}
                       </Dropdown.Toggle>
 
                       <Dropdown.Menu as={CustomMenu}>

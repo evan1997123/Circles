@@ -130,7 +130,9 @@ class ActiveCircles extends React.Component {
                             <div>
                               <strong>Remaining Tasks</strong>: {numTasksLeft}
                             </div>
-                            <div>Let's go complete some tasks! 💪</div>
+                            <div>
+                              Let's go complete some tasks and earn points! 💪
+                            </div>
                           </div>
                           {numPendingTasks !== -1 && (
                             <hr style={{ backgroundColor: "white" }}></hr>
@@ -141,7 +143,7 @@ class ActiveCircles extends React.Component {
                                 <strong>Pending Tasks</strong>:{" "}
                                 {numPendingTasks}
                               </div>
-                              <div>Let's go approve some tasks! ✅</div>
+                              <div>Let's go approve some tasks ✅</div>
                             </div>
                           ) : null}
                         </div>

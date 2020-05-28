@@ -31,7 +31,7 @@ class Dashboard extends React.Component {
     var allTasks = this.props.firestoreTasksRedux;
     var userID = this.props.firebaseAuthRedux.uid;
     var circleID;
-    if (this.props.firestoreCircleRedux) {
+    if (this.props.firestoreCircleRedux && this.props.firestoreCircleRedux[0]) {
       circleID = this.props.firestoreCircleRedux[0].circleID;
     }
     if (allTasks) {
