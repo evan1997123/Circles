@@ -122,12 +122,10 @@ class Circle extends React.Component {
         dueDateMonth = parseInt(dueDateMonth);
         dueDateDay = parseInt(dueDateDay);
         taskDueDate = new Date(dueDateYear, dueDateMonth - 1, dueDateDay);
-        console.log(taskDueDate);
         if (taskDueDate.getTime() - currentDate.getTime() < 0) {
           tasksToDelete.push(task);
         }
       }
-      console.log(tasksToDelete);
       for (var i = 0; i < tasksToDelete.length; i++) {
         this.props.dispatchRemoveOverdueTasks(
           tasksToDelete[i].taskID,
@@ -455,19 +453,15 @@ class Circle extends React.Component {
     const userID = auth.uid;
     var currentCircle;
     var isLeader = false;
-    if (this.props.firestoreCircleRedux) {
-      console.log(this.props.firestoreCircleRedux);
-      var myCircleLoaded = this.props.firestoreCircleRedux.filter(
-        circleDetails => circleDetails.circleID === this.props.match.params.id
-      );
-      console.log(myCircleLoaded);
-      if (myCircleLoaded.length === 1) {
-        console.log(this.props.match.params.id);
-        currentCircle = myCircleLoaded[0];
-        isLeader = Object.keys(currentCircle.leaderList).includes(userID)
-          ? true
-          : false;
-      }
+    if (
+      this.props.firestoreCircleRedux &&
+      this.props.firestoreCircleRedux.length === 1 &&
+      this.props.firestoreCircleRedux[0].circleID === this.props.match.params.id
+    ) {
+      currentCircle = this.props.firestoreCircleRedux[0];
+      isLeader = Object.keys(currentCircle.leaderList).includes(userID)
+        ? true
+        : false;
     }
 
     //if not logged in, then redirect to signin page
@@ -508,9 +502,6 @@ class Circle extends React.Component {
         if (!user) {
           return false;
         }
-        console.log(user);
-        console.log(Object.keys(user.circleList).includes(currentCircle.id));
-        console.log(currentCircle.id);
 
         return Object.keys(user.circleList).includes(currentCircle.id);
       });
@@ -519,7 +510,6 @@ class Circle extends React.Component {
         user => (allUsersCurrentCircleMap[user.id] = user)
       );
 
-      console.log(Object.keys(allUsersCurrentCircleMap));
       if (!Object.keys(allUsersCurrentCircleMap).includes(userID)) {
         return <Redirect to="/dashboard" />;
       }
@@ -914,7 +904,7 @@ export default compose(
   //whenever database for this collection is changed, it will induce the firestoreReducer, which will sync store state
   // and then this component will "hear" that because we connected that. Then state will change for the store
   firestoreConnect(props => {
-    console.log(props.match.params.id);
+    // console.log(props.match.params.id);
     return [
       {
         collection: "tasks",

@@ -98,9 +98,11 @@ class ActiveCircles extends React.Component {
                   // onClick={() =>
                   //   this.props.history.push("/circle/" + circle.id)
                   // }
-                  onMouseEnter={e => this.changeVisibility(e.target.name, true)}
+                  onMouseEnter={e =>
+                    this.changeVisibility(circle.circleID, true)
+                  }
                   onMouseLeave={e =>
-                    this.changeVisibility(e.target.name, false)
+                    this.changeVisibility(circle.circleID, false)
                   }
                   // name={circle.circleID}
                 >
