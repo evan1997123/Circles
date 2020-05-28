@@ -72,9 +72,14 @@ class ActiveCircles extends React.Component {
         return (
           <div className="activeCircle" key={index}>
             <div>
+              {/* <form action={"/circle/" + circle.id}>
+                <button
+                  type="submit"
+                  className={"myButton btn btn-primary " + className}
+                ></button>
+              </form> */}
               <Button
-                variant="primary"
-                className={"myButton " + className}
+                className={"myButton btn btn-primary " + className}
                 // onClick={() => this.setRedirect(circle.id)}
                 onClick={() => this.props.history.push("/circle/" + circle.id)}
                 onMouseEnter={(e) => this.changeVisibility(e.target.name, true)}
@@ -115,13 +120,13 @@ class ActiveCircles extends React.Component {
                   </span>
                 </div>
               </Button>
-              {/* <span className="tooltiptext">Text</span> */}
             </div>
             <h6>{circle.circleName}</h6>
           </div>
         );
       });
     }
+
     return (
       <div>
         <h4>Active Circles</h4>

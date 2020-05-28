@@ -15,6 +15,10 @@ class Dashboard extends React.Component {
     super(props);
     this.handleDismiss = this.handleDismiss.bind(this);
     this.handleRemoveOverdueTasks = this.handleRemoveOverdueTasks.bind(this);
+
+    console.log("HELLO FROM THE DASHBOARD");
+    this.props.handleNavBarUpdateProfile();
+    // console.log(window.location.hostname);
   }
 
   // Dismiss button removes the notification from the toDoTasks list
@@ -80,7 +84,7 @@ class Dashboard extends React.Component {
     var auth = this.props.firebaseAuthRedux;
     var userID = auth.uid;
     if (allTasks) {
-      allTasks.filter((task) => {
+      allTasks.filter(task => {
         if (task.taskStage === "toDo" && task.assignedForID === userID) {
           if (task.dismissed == false) {
             toDoTasksNotDismissed.push(task);
@@ -157,25 +161,28 @@ const mapStateToProps = (state, ownProps) => {
     firestoreTasksRedux: state.firestore.ordered.tasks,
     firebaseAuthRedux: state.firebase.auth,
     firestoreCircleRedux: state.firestore.ordered.circles,
-    firebaseProfileRedux: state.firebase.profile,
+    firebaseProfileRedux: state.firebase.profile
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
-    dispatchDismissTask: (task) => dispatch(dismissTask(task)),
+    dispatchDismissTask: task => dispatch(dismissTask(task)),
     dispatchRemoveOverdueTasks: (deleteThisTaskID, userID, circleID) =>
-      dispatch(removeOverdueTasks(deleteThisTaskID, userID, circleID)),
+      dispatch(removeOverdueTasks(deleteThisTaskID, userID, circleID))
   };
 };
 
 export default compose(
-  connect(mapStateToProps, mapDispatchToProps),
-  firestoreConnect((props) => {
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  ),
+  firestoreConnect(props => {
     return [
       {
-        collection: "tasks",
-      },
+        collection: "tasks"
+      }
     ];
   })
 )(Dashboard);

@@ -35,16 +35,25 @@ class App extends React.Component {
       currentName: "",
       currentEmail: "",
       isAuthed: false,
-      currentUser: null
+      currentUser: null,
+      functionToPassToProfile: () => console.log("this shouldn't be here")
     };
     //Users have https://firebase.google.com/docs/auth/web/start
     this.updateAuth = this.updateAuth.bind(this);
     this.handleLogOut = this.handleLogOut.bind(this);
+    this.updateMyAppStateToIncludeYourNavBarUpdateProfile = this.updateMyAppStateToIncludeYourNavBarUpdateProfile.bind(
+      this
+    );
     if (this.props.user) {
       this.setState({
         isAuthed: true
       });
     }
+  }
+  updateMyAppStateToIncludeYourNavBarUpdateProfile(functionINeed) {
+    this.setState({
+      functionToPassToProfile: functionINeed
+    });
   }
 
   updateAuth(authenticated) {
@@ -65,7 +74,9 @@ class App extends React.Component {
     var friendRequests = this.props.firestoreFriendRequestsRedux;
 
     const signInUpOrOut = auth.uid ? (
-      <Nav.Link onClick={this.handleLogOut}>Log Out</Nav.Link>
+      <Nav.Link onClick={this.handleLogOut} className={"marginAuto"}>
+        Log Out
+      </Nav.Link>
     ) : null;
     return (
       <BrowserRouter basename="/">
@@ -74,15 +85,29 @@ class App extends React.Component {
             profile={profile}
             signInUpOrOut={signInUpOrOut}
             isAuthed={auth.uid}
-            friendRequests = {friendRequests}
+            friendRequests={friendRequests}
+            updateMyAppStateToIncludeYourNavBarUpdateProfile={
+              this.updateMyAppStateToIncludeYourNavBarUpdateProfile
+            }
           />
           <Route
             path="/dashboard"
-            component={() => <Dashboard isAuthed={auth.uid} />}
+            component={() => (
+              <Dashboard
+                isAuthed={auth.uid}
+                handleNavBarUpdateProfile={this.state.functionToPassToProfile}
+              />
+            )}
           />
           <Route
             path="/profile"
-            component={() => <Profile isAuthed={auth.uid} />}
+            component={() => (
+              <Profile
+                isAuthed={auth.uid}
+                friendRequests={friendRequests}
+                handleNavBarUpdateProfile={this.state.functionToPassToProfile}
+              />
+            )}
           />
 
           {/* <Route path="/circle" component={Circle} /> */}

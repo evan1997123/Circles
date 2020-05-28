@@ -552,6 +552,9 @@ class InviteMembersModal extends Component {
                   name="requestingButton"
                   style={{ margin: "5px" }}
                   onClick={this.swapForms}
+                  variant={
+                    this.props.friendRequestClassName ? "danger" : "primary"
+                  }
                 >
                   Incoming Requests
                 </Button>

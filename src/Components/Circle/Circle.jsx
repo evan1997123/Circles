@@ -505,6 +505,10 @@ class Circle extends React.Component {
       allUsersCurrentCircle.map(
         (user) => (allUsersCurrentCircleMap[user.id] = user)
       );
+
+      if (!Object.keys(allUsersCurrentCircleMap).includes(userID)) {
+        return <Redirect to="/dashboard" />;
+      }
       // Figure out which tasks were assigned by you (the leader)
       if (isLeader) {
         var tasksAssignedByMe = allTasks.filter((task) => {
@@ -819,7 +823,14 @@ class Circle extends React.Component {
         </div>
       );
     } else {
-      return <div>Loading...</div>;
+      return (
+        <div>
+          Loading...{" "}
+          <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
+        </div>
+      );
     }
   }
 }

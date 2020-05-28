@@ -140,6 +140,18 @@ class Profile extends Component {
         );
       }
 
+      var friendRequestClassName = null;
+      var authID = this.props.firebaseAuthRedux.uid;
+      if (this.props.firestoreFriendRequestsRedux && authID) {
+        var friendRequestToMe = this.props.friendRequests.filter(
+          friendRequest => friendRequest.to === authID
+        );
+        // I have a friendRequest for me to respond to
+        if (friendRequestToMe.length > 0) {
+          friendRequestClassName = "outline-danger";
+        }
+      }
+
       console.log(this.props.firebaseAuthRedux.uid);
       return (
         <div>
@@ -148,7 +160,10 @@ class Profile extends Component {
               <AccountSettings />
             </div>
             <div className="panelItem">
-              <Picture auth={this.props.firebaseAuthRedux} />
+              <Picture
+                auth={this.props.firebaseAuthRedux}
+                handleNavBarUpdateProfile={this.props.handleNavBarUpdateProfile}
+              />
               {/* <ProfileStatus profileData={profileData} /> */}
             </div>
           </div>
@@ -161,9 +176,13 @@ class Profile extends Component {
                   onClick={this.handleClick}
                   style={{ margin: "7.5px" }}
                   size="lg"
-                  variant="outline-primary"
+                  variant={
+                    friendRequestClassName
+                      ? friendRequestClassName
+                      : "outline-primary"
+                  }
                 >
-                  Friend Options
+                  Manage Friends
                 </Button>
               </div>
             ) : null}
@@ -181,6 +200,7 @@ class Profile extends Component {
               handleAcceptFriendRequest={this.handleAcceptFriendRequest}
               handleDeleteFriends={this.handleDeleteFriends}
               firebase={this.props.firebase}
+              friendRequestClassName={friendRequestClassName}
             />
           </div>
         </div>
