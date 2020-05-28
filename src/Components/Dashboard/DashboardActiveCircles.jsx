@@ -37,10 +37,12 @@ class ActiveCircles extends React.Component {
   // For hover stuff
   changeVisibility(circleID, showHover) {
     var element = document.getElementById(circleID);
-    if (showHover) {
-      element.style.visibility = "visible";
-    } else {
-      element.style.visibility = "hidden";
+    if (element.style) {
+      if (showHover) {
+        element.style.visibility = "visible";
+      } else {
+        element.style.visibility = "hidden";
+      }
     }
   }
 
