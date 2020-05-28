@@ -18,7 +18,7 @@ class Task extends React.Component {
       handleDisapproveTask,
       isLeader,
       handleEditTask,
-      forLeaderEdits,
+      forLeaderEdits
     } = this.props;
     var ifExists = handleMoveTasks
       ? () => handleMoveTasks(task, userID)

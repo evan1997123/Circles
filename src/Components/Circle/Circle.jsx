@@ -177,6 +177,35 @@ class Circle extends React.Component {
       );
       return;
     }
+    var completeBy = this.state.completeBy;
+    var completeByYear = completeBy.slice(0, completeBy.indexOf("-"));
+    completeBy = completeBy.slice(
+      completeBy.indexOf("-") + 1,
+      completeBy.length
+    );
+    var completeByMonth = completeBy.slice(0, completeBy.indexOf("-"));
+    completeBy = completeBy.slice(
+      completeBy.indexOf("-") + 1,
+      completeBy.length
+    );
+    var completeByDay = completeBy;
+    var currentDate = new Date();
+    var numDaysLeft;
+    completeByYear = parseInt(completeByYear);
+    completeByMonth = parseInt(completeByMonth);
+    completeByDay = parseInt(completeByDay);
+    var completeByDate = new Date(
+      completeByYear,
+      completeByMonth - 1,
+      completeByDay
+    );
+    var difference = completeByDate.getTime() - currentDate.getTime();
+    numDaysLeft = Math.ceil(difference / (1000 * 60 * 60 * 24));
+
+    if (numDaysLeft < 0) {
+      alert("The complete by date has passed. Please enter a valid date.");
+      return;
+    }
     //dispatch creation of task data object
     var taskDetails = {
       circleID: this.state.circleID,
@@ -471,7 +500,7 @@ class Circle extends React.Component {
 
     //if not logged in, then redirect to signin page
     if (!userID) {
-      return <Redirect to="/signin" />;
+      return <Redirect to="/" />;
     }
 
     if (this.state.leftCircle) {
@@ -518,6 +547,8 @@ class Circle extends React.Component {
       if (!Object.keys(allUsersCurrentCircleMap).includes(userID)) {
         return <Redirect to="/dashboard" />;
       }
+
+      var needToApproveTasks = false;
       // Figure out which tasks were assigned by you (the leader)
       if (isLeader) {
         var tasksAssignedByMe = allTasks.filter(task => {
@@ -530,6 +561,15 @@ class Circle extends React.Component {
             return true;
           }
         });
+
+        //tasks that need to be approved
+        needToApproveTasks =
+          allTasks.filter(task => {
+            console.log(task.taskStage);
+            return (
+              task.circleID === currentCircle.id && task.taskStage === "pending"
+            );
+          }).length > 0;
       }
 
       // console.log(currentCircle.rewardsList);
@@ -560,7 +600,9 @@ class Circle extends React.Component {
                 size="lg"
                 variant="success"
                 id="dropdown-basic"
-                variant="outline-primary"
+                variant={
+                  needToApproveTasks ? "outline-danger" : "outline-primary"
+                }
               >
                 Manage Tasks
               </Dropdown.Toggle>
@@ -571,7 +613,9 @@ class Circle extends React.Component {
                     onClick={this.handleClick}
                     style={{ width: "100%", borderColor: "white" }}
                     size="lg"
-                    variant="outline-primary"
+                    variant={
+                      needToApproveTasks ? "outline-danger" : "outline-primary"
+                    }
                   >
                     Approve Tasks
                   </Button>
