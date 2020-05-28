@@ -171,6 +171,11 @@ class Circle extends React.Component {
     ) {
       alert("All fields are required");
       return;
+    } else if (this.state.reward < 0 || this.state.penalty < 0) {
+      alert(
+        "No negative values. Reward is how many points you will increase by. Penalty is how many points you will decrease by."
+      );
+      return;
     }
     //dispatch creation of task data object
     var taskDetails = {
