@@ -139,6 +139,9 @@ class ActiveCircles extends React.Component {
                           )}
                           {numPendingTasks !== -1 ? (
                             <div>
+                              <div style={{ fontSize: "0.75rem" }}>
+                                For Leaders
+                              </div>
                               <div>
                                 <strong>Pending Tasks</strong>:{" "}
                                 {numPendingTasks}
