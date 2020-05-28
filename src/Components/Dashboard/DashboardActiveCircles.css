@@ -66,5 +66,5 @@
 .needsAttention {
   border-color: red !important;
   border-width: 3px !important;
-  box-shadow: red 0px 0px 15px 0px;
+  /* box-shadow: red 0px 0px 15px 0px; */
 }
