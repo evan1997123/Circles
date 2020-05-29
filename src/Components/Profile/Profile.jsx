@@ -8,7 +8,7 @@ import {
   sendFriendRequest,
   cancelFriendRequest,
   acceptFriendRequest,
-  deleteFriends
+  deleteFriends,
 } from "../../Store/Actions/FriendActions";
 //
 import Picture from "./Picture";
@@ -36,7 +36,7 @@ class Profile extends Component {
     switch (e.target.name) {
       case "friendOptionsButton":
         this.setState({
-          showFriendOptionsModal: true
+          showFriendOptionsModal: true,
         });
         return;
       default:
@@ -45,7 +45,7 @@ class Profile extends Component {
   }
   handleClose() {
     this.setState({
-      showFriendOptionsModal: false
+      showFriendOptionsModal: false,
     });
   }
 
@@ -85,10 +85,10 @@ class Profile extends Component {
       var incomingFriendRequests;
       if (this.props.firestoreFriendRequestsRedux) {
         myFriendRequests = this.props.firestoreFriendRequestsRedux.filter(
-          friendRequest => friendRequest.from === userID
+          (friendRequest) => friendRequest.from === userID
         );
         incomingFriendRequests = this.props.firestoreFriendRequestsRedux.filter(
-          friendRequest => friendRequest.to === userID
+          (friendRequest) => friendRequest.to === userID
         );
         allLoaded = true;
       }
@@ -102,7 +102,7 @@ class Profile extends Component {
                 style={{
                   width: "100%!important",
                   margin: "auto",
-                  marginBottom: "10px"
+                  marginBottom: "10px",
                 }}
                 key={index}
                 className="card flex-row"
@@ -114,12 +114,12 @@ class Profile extends Component {
                     width: 450,
                     display: "flex",
                     justifyContent: "space-between",
-                    alignItems: "center"
+                    alignItems: "center",
                   }}
                 >
                   <Card.Title
                     style={{
-                      margin: 0
+                      margin: 0,
                     }}
                   >
                     {friendIDAndName[1]}
@@ -144,7 +144,7 @@ class Profile extends Component {
       var authID = this.props.firebaseAuthRedux.uid;
       if (this.props.firestoreFriendRequestsRedux && authID) {
         var friendRequestToMe = this.props.friendRequests.filter(
-          friendRequest => friendRequest.to === authID
+          (friendRequest) => friendRequest.to === authID
         );
         // I have a friendRequest for me to respond to
         if (friendRequestToMe.length > 0) {
@@ -154,54 +154,65 @@ class Profile extends Component {
 
       console.log(this.props.firebaseAuthRedux.uid);
       return (
-        <div>
-          <div className="panelContainer">
-            <div className="settings">
-              <AccountSettings />
-            </div>
-            <div className="panelItem">
-              <Picture
-                auth={this.props.firebaseAuthRedux}
-                handleNavBarUpdateProfile={this.props.handleNavBarUpdateProfile}
-              />
-              {/* <ProfileStatus profileData={profileData} /> */}
-            </div>
+        <div style={{ padding: "1%" }}>
+          <div className="settings">
+            <AccountSettings />
           </div>
-          <div>
-            <h2 style={{ textAlign: "center" }}>Friends List</h2>
-            {allLoaded ? (
-              <div style={{ textAlign: "center", padding: "1%" }}>
-                <Button
-                  name="friendOptionsButton"
-                  onClick={this.handleClick}
-                  style={{ margin: "7.5px" }}
-                  size="lg"
-                  variant={
-                    friendRequestClassName
-                      ? friendRequestClassName
-                      : "outline-primary"
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-evenly",
+              padding: "5%",
+            }}
+          >
+            <div className="panelContainer" style={{ width: "30%" }}>
+              <div className="panelItem" style={{ width: "100%" }}>
+                <Picture
+                  auth={this.props.firebaseAuthRedux}
+                  handleNavBarUpdateProfile={
+                    this.props.handleNavBarUpdateProfile
                   }
-                >
-                  Manage Friends
-                </Button>
+                />
+                {/* <ProfileStatus profileData={profileData} /> */}
               </div>
-            ) : null}
-            {myFriends ? myFriends : null}
-            <FriendOptionsModal
-              showFriendOptionsModal={this.state.showFriendOptionsModal}
-              handleClose={this.handleClose}
-              handleAddingFriend={this.handleAddingFriend}
-              profileData={profileData}
-              allUsers={allUsers}
-              userID={userID}
-              myFriendRequests={myFriendRequests}
-              myIncomingFriendRequests={incomingFriendRequests}
-              handleCancelFriendRequest={this.handleCancelFriendRequest}
-              handleAcceptFriendRequest={this.handleAcceptFriendRequest}
-              handleDeleteFriends={this.handleDeleteFriends}
-              firebase={this.props.firebase}
-              friendRequestClassName={friendRequestClassName}
-            />
+            </div>
+            <div style={{ width: "50%" }}>
+              <h2 style={{ textAlign: "center" }}>Friends List</h2>
+              {allLoaded ? (
+                <div style={{ textAlign: "center", padding: "1%" }}>
+                  <Button
+                    name="friendOptionsButton"
+                    onClick={this.handleClick}
+                    style={{ margin: "7.5px 7.5px 15.5px 7.5px" }}
+                    size="lg"
+                    variant={
+                      friendRequestClassName
+                        ? friendRequestClassName
+                        : "outline-primary"
+                    }
+                  >
+                    Manage Friends
+                  </Button>
+                </div>
+              ) : null}
+              {myFriends ? myFriends : null}
+              <FriendOptionsModal
+                showFriendOptionsModal={this.state.showFriendOptionsModal}
+                handleClose={this.handleClose}
+                handleAddingFriend={this.handleAddingFriend}
+                profileData={profileData}
+                allUsers={allUsers}
+                userID={userID}
+                myFriendRequests={myFriendRequests}
+                myIncomingFriendRequests={incomingFriendRequests}
+                handleCancelFriendRequest={this.handleCancelFriendRequest}
+                handleAcceptFriendRequest={this.handleAcceptFriendRequest}
+                handleDeleteFriends={this.handleDeleteFriends}
+                firebase={this.props.firebase}
+                friendRequestClassName={friendRequestClassName}
+              />
+            </div>
           </div>
         </div>
       );
@@ -215,28 +226,25 @@ const mapStateToProps = (state, ownProps) => {
     firebaseProfileRedux: state.firebase.profile,
     firestoreUsersRedux: state.firestore.ordered.users,
     firestoreFriendRequestsRedux: state.firestore.ordered.friendRequests,
-    firebase: state.firebase
+    firebase: state.firebase,
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    dispatchSendFriendRequest: friendInfo =>
+    dispatchSendFriendRequest: (friendInfo) =>
       dispatch(sendFriendRequest(friendInfo)),
-    dispatchCancelFriendRequest: friendRequestDocumentID =>
+    dispatchCancelFriendRequest: (friendRequestDocumentID) =>
       dispatch(cancelFriendRequest(friendRequestDocumentID)),
-    dispatchAcceptFriendRequest: friendRequest =>
+    dispatchAcceptFriendRequest: (friendRequest) =>
       dispatch(acceptFriendRequest(friendRequest)),
-    dispatchDeleteFriends: deleteInfo => dispatch(deleteFriends(deleteInfo))
+    dispatchDeleteFriends: (deleteInfo) => dispatch(deleteFriends(deleteInfo)),
   };
 };
 
 export default compose(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  ),
-  firestoreConnect(props => {
+  connect(mapStateToProps, mapDispatchToProps),
+  firestoreConnect((props) => {
     if (props.firebaseAuthRedux.uid) {
       return [
         { collection: "circles" },
@@ -244,17 +252,17 @@ export default compose(
         {
           collection: "friendRequests",
           where: [
-            ["allUsersRelated", "array-contains", props.firebaseAuthRedux.uid]
-          ]
-        }
+            ["allUsersRelated", "array-contains", props.firebaseAuthRedux.uid],
+          ],
+        },
       ];
     } else {
       return [
         { collection: "circles" },
         { collection: "users" },
         {
-          collection: "friendRequests"
-        }
+          collection: "friendRequests",
+        },
       ];
     }
   })
