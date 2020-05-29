@@ -184,7 +184,7 @@ class Profile extends Component {
                   <Button
                     name="friendOptionsButton"
                     onClick={this.handleClick}
-                    style={{ margin: "7.5px 7.5px 15px 7.5px" }}
+                    style={{ margin: "7.5px 7.5px 15.5px 7.5px" }}
                     size="lg"
                     variant={
                       friendRequestClassName
