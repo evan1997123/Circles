@@ -498,6 +498,12 @@ class Circle extends React.Component {
       return <Redirect to="/dashboard" />;
     }
 
+    if (
+      this.props.firestoreCircleRedux &&
+      this.props.firestoreCircleRedux.length === 0
+    ) {
+      return <Redirect to="/error/invalidCircle" />;
+    }
     //IDEALLY allTasks should get all the tasks from a particular circle, without having to fetch all the tasks and filter out via circle ID
     //similarily, allUsers should only be all the users in this circle
     //isn't that bad security design?
