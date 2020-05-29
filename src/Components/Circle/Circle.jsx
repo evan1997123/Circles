@@ -121,7 +121,6 @@ class Circle extends React.Component {
         dueDateYear = parseInt(dueDateYear);
         dueDateMonth = parseInt(dueDateMonth);
         dueDateDay = parseInt(dueDateDay);
-<<<<<<< HEAD
         taskDueDate = new Date(
           dueDateYear,
           dueDateMonth - 1,
@@ -131,9 +130,6 @@ class Circle extends React.Component {
           59
         );
         console.log(taskDueDate);
-=======
-        taskDueDate = new Date(dueDateYear, dueDateMonth - 1, dueDateDay);
->>>>>>> 50d828ca9ce21a1ed5f5a333a9e06b28e3dca244
         if (taskDueDate.getTime() - currentDate.getTime() < 0) {
           tasksToDelete.push(task);
         }
