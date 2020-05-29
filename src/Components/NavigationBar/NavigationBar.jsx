@@ -47,8 +47,8 @@ class NavigationBar extends Component {
     }
     const profileCircle = (
       <Nav.Link href="/profile" className={"blueTextAndBigger"}>
-        {this.props.profile.initials &&
-          this.props.profile.initials.toUpperCase()}
+        {/* {this.props.profile.initials &&
+          this.props.profile.initials.toUpperCase()} */}
         &nbsp;
         <Image
           src={this.state.source}

@@ -13,7 +13,7 @@ class ActiveCircles extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      show: false,
+      show: false
     };
     this.showModal = this.showModal.bind(this);
     this.hideModal = this.hideModal.bind(this);
@@ -24,20 +24,20 @@ class ActiveCircles extends React.Component {
 
   showModal() {
     this.setState({
-      show: true,
+      show: true
     });
   }
 
   hideModal() {
     this.setState({
-      show: false,
+      show: false
     });
   }
 
   // For hover stuff
   changeVisibility(circleID, showHover) {
     var element = document.getElementById(circleID);
-    if (element.style) {
+    if (element && element.style) {
       if (showHover) {
         element.style.visibility = "visible";
       } else {
@@ -54,7 +54,7 @@ class ActiveCircles extends React.Component {
         var needsAttention;
         var className;
 
-        this.props.toDoTasks.forEach((toDoTask) => {
+        this.props.toDoTasks.forEach(toDoTask => {
           if (toDoTask.circleID === circle.circleID) {
             needsAttention = true;
           }
@@ -98,13 +98,13 @@ class ActiveCircles extends React.Component {
                   // onClick={() =>
                   //   this.props.history.push("/circle/" + circle.id)
                   // }
-                  onMouseEnter={(e) =>
-                    this.changeVisibility(e.target.name, true)
+                  onMouseEnter={e =>
+                    this.changeVisibility(circle.circleID, true)
                   }
-                  onMouseLeave={(e) =>
-                    this.changeVisibility(e.target.name, false)
+                  onMouseLeave={e =>
+                    this.changeVisibility(circle.circleID, false)
                   }
-                  name={circle.circleID}
+                  // name={circle.circleID}
                 >
                   <div style={{ position: "relative", display: "inlineBlock" }}>
                     <span
@@ -120,7 +120,7 @@ class ActiveCircles extends React.Component {
                         zIndex: "1",
                         top: "75px",
                         // left: "50%",
-                        marginLeft: "-90px",
+                        marginLeft: "-90px"
                       }}
                       id={circle.circleID}
                     >

@@ -13,12 +13,12 @@ import {
   deleteTask,
   disapproveTask,
   editTask,
-  removeOverdueTasks,
+  removeOverdueTasks
 } from "../../Store/Actions/TaskActions";
 import {
   updateCircleMembers,
   updateCirclePromoteDemote,
-  leaveCircle,
+  leaveCircle
 } from "../../Store/Actions/CircleActions";
 import { firestoreConnect } from "react-redux-firebase"; // so this allows us to connect this component to a firebase collection
 import { compose } from "redux";
@@ -27,7 +27,7 @@ import { Button, Modal, Dropdown } from "react-bootstrap";
 import {
   createReward,
   claimReward,
-  deleteReward,
+  deleteReward
 } from "../../Store/Actions/RewardActions";
 import ViewMembersModal from "./ViewMembersModal";
 import LeaderEditTasksModal from "./LeaderEditTasksModal";
@@ -58,8 +58,9 @@ class Circle extends React.Component {
       leftCircle: false,
       recurringReward: "Yes", // All rewards are recurring by default
       editingTaskID: "",
-      penalty: "", // For overdue tasks
+      penalty: "" // For overdue tasks
     };
+    // console.log(this.props.match.params.id);
 
     //input form local state
     this.handleChangeInput = this.handleChangeInput.bind(this);
@@ -120,6 +121,7 @@ class Circle extends React.Component {
         dueDateYear = parseInt(dueDateYear);
         dueDateMonth = parseInt(dueDateMonth);
         dueDateDay = parseInt(dueDateDay);
+<<<<<<< HEAD
         taskDueDate = new Date(
           dueDateYear,
           dueDateMonth - 1,
@@ -129,11 +131,13 @@ class Circle extends React.Component {
           59
         );
         console.log(taskDueDate);
+=======
+        taskDueDate = new Date(dueDateYear, dueDateMonth - 1, dueDateDay);
+>>>>>>> 50d828ca9ce21a1ed5f5a333a9e06b28e3dca244
         if (taskDueDate.getTime() - currentDate.getTime() < 0) {
           tasksToDelete.push(task);
         }
       }
-      console.log(tasksToDelete);
       for (var i = 0; i < tasksToDelete.length; i++) {
         this.props.dispatchRemoveOverdueTasks(
           tasksToDelete[i].taskID,
@@ -144,7 +148,7 @@ class Circle extends React.Component {
     }
   }
 
-  deleteTask = (taskId) => {
+  deleteTask = taskId => {
     // Delete task
     this.props.dispatchDeleteTask(taskId);
   };
@@ -155,13 +159,13 @@ class Circle extends React.Component {
       var value = parseInt(e.target.value);
       var newValue = isNaN(value) ? "" : value;
       this.setState({
-        [e.target.name]: newValue,
+        [e.target.name]: newValue
       });
       return;
     }
     // Saves current form inputs in state
     this.setState({
-      [e.target.name]: e.target.value,
+      [e.target.name]: e.target.value
     });
     // console.log(e.target.value);
   }
@@ -179,6 +183,40 @@ class Circle extends React.Component {
     ) {
       alert("All fields are required");
       return;
+    } else if (this.state.reward < 0 || this.state.penalty < 0) {
+      alert(
+        "No negative values. Reward is how many points you will increase by. Penalty is how many points you will decrease by."
+      );
+      return;
+    }
+    var completeBy = this.state.completeBy;
+    var completeByYear = completeBy.slice(0, completeBy.indexOf("-"));
+    completeBy = completeBy.slice(
+      completeBy.indexOf("-") + 1,
+      completeBy.length
+    );
+    var completeByMonth = completeBy.slice(0, completeBy.indexOf("-"));
+    completeBy = completeBy.slice(
+      completeBy.indexOf("-") + 1,
+      completeBy.length
+    );
+    var completeByDay = completeBy;
+    var currentDate = new Date();
+    var numDaysLeft;
+    completeByYear = parseInt(completeByYear);
+    completeByMonth = parseInt(completeByMonth);
+    completeByDay = parseInt(completeByDay);
+    var completeByDate = new Date(
+      completeByYear,
+      completeByMonth - 1,
+      completeByDay
+    );
+    var difference = completeByDate.getTime() - currentDate.getTime();
+    numDaysLeft = Math.ceil(difference / (1000 * 60 * 60 * 24));
+
+    if (numDaysLeft < 0) {
+      alert("The complete by date has passed. Please enter a valid date.");
+      return;
     }
     //dispatch creation of task data object
     var taskDetails = {
@@ -188,7 +226,7 @@ class Circle extends React.Component {
       taskDescription: this.state.taskDescription,
       completeBy: this.state.completeBy,
       reward: this.state.reward === "" ? 0 : this.state.reward,
-      penalty: this.state.penalty === "" ? 0 : this.state.penalty,
+      penalty: this.state.penalty === "" ? 0 : this.state.penalty
     };
     this.props.dispatchCreateTask(taskDetails);
 
@@ -207,7 +245,7 @@ class Circle extends React.Component {
       showPromoteDemoteModal: false,
       showApproveTasksModal: false,
       showViewMembersModal: false,
-      showEditTaskModal: false,
+      showEditTaskModal: false
     });
 
     // After creating the task, also create the notification
@@ -230,52 +268,52 @@ class Circle extends React.Component {
   }
 
   // For showing modal (creating new task)
-  handleClick = (e) => {
+  handleClick = e => {
     console.log("handle click");
     switch (e.target.name) {
       case "createTaskButton":
         this.setState({
-          showCreateTaskModal: true,
+          showCreateTaskModal: true
         });
         return;
       case "inviteMembersButton":
         this.setState({
-          showInviteMembersModal: true,
+          showInviteMembersModal: true
         });
         return;
       case "promoteDemoteButton":
         this.setState({
-          showPromoteDemoteModal: true,
+          showPromoteDemoteModal: true
         });
         return;
       case "approveTasksButton":
         this.setState({
-          showApproveTasksModal: true,
+          showApproveTasksModal: true
         });
         return;
       case "createRewardsButton":
         this.setState({
-          showCreateRewardsModal: true,
+          showCreateRewardsModal: true
         });
         return;
       case "leaveCircleButton":
         this.setState({
-          showLeaveCircleModal: true,
+          showLeaveCircleModal: true
         });
         return;
       case "viewMembersButton":
         this.setState({
-          showViewMembersModal: true,
+          showViewMembersModal: true
         });
         return;
       case "editTasksButton":
         this.setState({
-          showLeaderEditTasksModal: true,
+          showLeaderEditTasksModal: true
         });
         return;
       case "viewRewardsHistory":
         this.setState({
-          showViewRewardsHistoryModal: true,
+          showViewRewardsHistoryModal: true
         });
         return;
       default:
@@ -297,7 +335,7 @@ class Circle extends React.Component {
       showViewRewardsHistoryModal: false,
       rewardTitle: "",
       rewardDescription: "",
-      rewardPoints: "",
+      rewardPoints: ""
     });
   };
 
@@ -319,7 +357,7 @@ class Circle extends React.Component {
       rewardTitle: this.state.rewardTitle,
       rewardDescription: this.state.rewardDescription,
       rewardPoints: this.state.rewardPoints,
-      recurringReward: this.state.recurringReward,
+      recurringReward: this.state.recurringReward
     };
     // Create and call the dispatchCreateReward function?
     this.props.dispatchCreateReward(rewardDetails);
@@ -331,7 +369,7 @@ class Circle extends React.Component {
       rewardDescription: "",
       rewardPoints: 0,
       showCreateRewardsModal: false,
-      recurringReward: "Yes",
+      recurringReward: "Yes"
     });
   }
 
@@ -374,7 +412,7 @@ class Circle extends React.Component {
     var currentUserID = auth.uid;
     this.props.dispatchLeaveCircle(currentCircle.circleID, currentUserID);
     this.setState({
-      leftCircle: true,
+      leftCircle: true
     });
   }
 
@@ -406,7 +444,7 @@ class Circle extends React.Component {
       reward: editTask.reward,
       showEditTaskModal: true,
       completeBy: editTask.completeBy,
-      editingTaskID: editTask.taskID,
+      editingTaskID: editTask.taskID
     });
   }
 
@@ -433,7 +471,7 @@ class Circle extends React.Component {
       taskDescription: this.state.taskDescription,
       reward: this.state.reward === "" ? 0 : this.state.reward,
       taskID: this.state.editingTaskID,
-      completeBy: this.state.completeBy,
+      completeBy: this.state.completeBy
     };
     this.props.dispatchEditTask(newTaskDetails);
     // Find the form and reset form inputs
@@ -451,7 +489,7 @@ class Circle extends React.Component {
       showPromoteDemoteModal: false,
       showApproveTasksModal: false,
       showViewMembersModal: false,
-      showEditTaskModal: false,
+      showEditTaskModal: false
     });
   }
 
@@ -461,7 +499,11 @@ class Circle extends React.Component {
     const userID = auth.uid;
     var currentCircle;
     var isLeader = false;
-    if (this.props.firestoreCircleRedux && this.props.firestoreCircleRedux[0]) {
+    if (
+      this.props.firestoreCircleRedux &&
+      this.props.firestoreCircleRedux.length === 1 &&
+      this.props.firestoreCircleRedux[0].circleID === this.props.match.params.id
+    ) {
       currentCircle = this.props.firestoreCircleRedux[0];
       isLeader = Object.keys(currentCircle.leaderList).includes(userID)
         ? true
@@ -470,7 +512,7 @@ class Circle extends React.Component {
 
     //if not logged in, then redirect to signin page
     if (!userID) {
-      return <Redirect to="/signin" />;
+      return <Redirect to="/" />;
     }
 
     if (this.state.leftCircle) {
@@ -502,23 +544,26 @@ class Circle extends React.Component {
       //   console.log(user.username);
       //   console.log(Object.keys(user.circleList).includes(currentCircle.id));
       // });
-      var allUsersCurrentCircle = allUsers.filter((user) => {
+      var allUsersCurrentCircle = allUsers.filter(user => {
         if (!user) {
           return false;
         }
+
         return Object.keys(user.circleList).includes(currentCircle.id);
       });
       var allUsersCurrentCircleMap = {};
       allUsersCurrentCircle.map(
-        (user) => (allUsersCurrentCircleMap[user.id] = user)
+        user => (allUsersCurrentCircleMap[user.id] = user)
       );
 
       if (!Object.keys(allUsersCurrentCircleMap).includes(userID)) {
         return <Redirect to="/dashboard" />;
       }
+
+      var needToApproveTasks = false;
       // Figure out which tasks were assigned by you (the leader)
       if (isLeader) {
-        var tasksAssignedByMe = allTasks.filter((task) => {
+        var tasksAssignedByMe = allTasks.filter(task => {
           // Only need to edit the task if it is in the to-do stage
           if (task.taskStage !== "toDo") {
             return false;
@@ -528,6 +573,15 @@ class Circle extends React.Component {
             return true;
           }
         });
+
+        //tasks that need to be approved
+        needToApproveTasks =
+          allTasks.filter(task => {
+            console.log(task.taskStage);
+            return (
+              task.circleID === currentCircle.id && task.taskStage === "pending"
+            );
+          }).length > 0;
       }
 
       // console.log(currentCircle.rewardsList);
@@ -558,7 +612,9 @@ class Circle extends React.Component {
                 size="lg"
                 variant="success"
                 id="dropdown-basic"
-                variant="outline-primary"
+                variant={
+                  needToApproveTasks ? "outline-danger" : "outline-primary"
+                }
               >
                 Manage Tasks
               </Dropdown.Toggle>
@@ -569,7 +625,9 @@ class Circle extends React.Component {
                     onClick={this.handleClick}
                     style={{ width: "100%", borderColor: "white" }}
                     size="lg"
-                    variant="outline-primary"
+                    variant={
+                      needToApproveTasks ? "outline-danger" : "outline-primary"
+                    }
                   >
                     Approve Tasks
                   </Button>
@@ -866,32 +924,32 @@ const mapStateToProps = (state, ownProps) => {
     firestoreUsersRedux: state.firestore.ordered.users,
     firestoreCircleRedux: state.firestore.ordered.circles,
     firebaseAuthRedux: state.firebase.auth,
-    firebaseProfileRedux: state.firebase.profile,
+    firebaseProfileRedux: state.firebase.profile
   };
 };
 
 //dispatchCreateTask is a method to dispatch the create task event upon submitting the form
 //createTask is a functional action creator from TaskActions
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
-    dispatchCreateTask: (task) => dispatch(createTask(task)),
+    dispatchCreateTask: task => dispatch(createTask(task)),
     dispatchMoveTask: (task, userID) => dispatch(moveTask(task, userID)),
-    dispatchDeleteTask: (taskId) => dispatch(deleteTask(taskId)),
-    dispatchUpdateCircleMembers: (newCircleDetails) =>
+    dispatchDeleteTask: taskId => dispatch(deleteTask(taskId)),
+    dispatchUpdateCircleMembers: newCircleDetails =>
       dispatch(updateCircleMembers(newCircleDetails)),
-    dispatchUpdateCirclePromoteDemote: (newCircleDetails) =>
+    dispatchUpdateCirclePromoteDemote: newCircleDetails =>
       dispatch(updateCirclePromoteDemote(newCircleDetails)),
-    dispatchCreateReward: (reward) => dispatch(createReward(reward)),
+    dispatchCreateReward: reward => dispatch(createReward(reward)),
     dispatchClaimReward: (rewardID, userID, circleID, recurringReward) =>
       dispatch(claimReward(rewardID, userID, circleID, recurringReward)),
     dispatchDeleteReward: (rewardID, circleID) =>
       dispatch(deleteReward(rewardID, circleID)),
     dispatchLeaveCircle: (circleID, userID) =>
       dispatch(leaveCircle(circleID, userID)),
-    dispatchDisapproveTask: (taskID) => dispatch(disapproveTask(taskID)),
-    dispatchEditTask: (newTaskDetails) => dispatch(editTask(newTaskDetails)),
+    dispatchDisapproveTask: taskID => dispatch(disapproveTask(taskID)),
+    dispatchEditTask: newTaskDetails => dispatch(editTask(newTaskDetails)),
     dispatchRemoveOverdueTasks: (deleteThisTaskID, userID, circleID) =>
-      dispatch(removeOverdueTasks(deleteThisTaskID, userID, circleID)),
+      dispatch(removeOverdueTasks(deleteThisTaskID, userID, circleID))
   };
 };
 
@@ -899,19 +957,22 @@ const mapDispatchToProps = (dispatch) => {
 //whenever database for this collection is changed, it will induce the firestoreReducer, which will sync firestore/redux store state
 //and then this component will "hear" it.
 export default compose(
-  connect(mapStateToProps, mapDispatchToProps),
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  ),
   //firestoreConnect takes in an array of of objects that say which collection you want to connect to
   //whenever database for this collection is changed, it will induce the firestoreReducer, which will sync store state
   // and then this component will "hear" that because we connected that. Then state will change for the store
-  firestoreConnect((props) => {
-    // console.log(props);
+  firestoreConnect(props => {
+    // console.log(props.match.params.id);
     return [
       {
         collection: "tasks",
-        where: ["circleID", "==", props.match.params.id],
+        where: ["circleID", "==", props.match.params.id]
       },
       { collection: "users" },
-      { collection: "circles", doc: props.match.params.id },
+      { collection: "circles", doc: props.match.params.id }
     ];
   })
 )(Circle);
