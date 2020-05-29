@@ -7,12 +7,21 @@ import Task from "../Circle/Task";
 class Notification extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      handledOverdue: false,
+    };
   }
 
   componentDidUpdate() {
     // Check for overdue tasks here
     var handleRemoveOverdueTasks = this.props.handleRemoveOverdueTasks;
-    handleRemoveOverdueTasks();
+    if (this.state.handledOverdue === false) {
+      if (handleRemoveOverdueTasks()) {
+        this.setState({
+          handledOverdue: true,
+        });
+      }
+    }
   }
 
   render() {

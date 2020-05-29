@@ -77,7 +77,11 @@ class Dashboard extends React.Component {
           circleID
         );
       }
+      if (tasksToDelete.length > 0) {
+        return true;
+      }
     }
+    return false;
   }
 
   render() {
@@ -91,7 +95,7 @@ class Dashboard extends React.Component {
     var auth = this.props.firebaseAuthRedux;
     var userID = auth.uid;
     if (allTasks) {
-      allTasks.filter(task => {
+      allTasks.filter((task) => {
         if (task.taskStage === "toDo" && task.assignedForID === userID) {
           if (task.dismissed == false) {
             toDoTasksNotDismissed.push(task);
@@ -112,8 +116,8 @@ class Dashboard extends React.Component {
     // Tasks that are still to be done and are assigned to me
     allTasks = this.props.firestoreTasksRedux;
     console.log(allCircles);
-    if (allTasks && allCircles) {
-      allTasks = allTasks.filter(task => {
+    if (allTasks) {
+      allTasks = allTasks.filter((task) => {
         if (task.assignedForID === userID && task.taskStage === "toDo") {
           return true;
         }
@@ -121,20 +125,24 @@ class Dashboard extends React.Component {
       });
       // Figure out the number of tasks remaining for each Circle (for you specifically)
       var circleIDToTasksMap = {};
-      for (var i = 0; i < allCircles.length; i++) {
-        // For each Circle, find the number of tasks that are still left to do
-        var myCircle = allCircles[i];
-        var myCircleID = myCircle.circleID;
-        circleIDToTasksMap[myCircleID] = allTasks.filter(task => {
-          return task.circleID === myCircleID;
-        });
+      if (allCircles) {
+        for (var i = 0; i < allCircles.length; i++) {
+          // For each Circle, find the number of tasks that are still left to do
+          var myCircle = allCircles[i];
+          var myCircleID = myCircle.circleID;
+          circleIDToTasksMap[myCircleID] = allTasks.filter((task) => {
+            return task.circleID === myCircleID;
+          });
+        }
       }
       console.log(circleIDToTasksMap);
       var circleIDToNumTasksLeftMap = {};
-      for (var i = 0; i < allCircles.length; i++) {
-        var myCircle = allCircles[i];
-        var numTasksLeft = circleIDToTasksMap[myCircle.circleID].length;
-        circleIDToNumTasksLeftMap[myCircle.circleID] = numTasksLeft;
+      if (allCircles) {
+        for (var i = 0; i < allCircles.length; i++) {
+          var myCircle = allCircles[i];
+          var numTasksLeft = circleIDToTasksMap[myCircle.circleID].length;
+          circleIDToNumTasksLeftMap[myCircle.circleID] = numTasksLeft;
+        }
       }
       console.log(circleIDToNumTasksLeftMap);
     }
@@ -160,7 +168,7 @@ class Dashboard extends React.Component {
     if (allTasks) {
       for (var i = 0; i < leaderInTheseCircles.length; i++) {
         var circleID = leaderInTheseCircles[i];
-        circleIDToNumPendingTasks[circleID] = allTasks.filter(task => {
+        circleIDToNumPendingTasks[circleID] = allTasks.filter((task) => {
           console.log(task.taskStage);
           return task.circleID === circleID && task.taskStage === "pending";
         }).length;
@@ -198,28 +206,25 @@ const mapStateToProps = (state, ownProps) => {
     firestoreTasksRedux: state.firestore.ordered.tasks,
     firebaseAuthRedux: state.firebase.auth,
     firestoreCircleRedux: state.firestore.ordered.circles,
-    firebaseProfileRedux: state.firebase.profile
+    firebaseProfileRedux: state.firebase.profile,
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    dispatchDismissTask: task => dispatch(dismissTask(task)),
+    dispatchDismissTask: (task) => dispatch(dismissTask(task)),
     dispatchRemoveOverdueTasks: (deleteThisTaskID, userID, circleID) =>
-      dispatch(removeOverdueTasks(deleteThisTaskID, userID, circleID))
+      dispatch(removeOverdueTasks(deleteThisTaskID, userID, circleID)),
   };
 };
 
 export default compose(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  ),
-  firestoreConnect(props => {
+  connect(mapStateToProps, mapDispatchToProps),
+  firestoreConnect((props) => {
     return [
       {
-        collection: "tasks"
-      }
+        collection: "tasks",
+      },
     ];
   })
 )(Dashboard);
