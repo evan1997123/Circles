@@ -491,7 +491,7 @@ class Circle extends React.Component {
 
     //if not logged in, then redirect to signin page
     if (!userID) {
-      return <Redirect to="/signin" />;
+      return <Redirect to="/" />;
     }
 
     if (this.state.leftCircle) {
@@ -543,6 +543,7 @@ class Circle extends React.Component {
       if (!Object.keys(allUsersCurrentCircleMap).includes(userID)) {
         return <Redirect to="/dashboard" />;
       }
+      var needApproval = 0;
       // Figure out which tasks were assigned by you (the leader)
       if (isLeader) {
         var tasksAssignedByMe = allTasks.filter(task => {
@@ -555,6 +556,8 @@ class Circle extends React.Component {
             return true;
           }
         });
+        needApproval = allTasks.filter(task => task.taskStage === "pending")
+          .length;
       }
 
       // console.log(currentCircle.rewardsList);
@@ -585,7 +588,7 @@ class Circle extends React.Component {
                 size="lg"
                 variant="success"
                 id="dropdown-basic"
-                variant="outline-primary"
+                variant={needApproval ? "outline-danger" : "outline-primary"}
               >
                 Manage Tasks
               </Dropdown.Toggle>
@@ -596,7 +599,9 @@ class Circle extends React.Component {
                     onClick={this.handleClick}
                     style={{ width: "100%", borderColor: "white" }}
                     size="lg"
-                    variant="outline-primary"
+                    variant={
+                      needApproval ? "outline-danger" : "outline-primary"
+                    }
                   >
                     Approve Tasks
                   </Button>
@@ -634,7 +639,7 @@ class Circle extends React.Component {
                     name="viewMembersButton"
                     size="lg"
                   >
-                    View Members
+                    View Users
                   </Button>
                   <Button
                     name="inviteMembersButton"

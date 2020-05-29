@@ -25,7 +25,7 @@ class CircleColumn extends React.Component {
       deleteTask,
       forRewards,
       handleDisapproveTask,
-      handleEditTask,
+      handleEditTask
     } = this.props;
 
     if (!(typeof tasks === "undefined")) {
