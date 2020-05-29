@@ -344,6 +344,9 @@ export const removeOverdueTasks = (deleteThisTaskID, userID, circleID) => {
             // Update user's points
             var circleDetails = doc.data();
             var oldPoints = circleDetails.points;
+            console.log("oldPoints: " + oldPoints[userID]);
+            console.log("penalty: " + penalty);
+            console.log(oldPoints[userID] - penalty);
             var newPoints = {
               ...oldPoints,
               [userID]: oldPoints[userID] - penalty

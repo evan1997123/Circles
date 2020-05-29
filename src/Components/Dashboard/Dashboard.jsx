@@ -56,7 +56,14 @@ class Dashboard extends React.Component {
         dueDateYear = parseInt(dueDateYear);
         dueDateMonth = parseInt(dueDateMonth);
         dueDateDay = parseInt(dueDateDay);
-        taskDueDate = new Date(dueDateYear, dueDateMonth - 1, dueDateDay);
+        taskDueDate = new Date(
+          dueDateYear,
+          dueDateMonth - 1,
+          dueDateDay,
+          23,
+          59,
+          59
+        );
         console.log(taskDueDate);
         if (taskDueDate.getTime() - currentDate.getTime() < 0) {
           tasksToDelete.push(task);
@@ -70,7 +77,11 @@ class Dashboard extends React.Component {
           circleID
         );
       }
+      if (tasksToDelete.length > 0) {
+        return true;
+      }
     }
+    return false;
   }
 
   render() {

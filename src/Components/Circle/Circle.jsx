@@ -59,6 +59,7 @@ class Circle extends React.Component {
       recurringReward: "Yes", // All rewards are recurring by default
       editingTaskID: "",
       penalty: "", // For overdue tasks
+      handledOverdue: false,
     };
 
     //input form local state
@@ -88,10 +89,16 @@ class Circle extends React.Component {
   componentDidUpdate() {
     var allTasks = this.props.firestoreTasksRedux;
     // console.log(allTasks);
-    this.handleRemoveOverdueTasks();
+    console.log("handledOverdue");
+    console.log(this.state.handledOverdue);
+    if (this.state.handledOverdue === false) {
+      this.handleRemoveOverdueTasks();
+    }
   }
 
   handleRemoveOverdueTasks() {
+    console.log("handle remove overdue tasks");
+    console.log("changing state");
     var allTasks = this.props.firestoreTasksRedux;
     var userID = this.props.firebaseAuthRedux.uid;
     var circleID;
@@ -120,7 +127,14 @@ class Circle extends React.Component {
         dueDateYear = parseInt(dueDateYear);
         dueDateMonth = parseInt(dueDateMonth);
         dueDateDay = parseInt(dueDateDay);
-        taskDueDate = new Date(dueDateYear, dueDateMonth - 1, dueDateDay);
+        taskDueDate = new Date(
+          dueDateYear,
+          dueDateMonth - 1,
+          dueDateDay,
+          23,
+          59,
+          59
+        );
         console.log(taskDueDate);
         if (taskDueDate.getTime() - currentDate.getTime() < 0) {
           tasksToDelete.push(task);
@@ -128,11 +142,16 @@ class Circle extends React.Component {
       }
       console.log(tasksToDelete);
       for (var i = 0; i < tasksToDelete.length; i++) {
+        console.log("deleting this task");
+        console.log(tasksToDelete[i]);
         this.props.dispatchRemoveOverdueTasks(
           tasksToDelete[i].taskID,
           userID,
           circleID
         );
+        this.setState({
+          handledOverdue: true,
+        });
       }
     }
   }
