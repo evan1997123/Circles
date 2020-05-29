@@ -105,7 +105,7 @@ class Dashboard extends React.Component {
     // Tasks that are still to be done and are assigned to me
     allTasks = this.props.firestoreTasksRedux;
     console.log(allCircles);
-    if (allTasks) {
+    if (allTasks && allCircles) {
       allTasks = allTasks.filter(task => {
         if (task.assignedForID === userID && task.taskStage === "toDo") {
           return true;
