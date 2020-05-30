@@ -5,36 +5,29 @@ import { withRouter } from "react-router-dom";
 import CircleForm from "./CircleForm";
 import "./DashboardActiveCircles.css";
 
-// import { connect } from "react-redux";
-// import { firestoreConnect } from "react-redux-firebase"; // so this allows us to connect this component to a firebase collection
-// import { compose } from "redux";
-
 class ActiveCircles extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      show: false
+      show: false,
     };
     this.showModal = this.showModal.bind(this);
     this.hideModal = this.hideModal.bind(this);
     this.changeVisibility = this.changeVisibility.bind(this);
   }
 
-  componentDidMount() {}
-
   showModal() {
     this.setState({
-      show: true
+      show: true,
     });
   }
 
   hideModal() {
     this.setState({
-      show: false
+      show: false,
     });
   }
 
-  // For hover stuff
   changeVisibility(circleID, showHover) {
     var element = document.getElementById(circleID);
     if (element && element.style) {
@@ -49,12 +42,11 @@ class ActiveCircles extends React.Component {
   render() {
     var circles;
     if (this.props.myCircles && this.props.toDoTasks) {
-      // console.log(this.props.myCircles);
       circles = this.props.myCircles.map((circle, index) => {
         var needsAttention;
         var className;
 
-        this.props.toDoTasks.forEach(toDoTask => {
+        this.props.toDoTasks.forEach((toDoTask) => {
           if (toDoTask.circleID === circle.circleID) {
             needsAttention = true;
           }
@@ -68,10 +60,9 @@ class ActiveCircles extends React.Component {
         var numTasksLeft = 0;
         if (this.props.circleIDToNumTasksLeftMap) {
           numTasksLeft = this.props.circleIDToNumTasksLeftMap[circle.circleID];
-          // console.log(numTasksLeft);
         }
 
-        var numPendingTasks = -1;
+        var numPendingTasks = 0;
         if (
           this.props.circleIDToNumPendingTasks &&
           this.props.circleIDToNumPendingTasks[circle.circleID]
@@ -98,10 +89,10 @@ class ActiveCircles extends React.Component {
                   // onClick={() =>
                   //   this.props.history.push("/circle/" + circle.id)
                   // }
-                  onMouseEnter={e =>
+                  onMouseEnter={(e) =>
                     this.changeVisibility(circle.circleID, true)
                   }
-                  onMouseLeave={e =>
+                  onMouseLeave={(e) =>
                     this.changeVisibility(circle.circleID, false)
                   }
                   // name={circle.circleID}
@@ -120,12 +111,12 @@ class ActiveCircles extends React.Component {
                         zIndex: "1",
                         top: "75px",
                         // left: "50%",
-                        marginLeft: "-90px"
+                        marginLeft: "-90px",
                       }}
                       id={circle.circleID}
                     >
-                      {numTasksLeft !== 0 ? (
-                        <div>
+                      <div>
+                        {numTasksLeft !== 0 && (
                           <div>
                             <div>
                               <strong>Remaining Tasks</strong>: {numTasksLeft}
@@ -134,23 +125,25 @@ class ActiveCircles extends React.Component {
                               Let's go complete some tasks and earn points! 💪
                             </div>
                           </div>
-                          {numPendingTasks !== -1 && (
-                            <hr style={{ backgroundColor: "white" }}></hr>
-                          )}
-                          {numPendingTasks !== -1 ? (
-                            <div>
-                              <div style={{ fontSize: "0.75rem" }}>
-                                (For Leaders)
-                              </div>
-                              <div>
-                                <strong>Pending Tasks</strong>:{" "}
-                                {numPendingTasks}
-                              </div>
-                              <div>Let's go approve some tasks ✅</div>
+                        )}
+
+                        {numTasksLeft !== 0 && numPendingTasks !== 0 && (
+                          <hr style={{ backgroundColor: "white" }}></hr>
+                        )}
+
+                        {numPendingTasks !== 0 ? (
+                          <div>
+                            <div style={{ fontSize: "0.75rem" }}>
+                              (For Leaders)
                             </div>
-                          ) : null}
-                        </div>
-                      ) : (
+                            <div>
+                              <strong>Pending Tasks</strong>: {numPendingTasks}
+                            </div>
+                            <div>Let's go approve some tasks ✅</div>
+                          </div>
+                        ) : null}
+                      </div>
+                      {numTasksLeft === 0 && numPendingTasks === 0 && (
                         <div>
                           You've completed all of your assigned tasks in this
                           Circle! 🤗 Let's go add some more tasks!

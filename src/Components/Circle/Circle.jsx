@@ -92,16 +92,16 @@ class Circle extends React.Component {
   componentDidUpdate() {
     var allTasks = this.props.firestoreTasksRedux;
     // console.log(allTasks);
-    console.log("handledOverdue");
-    console.log(this.state.handledOverdue);
+    // console.log("handledOverdue");
+    // console.log(this.state.handledOverdue);
     if (this.state.handledOverdue === false) {
       this.handleRemoveOverdueTasks();
     }
   }
 
   handleRemoveOverdueTasks() {
-    console.log("handle remove overdue tasks");
-    console.log("changing state");
+    // console.log("handle remove overdue tasks");
+    // console.log("changing state");
     var allTasks = this.props.firestoreTasksRedux;
     var userID = this.props.firebaseAuthRedux.uid;
     var circleID;
@@ -138,15 +138,15 @@ class Circle extends React.Component {
           59,
           59
         );
-        console.log(taskDueDate);
+        // console.log(taskDueDate);
         if (taskDueDate.getTime() - currentDate.getTime() < 0) {
           tasksToDelete.push(task);
         }
       }
-      console.log(tasksToDelete);
+      // console.log(tasksToDelete);
       for (var i = 0; i < tasksToDelete.length; i++) {
-        console.log("deleting this task");
-        console.log(tasksToDelete[i]);
+        // console.log("deleting this task");
+        // console.log(tasksToDelete[i]);
         this.props.dispatchRemoveOverdueTasks(
           tasksToDelete[i].taskID,
           userID,
@@ -240,7 +240,7 @@ class Circle extends React.Component {
   }
 
   handleUpdateCircleMembers(newCircleDetails) {
-    console.log("updating circle");
+    // console.log("updating circle");
     this.props.dispatchUpdateCircleMembers(newCircleDetails);
   }
 
@@ -251,7 +251,7 @@ class Circle extends React.Component {
 
   // For showing modal (creating new task)
   handleClick = e => {
-    console.log("handle click");
+    console.log(e.target.name);
     switch (e.target.name) {
       case "createTaskButton":
         this.setState({
@@ -292,6 +292,7 @@ class Circle extends React.Component {
         this.setState({
           showLeaderEditTasksModal: true
         });
+        console.log("here");
         return;
       case "viewRewardsHistory":
         this.setState({
@@ -421,14 +422,14 @@ class Circle extends React.Component {
   }
 
   handleDisapproveTask(taskID) {
-    console.log("disapproved task");
+    // console.log("disapproved task");
     this.props.dispatchDisapproveTask(taskID);
   }
 
   // When click on the edit button inside the task
   // Using this function to set the state so that the form autofills the information from before
   handleEditTask(taskID) {
-    console.log("edit task");
+    // console.log("edit task");
     // Edit the state of the Circle component to the current task info
     var allTasks = this.props.firestoreTasksRedux;
     const profileData = this.props.firebaseProfileRedux;
@@ -569,24 +570,23 @@ class Circle extends React.Component {
       if (!Object.keys(allUsersCurrentCircleMap).includes(userID)) {
         return <Redirect to="/dashboard" />;
       }
+      // Figure out which tasks were assigned by you (either leader or member)
       var needApproval = 0;
-      // Figure out which tasks were assigned by you (the leader)
-      if (isLeader) {
-        var tasksAssignedByMe = allTasks.filter(task => {
-          // Only need to edit the task if it is in the to-do stage
-          if (task.taskStage !== "toDo") {
-            return false;
-          } else if (task.assignedByID !== userID) {
-            return false;
-          } else {
-            return true;
-          }
-        });
-        needApproval = allTasks.filter(task => task.taskStage === "pending")
-          .length;
-      }
+      var tasksAssignedByMe = allTasks.filter(task => {
+        if (task.taskStage !== "toDo") {
+          return false;
+        } else if (task.assignedByID !== userID) {
+          return false;
+        } else {
+          return true;
+        }
+      });
+      needApproval = allTasks.filter(task => task.taskStage === "pending")
+        .length;
+    }
 
-      // console.log(currentCircle.rewardsList);
+    // console.log(currentCircle.rewardsList);
+    if (currentCircle) {
       return (
         <div className="overallContainer">
           <div className="text-center">
@@ -632,17 +632,15 @@ class Circle extends React.Component {
                     Approve Tasks
                   </Button>
                 ) : null}
-                {isLeader && (
-                  <Button
-                    name="editTasksButton"
-                    onClick={this.handleClick}
-                    style={{ width: "100%", borderColor: "white" }}
-                    size="lg"
-                    variant="outline-primary"
-                  >
-                    Edit Tasks
-                  </Button>
-                )}
+                <Button
+                  name="editTasksButton"
+                  onClick={this.handleClick}
+                  style={{ width: "100%", borderColor: "white" }}
+                  size="lg"
+                  variant="outline-primary"
+                >
+                  Edit Tasks
+                </Button>
               </Dropdown.Menu>
             </Dropdown>
             &nbsp;
@@ -758,8 +756,11 @@ class Circle extends React.Component {
             showLeaderEditTasksModal={this.state.showLeaderEditTasksModal}
             handleClose={this.handleClose}
             tasksAssignedByMe={tasksAssignedByMe}
+            allTasks={allTasks}
             handleEditTask={this.handleEditTask}
             deleteTask={this.deleteTask}
+            userID={userID}
+            isLeader={isLeader}
           ></LeaderEditTasksModal>
           <ViewMembersModal
             showViewMembersModal={this.state.showViewMembersModal}
