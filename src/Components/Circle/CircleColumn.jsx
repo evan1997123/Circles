@@ -44,6 +44,7 @@ class CircleColumn extends React.Component {
           isLeader={this.props.isLeader}
           handleEditTask={handleEditTask}
           forLeaderEdits={false}
+          assignedByMe={task.assignedByID === userID}
         ></Task>
       ));
     }

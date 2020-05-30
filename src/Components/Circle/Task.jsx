@@ -18,7 +18,8 @@ class Task extends React.Component {
       handleDisapproveTask,
       isLeader,
       handleEditTask,
-      forLeaderEdits
+      forLeaderEdits,
+      assignedByMe,
     } = this.props;
     var ifExists = handleMoveTasks
       ? () => handleMoveTasks(task, userID)
@@ -29,7 +30,7 @@ class Task extends React.Component {
           // className="deleteButton"
           onClick={() => deleteTask(task.id)}
           variant="outline-danger"
-          style={{ marginRight: "10px" }}
+          style={{ margin: "5px 10px 5px 0" }}
         >
           Delete
         </Button>
@@ -68,7 +69,7 @@ class Task extends React.Component {
       classForTask = "notification-task";
     }
     // Check if this task is assigned by yourself
-    var assignedByMe = task.assignedByID === userID;
+    // var assignedByMe = task.assignedByID === userID;
 
     return (
       <div className={classForTask} style={{ width: "100%" }}>
@@ -102,32 +103,54 @@ class Task extends React.Component {
             <Card.Text>
               <strong>Penalty</strong>: {task.penalty}
             </Card.Text>
-
-            {!forNotification && !forLeaderEdits && (
-              <Button
-                variant={"outline-primary"}
-                onClick={ifExists}
-                style={{ marginRight: "10px" }}
-              >
-                {buttonText}
-              </Button>
+            {task.taskStage === "toDo" && (
+              <Card.Text style={{ color: "red" }}>
+                <strong>Days Left</strong>: {numDaysLeft}
+              </Card.Text>
             )}
+
+            {!forNotification &&
+              !forLeaderEdits &&
+              buttonText !== "Requesting Approval" && (
+                <Button
+                  variant={"outline-primary"}
+                  onClick={ifExists}
+                  style={{ margin: "5px 10px 5px 0" }}
+                >
+                  {buttonText}
+                </Button>
+              )}
+
+            {!forNotification &&
+              !forLeaderEdits &&
+              buttonText === "Requesting Approval" && (
+                <Button
+                  variant={"outline-primary"}
+                  onClick={ifExists}
+                  style={{ margin: "5px 10px 5px 0" }}
+                  disabled
+                >
+                  {buttonText}
+                </Button>
+              )}
+
             {task.taskStage === "pending" && buttonText === "Approve" && (
               <Button
                 variant="outline-danger"
                 onClick={() => handleDisapproveTask(task.taskID)}
-                style={{ marginRight: "10px" }}
+                style={{ margin: "5px 10px 5px 0" }}
               >
                 Disapprove
               </Button>
             )}
             {!forNotification && (isLeader || assignedByMe) && deleteButton}
             {!forNotification &&
-              (assignedByMe || forLeaderEdits) &&
-              task.taskStage === "toDo" && (
+              ((assignedByMe && task.taskStage === "toDo") ||
+                (forLeaderEdits && task.taskStage === "pending")) && (
                 <Button
                   variant="outline-info"
                   onClick={() => handleEditTask(task.taskID)}
+                  style={{ margin: "5px 10px 5px 0" }}
                 >
                   Edit Task
                 </Button>
@@ -141,13 +164,6 @@ class Task extends React.Component {
               </Button>
             )}
           </Card.Body>
-          {task.taskStage === "toDo" && (
-            <Card.Footer>
-              <Card.Text style={{ color: "red" }}>
-                Days Left: {numDaysLeft}
-              </Card.Text>
-            </Card.Footer>
-          )}
         </Card>
       </div>
     );
