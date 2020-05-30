@@ -545,6 +545,7 @@ class Circle extends React.Component {
         return <Redirect to="/dashboard" />;
       }
       // Figure out which tasks were assigned by you (either leader or member)
+      var needApproval = 0;
       var tasksAssignedByMe = allTasks.filter((task) => {
         if (task.taskStage !== "toDo") {
           return false;
@@ -554,8 +555,12 @@ class Circle extends React.Component {
           return true;
         }
       });
+      needApproval = allTasks.filter((task) => task.taskStage === "pending")
+        .length;
+    }
 
-      // console.log(currentCircle.rewardsList);
+    // console.log(currentCircle.rewardsList);
+    if (currentCircle) {
       return (
         <div className="overallContainer">
           <div className="text-center">
