@@ -467,14 +467,26 @@ const CustomMenu = React.forwardRef(
   ({ children, style, className, "aria-labelledby": labeledBy }, ref) => {
     const [value, setValue] = useState("");
 
-    var allShow = React.Children.toArray(children).filter(
-      child =>
-        !value ||
-        child.props.children
-          .toString()
-          .toLowerCase()
-          .startsWith(value, 1)
-    );
+    var allShow = React.Children.toArray(children).filter(child => {
+      var checkBasic = !value;
+      var usernameAndFullName = child.props.children;
+      var checkUsername = usernameAndFullName
+        .toString()
+        .toLowerCase()
+        .startsWith(value.toLowerCase(), 1);
+      var leftBracket = usernameAndFullName.indexOf("[");
+      var slicedName = usernameAndFullName.slice(
+        leftBracket + 1,
+        usernameAndFullName.length - 1
+      );
+      var fullName = slicedName;
+
+      var checkFullName = fullName
+        .toString()
+        .toLowerCase()
+        .startsWith(value.toLowerCase(), 0);
+      return checkBasic || checkUsername || checkFullName;
+    });
 
     allShow.sort(function(user1, user2) {
       var user1Name = user1.props.children;
