@@ -45,7 +45,7 @@ class LeaderEditTasksModal extends Component {
           forLeaderEdits={true}
           handleEditTask={this.props.handleEditTask}
           deleteTask={this.props.deleteTask}
-          assignedByMe={true} // I need to pass this in as a prop because 
+          assignedByMe={true} // I need to pass this in as a prop because
         ></Task>
       ));
     } else if (this.state.displayAssignedByMe && this.props.tasksAssignedByMe) {
@@ -57,6 +57,7 @@ class LeaderEditTasksModal extends Component {
           forLeaderEdits={true}
           handleEditTask={this.props.handleEditTask}
           deleteTask={this.props.deleteTask}
+          assignedByMe={true}
         ></Task>
       ));
     } else {
@@ -78,6 +79,7 @@ class LeaderEditTasksModal extends Component {
           forLeaderEdits={true}
           handleEditTask={this.props.handleEditTask}
           deleteTask={this.props.deleteTask}
+          assignedByMe={true} // Me or other leaders
         ></Task>
       ));
     }

@@ -209,7 +209,6 @@ class Circle extends React.Component {
     };
     this.props.dispatchCreateTask(taskDetails);
 
-    //find form
     var frm = document.getElementsByName("TaskForm")[0];
     frm.reset();
     this.setState({
@@ -425,6 +424,7 @@ class Circle extends React.Component {
       showEditTaskModal: true,
       completeBy: editTask.completeBy,
       editingTaskID: editTask.taskID,
+      penalty: editTask.penalty,
     });
   }
 
@@ -614,6 +614,13 @@ class Circle extends React.Component {
                   variant="outline-primary"
                 >
                   Edit Tasks
+                </Button>
+                <Button
+                  style={{ width: "100%", borderColor: "white" }}
+                  size="lg"
+                  variant="outline-primary"
+                >
+                  Tasks History
                 </Button>
               </Dropdown.Menu>
             </Dropdown>
