@@ -492,13 +492,19 @@ class Circle extends React.Component {
 
     //if not logged in, then redirect to signin page
     if (!userID) {
-      return <Redirect to="/signin" />;
+      return <Redirect to="/" />;
     }
 
     if (this.state.leftCircle) {
       return <Redirect to="/dashboard" />;
     }
 
+    if (
+      this.props.firestoreCircleRedux &&
+      this.props.firestoreCircleRedux.length === 0
+    ) {
+      return <Redirect to="/error/invalidCircle" />;
+    }
     //IDEALLY allTasks should get all the tasks from a particular circle, without having to fetch all the tasks and filter out via circle ID
     //similarily, allUsers should only be all the users in this circle
     //isn't that bad security design?
@@ -577,7 +583,7 @@ class Circle extends React.Component {
                 size="lg"
                 variant="success"
                 id="dropdown-basic"
-                variant="outline-primary"
+                variant={needApproval ? "outline-danger" : "outline-primary"}
               >
                 Manage Tasks
               </Dropdown.Toggle>
@@ -588,7 +594,9 @@ class Circle extends React.Component {
                     onClick={this.handleClick}
                     style={{ width: "100%", borderColor: "white" }}
                     size="lg"
-                    variant="outline-primary"
+                    variant={
+                      needApproval ? "outline-danger" : "outline-primary"
+                    }
                   >
                     Approve Tasks
                   </Button>
@@ -624,7 +632,7 @@ class Circle extends React.Component {
                     name="viewMembersButton"
                     size="lg"
                   >
-                    View Members
+                    View Users
                   </Button>
                   <Button
                     name="inviteMembersButton"
@@ -648,28 +656,27 @@ class Circle extends React.Component {
               </Dropdown>
             ) : null}
             &nbsp;
-            {isLeader ? (
-              <Dropdown>
-                <Dropdown.Toggle
-                  style={{ margin: "7.5px", height: "100%" }}
-                  size="lg"
-                  variant="success"
-                  id="dropdown-basic"
+            <Dropdown>
+              <Dropdown.Toggle
+                style={{ margin: "7.5px", height: "100%" }}
+                size="lg"
+                variant="success"
+                id="dropdown-basic"
+                variant="outline-primary"
+              >
+                Manage Rewards
+              </Dropdown.Toggle>
+              <Dropdown.Menu style={{ width: "100%" }}>
+                <Button
                   variant="outline-primary"
+                  style={{ width: "100%", borderColor: "white" }}
+                  size="lg"
+                  name="viewRewardsHistory"
+                  onClick={this.handleClick}
                 >
-                  Manage Rewards
-                </Dropdown.Toggle>
-
-                <Dropdown.Menu style={{ width: "100%" }}>
-                  <Button
-                    variant="outline-primary"
-                    style={{ width: "100%", borderColor: "white" }}
-                    size="lg"
-                    name="viewRewardsHistory"
-                    onClick={this.handleClick}
-                  >
-                    Rewards History
-                  </Button>
+                  Rewards History
+                </Button>
+                {isLeader ? (
                   <Button
                     name="createRewardsButton"
                     onClick={this.handleClick}
@@ -679,9 +686,9 @@ class Circle extends React.Component {
                   >
                     Create Rewards
                   </Button>
-                </Dropdown.Menu>
-              </Dropdown>
-            ) : null}
+                ) : null}
+              </Dropdown.Menu>
+            </Dropdown>
             {!isLeader && (
               <Button
                 variant="outline-danger"
