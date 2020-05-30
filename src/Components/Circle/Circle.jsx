@@ -61,7 +61,8 @@ class Circle extends React.Component {
       recurringReward: "Yes", // All rewards are recurring by default
       editingTaskID: "",
       penalty: "", // For overdue tasks
-      handledOverdue: false
+      handledOverdue: false,
+      deleteCircleError: ""
     };
 
     //input form local state
@@ -324,7 +325,8 @@ class Circle extends React.Component {
       showDeleteCircleModal: false,
       rewardTitle: "",
       rewardDescription: "",
-      rewardPoints: ""
+      rewardPoints: "",
+      deleteCircleError: ""
     });
   };
 
@@ -406,7 +408,19 @@ class Circle extends React.Component {
   }
 
   handleDeleteCircle() {
+    // console.log(inputBox.value);
     var currentCircle = this.props.firestoreCircleRedux[0];
+
+    var inputBox = document.getElementById("confirmDeletionCircleName");
+    var whatTheyPut = inputBox.value;
+    if (whatTheyPut !== currentCircle.circleName) {
+      console.log("wrong thing");
+      this.setState({
+        deleteCircleError:
+          "Given circle name does not match " + currentCircle.circleName
+      });
+      return;
+    }
     var allUsersCurrentCircle = this.props.firestoreUsersRedux.filter(user => {
       if (!user) {
         return false;
@@ -418,7 +432,7 @@ class Circle extends React.Component {
       user => (allUsersCurrentCircleMap[user.id] = user)
     );
     var allTasksCurrentCircle = this.props.firestoreTasksRedux;
-    // console.log("deleting circle");
+    console.log("deleting circle");
     this.props.dispatchDeleteCircle(
       currentCircle.id,
       allUsersCurrentCircleMap,
@@ -896,8 +910,19 @@ class Circle extends React.Component {
             <Modal.Body>
               <p>
                 You are about to DELETE this Circle. Are you sure you want to
-                DELETE it?
+                DELETE it? Everyone will be removed from this circle, all tasks
+                and rewards will be removed, and there is no undoing this
+                process. Please type the name of the circle undeneath to confirm
+                that you understand the consequences. Reference:
+                <b style={{ color: "red" }}>{" " + currentCircle.circleName}</b>
+                <br />
+                Case Sensitive!
               </p>
+              <input
+                style={{ color: "red" }}
+                id={"confirmDeletionCircleName"}
+              ></input>
+              <p>{this.state.deleteCircleError}</p>
               <div style={{ display: "flex", justifyContent: "center" }}>
                 <Button
                   style={{ margin: "10px 10px" }}
