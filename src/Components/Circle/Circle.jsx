@@ -663,28 +663,27 @@ class Circle extends React.Component {
               </Dropdown>
             ) : null}
             &nbsp;
-            {isLeader ? (
-              <Dropdown>
-                <Dropdown.Toggle
-                  style={{ margin: "7.5px", height: "100%" }}
-                  size="lg"
-                  variant="success"
-                  id="dropdown-basic"
+            <Dropdown>
+              <Dropdown.Toggle
+                style={{ margin: "7.5px", height: "100%" }}
+                size="lg"
+                variant="success"
+                id="dropdown-basic"
+                variant="outline-primary"
+              >
+                Manage Rewards
+              </Dropdown.Toggle>
+              <Dropdown.Menu style={{ width: "100%" }}>
+                <Button
                   variant="outline-primary"
+                  style={{ width: "100%", borderColor: "white" }}
+                  size="lg"
+                  name="viewRewardsHistory"
+                  onClick={this.handleClick}
                 >
-                  Manage Rewards
-                </Dropdown.Toggle>
-
-                <Dropdown.Menu style={{ width: "100%" }}>
-                  <Button
-                    variant="outline-primary"
-                    style={{ width: "100%", borderColor: "white" }}
-                    size="lg"
-                    name="viewRewardsHistory"
-                    onClick={this.handleClick}
-                  >
-                    Rewards History
-                  </Button>
+                  Rewards History
+                </Button>
+                {isLeader ? (
                   <Button
                     name="createRewardsButton"
                     onClick={this.handleClick}
@@ -694,9 +693,9 @@ class Circle extends React.Component {
                   >
                     Create Rewards
                   </Button>
-                </Dropdown.Menu>
-              </Dropdown>
-            ) : null}
+                ) : null}
+              </Dropdown.Menu>
+            </Dropdown>
             {!isLeader && (
               <Button
                 variant="outline-danger"

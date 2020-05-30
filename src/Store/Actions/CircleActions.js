@@ -301,3 +301,8 @@ export const leaveCircle = (circleID, userID) => {
       });
   };
 };
+export const deleteCircle = (circleID, userID) => {
+  return (dispatch, getState, { getFirebase, getFirestore }) => {
+    null;
+  };
+};
