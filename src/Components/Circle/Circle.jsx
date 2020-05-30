@@ -417,8 +417,13 @@ class Circle extends React.Component {
     allUsersCurrentCircle.map(
       user => (allUsersCurrentCircleMap[user.id] = user)
     );
+    var allTasksCurrentCircle = this.props.firestoreTasksRedux;
     // console.log("deleting circle");
-    this.props.dispatchDeleteCircle(currentCircle.id, allUsersCurrentCircleMap);
+    this.props.dispatchDeleteCircle(
+      currentCircle.id,
+      allUsersCurrentCircleMap,
+      allTasksCurrentCircle
+    );
   }
 
   handleDisapproveTask(taskID) {
@@ -991,8 +996,14 @@ const mapDispatchToProps = dispatch => {
     dispatchEditTask: newTaskDetails => dispatch(editTask(newTaskDetails)),
     dispatchRemoveOverdueTasks: (deleteThisTaskID, userID, circleID) =>
       dispatch(removeOverdueTasks(deleteThisTaskID, userID, circleID)),
-    dispatchDeleteCircle: (circleID, allUsersCurrentCircleMap) =>
-      dispatch(deleteCircle(circleID, allUsersCurrentCircleMap))
+    dispatchDeleteCircle: (
+      circleID,
+      allUsersCurrentCircleMap,
+      allTasksCurrentCircle
+    ) =>
+      dispatch(
+        deleteCircle(circleID, allUsersCurrentCircleMap, allTasksCurrentCircle)
+      )
   };
 };
 

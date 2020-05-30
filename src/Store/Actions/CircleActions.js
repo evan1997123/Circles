@@ -301,24 +301,101 @@ export const leaveCircle = (circleID, userID) => {
       });
   };
 };
-export const deleteCircle = (circleID, allUsersCurrentCircleMap) => {
+export const deleteCircle = (
+  circleID,
+  allUsersCurrentCircleMap,
+  allTasksCurrentCircle
+) => {
   return (dispatch, getState, { getFirebase, getFirestore }) => {
     console.log(circleID, allUsersCurrentCircleMap);
 
     const firestore = getFirestore();
-
+    console.log(allTasksCurrentCircle);
     // allUsersCurrentCircleMap.map();
+    //delete the circle from the user's circleList
+    console.log("in delete Circle Actions");
     Object.keys(allUsersCurrentCircleMap).map(userID => {
       var currentUserCircleList = allUsersCurrentCircleMap[userID].circleList;
-      console.log(currentUserCircleList);
+      // console.log(currentUserCircleList);
 
       var updatedUserCircleList = { ...currentUserCircleList };
-      // delete updatedUserCircleList[circleID];
-      console.log(updatedUserCircleList);
-      // firestore
-      //   .collection("users")
-      //   .doc(userID)
-      //   .update();
+      delete updatedUserCircleList[circleID];
+      // console.log(updatedUserCircleList);
+
+      console.log("deleting", userID);
+
+      firestore
+        .collection("users")
+        .doc(userID)
+        .update({
+          circleList: updatedUserCircleList
+        })
+        .then(() => {
+          dispatch({
+            type: "DELETE_CIRCLE_SUCCESS",
+            who: userID,
+            what: "from circleList"
+          });
+        })
+        .catch(err => {
+          dispatch({
+            type: "LEAVE_CIRCLE_ERROR",
+            who: userID,
+            what: "from circleList",
+            err: err
+          });
+        });
     });
+
+    //delete the tasks within this circle
+    allTasksCurrentCircle.map(task => {
+      var taskID = task.taskID;
+      if (task.circleID === circleID) {
+        console.log("deleting", taskID);
+        firestore
+          .collection("tasks")
+          .doc(taskID)
+          .delete()
+          .then(() => {
+            dispatch({
+              type: "DELETE_CIRCLE_SUCCESS",
+              who: taskID,
+              what: "from tasks"
+            });
+          })
+          .catch(err => {
+            dispatch({
+              type: "DELETE_CIRCLE_ERROR",
+              who: taskID,
+              what: "from tasks",
+              err: err
+            });
+          });
+      }
+
+      // taskID;
+    });
+
+    //delete the circle
+    console.log("deleting circle", circleID);
+    firestore
+      .collection("circles")
+      .doc(circleID)
+      .delete()
+      .then(() => {
+        dispatch({
+          type: "DELETE_CIRCLE_SUCCESS",
+          who: circleID,
+          what: "from circles"
+        });
+      })
+      .catch(err => {
+        dispatch({
+          type: "DELETE_CIRCLE_ERROR",
+          who: circleID,
+          what: "from circles",
+          err: err
+        });
+      });
   };
 };
