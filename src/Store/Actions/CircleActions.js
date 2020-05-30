@@ -301,8 +301,24 @@ export const leaveCircle = (circleID, userID) => {
       });
   };
 };
-export const deleteCircle = (circleID, userID) => {
+export const deleteCircle = (circleID, allUsersCurrentCircleMap) => {
   return (dispatch, getState, { getFirebase, getFirestore }) => {
-    null;
+    console.log(circleID, allUsersCurrentCircleMap);
+
+    const firestore = getFirestore();
+
+    // allUsersCurrentCircleMap.map();
+    Object.keys(allUsersCurrentCircleMap).map(userID => {
+      var currentUserCircleList = allUsersCurrentCircleMap[userID].circleList;
+      console.log(currentUserCircleList);
+
+      var updatedUserCircleList = { ...currentUserCircleList };
+      // delete updatedUserCircleList[circleID];
+      console.log(updatedUserCircleList);
+      // firestore
+      //   .collection("users")
+      //   .doc(userID)
+      //   .update();
+    });
   };
 };

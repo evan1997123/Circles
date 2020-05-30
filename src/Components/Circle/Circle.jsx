@@ -18,7 +18,8 @@ import {
 import {
   updateCircleMembers,
   updateCirclePromoteDemote,
-  leaveCircle
+  leaveCircle,
+  deleteCircle
 } from "../../Store/Actions/CircleActions";
 import { firestoreConnect } from "react-redux-firebase"; // so this allows us to connect this component to a firebase collection
 import { compose } from "redux";
@@ -52,6 +53,7 @@ class Circle extends React.Component {
       showViewMembersModal: false,
       showEditTaskModal: false,
       showLeaderEditTasksModal: false,
+      showDeleteCircleModal: false,
       rewardTitle: "",
       rewardDescription: "",
       rewardPoints: "",
@@ -84,6 +86,7 @@ class Circle extends React.Component {
     this.handleEditTask = this.handleEditTask.bind(this);
     this.handleSubmitEditedTask = this.handleSubmitEditedTask.bind(this);
     this.handleRemoveOverdueTasks = this.handleRemoveOverdueTasks.bind(this);
+    this.handleDeleteCircle = this.handleDeleteCircle.bind(this);
   }
 
   componentDidUpdate() {
@@ -295,6 +298,11 @@ class Circle extends React.Component {
           showViewRewardsHistoryModal: true
         });
         return;
+      case "deleteCircleButton":
+        this.setState({
+          showDeleteCircleModal: true
+        });
+        return;
       default:
         return;
     }
@@ -312,6 +320,7 @@ class Circle extends React.Component {
       showEditTaskModal: false,
       showLeaderEditTasksModal: false,
       showViewRewardsHistoryModal: false,
+      showDeleteCircleModal: false,
       rewardTitle: "",
       rewardDescription: "",
       rewardPoints: ""
@@ -393,6 +402,22 @@ class Circle extends React.Component {
     this.setState({
       leftCircle: true
     });
+  }
+
+  handleDeleteCircle() {
+    var currentCircle = this.props.firestoreCircleRedux[0];
+    var allUsersCurrentCircle = this.props.firestoreUsersRedux.filter(user => {
+      if (!user) {
+        return false;
+      }
+      return Object.keys(user.circleList).includes(currentCircle.id);
+    });
+    var allUsersCurrentCircleMap = {};
+    allUsersCurrentCircle.map(
+      user => (allUsersCurrentCircleMap[user.id] = user)
+    );
+    // console.log("deleting circle");
+    this.props.dispatchDeleteCircle(currentCircle.id, allUsersCurrentCircleMap);
   }
 
   handleDisapproveTask(taskID) {
@@ -495,6 +520,7 @@ class Circle extends React.Component {
     }
 
     if (this.state.leftCircle) {
+      console.log("left circle");
       return <Redirect to="/dashboard" />;
     }
 
@@ -696,7 +722,7 @@ class Circle extends React.Component {
                 ) : null}
               </Dropdown.Menu>
             </Dropdown>
-            {!isLeader && (
+            {!isLeader ? (
               <Button
                 variant="outline-danger"
                 size="lg"
@@ -705,6 +731,16 @@ class Circle extends React.Component {
                 name="leaveCircleButton"
               >
                 Leave Circle
+              </Button>
+            ) : (
+              <Button
+                variant="outline-danger"
+                size="lg"
+                style={{ margin: "7.5px" }}
+                onClick={this.handleClick}
+                name="deleteCircleButton"
+              >
+                Delete Circle
               </Button>
             )}
           </div>
@@ -844,6 +880,37 @@ class Circle extends React.Component {
             </Modal.Body>
             <Modal.Footer></Modal.Footer>
           </Modal>
+          <Modal
+            show={this.state.showDeleteCircleModal}
+            onHide={this.handleClose}
+          >
+            <Modal.Header>
+              <Modal.Title>DELETE Circle</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <p>
+                You are about to DELETE this Circle. Are you sure you want to
+                DELETE it?
+              </p>
+              <div style={{ display: "flex", justifyContent: "center" }}>
+                <Button
+                  style={{ margin: "10px 10px" }}
+                  variant="outline-danger"
+                  onClick={this.handleDeleteCircle}
+                >
+                  Yes, I would like to DELETE this
+                </Button>
+                <Button
+                  style={{ margin: "10px 10px" }}
+                  variant="outline-success"
+                  onClick={this.handleClose}
+                >
+                  No, I want it
+                </Button>
+              </div>
+            </Modal.Body>
+            <Modal.Footer></Modal.Footer>
+          </Modal>
 
           <div className="centered">
             <CircleColumns
@@ -922,7 +989,9 @@ const mapDispatchToProps = dispatch => {
     dispatchDisapproveTask: taskID => dispatch(disapproveTask(taskID)),
     dispatchEditTask: newTaskDetails => dispatch(editTask(newTaskDetails)),
     dispatchRemoveOverdueTasks: (deleteThisTaskID, userID, circleID) =>
-      dispatch(removeOverdueTasks(deleteThisTaskID, userID, circleID))
+      dispatch(removeOverdueTasks(deleteThisTaskID, userID, circleID)),
+    dispatchDeleteCircle: (circleID, allUsersCurrentCircleMap) =>
+      dispatch(deleteCircle(circleID, allUsersCurrentCircleMap))
   };
 };
 
