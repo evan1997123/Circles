@@ -9,7 +9,7 @@ class ActiveCircles extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      show: false,
+      show: false
     };
     this.showModal = this.showModal.bind(this);
     this.hideModal = this.hideModal.bind(this);
@@ -18,13 +18,13 @@ class ActiveCircles extends React.Component {
 
   showModal() {
     this.setState({
-      show: true,
+      show: true
     });
   }
 
   hideModal() {
     this.setState({
-      show: false,
+      show: false
     });
   }
 
@@ -46,15 +46,11 @@ class ActiveCircles extends React.Component {
         var needsAttention;
         var className;
 
-        this.props.toDoTasks.forEach((toDoTask) => {
+        this.props.toDoTasks.forEach(toDoTask => {
           if (toDoTask.circleID === circle.circleID) {
             needsAttention = true;
           }
         });
-
-        if (needsAttention) {
-          className = "needsAttention";
-        }
 
         // Figure out number of tasks left for this circle
         var numTasksLeft = 0;
@@ -70,6 +66,10 @@ class ActiveCircles extends React.Component {
           numPendingTasks = this.props.circleIDToNumPendingTasks[
             circle.circleID
           ];
+        }
+
+        if (needsAttention || numPendingTasks > 0) {
+          className = "needsAttention";
         }
 
         return (
@@ -89,10 +89,10 @@ class ActiveCircles extends React.Component {
                   // onClick={() =>
                   //   this.props.history.push("/circle/" + circle.id)
                   // }
-                  onMouseEnter={(e) =>
+                  onMouseEnter={e =>
                     this.changeVisibility(circle.circleID, true)
                   }
-                  onMouseLeave={(e) =>
+                  onMouseLeave={e =>
                     this.changeVisibility(circle.circleID, false)
                   }
                   // name={circle.circleID}
@@ -111,7 +111,7 @@ class ActiveCircles extends React.Component {
                         zIndex: "1",
                         top: "75px",
                         // left: "50%",
-                        marginLeft: "-90px",
+                        marginLeft: "-90px"
                       }}
                       id={circle.circleID}
                     >
