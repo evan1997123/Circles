@@ -63,10 +63,7 @@ class Circle extends React.Component {
       editingTaskID: "",
       penalty: "", // For overdue tasks
       handledOverdue: false,
-<<<<<<< HEAD
-=======
-      deleteCircleError: ""
->>>>>>> 304334735b4eb94cfbf043143533d3cc7eb1aa0b
+      deleteCircleError: "",
     };
 
     //input form local state
@@ -337,7 +334,7 @@ class Circle extends React.Component {
         rewardTitle: "",
         rewardDescription: "",
         rewardPoints: "",
-        deleteCircleError: ""
+        deleteCircleError: "",
       });
     }
   }
@@ -426,15 +423,17 @@ class Circle extends React.Component {
       console.log("wrong thing");
       this.setState({
         deleteCircleError:
-          "Given circle name does not match " + currentCircle.circleName
+          "Given circle name does not match " + currentCircle.circleName,
       });
       return;
     }
-    var allUsersCurrentCircle = this.props.firestoreUsersRedux.filter(user => {
-      if (!user) {
-        return false;
+    var allUsersCurrentCircle = this.props.firestoreUsersRedux.filter(
+      (user) => {
+        if (!user) {
+          return false;
+        }
       }
-    });
+    );
     var allUsersCurrentCircleMap = {};
     allUsersCurrentCircle.map(
       (user) => (allUsersCurrentCircleMap[user.id] = user)
@@ -477,7 +476,7 @@ class Circle extends React.Component {
       showEditTaskModal: true,
       completeBy: editTask.completeBy,
       editingTaskID: editTask.taskID,
-      penalty: editTask.penalty
+      penalty: editTask.penalty,
     });
   }
 
@@ -1009,7 +1008,7 @@ const mapStateToProps = (state, ownProps) => {
     firestoreCircleRedux: state.firestore.ordered.circles,
     firebaseAuthRedux: state.firebase.auth,
     firebaseProfileRedux: state.firebase.profile,
-    firestoreFriendRequestsRedux: state.firestore.ordered.friendRequests
+    firestoreFriendRequestsRedux: state.firestore.ordered.friendRequests,
   };
 };
 
@@ -1043,8 +1042,8 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(
         deleteCircle(circleID, allUsersCurrentCircleMap, allTasksCurrentCircle)
       ),
-    dispatchSendFriendRequest: friendInfo =>
-      dispatch(sendFriendRequest(friendInfo))
+    dispatchSendFriendRequest: (friendInfo) =>
+      dispatch(sendFriendRequest(friendInfo)),
   };
 };
 
@@ -1068,9 +1067,9 @@ export default compose(
       {
         collection: "friendRequests",
         where: [
-          ["allUsersRelated", "array-contains", props.firebaseAuthRedux.uid]
-        ]
-      }
+          ["allUsersRelated", "array-contains", props.firebaseAuthRedux.uid],
+        ],
+      },
     ];
   })
 )(Circle);
