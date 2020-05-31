@@ -30,6 +30,7 @@ import {
   claimReward,
   deleteReward,
 } from "../../Store/Actions/RewardActions";
+import { sendFriendRequest } from "../../Store/Actions/FriendActions";
 import ViewMembersModal from "./ViewMembersModal";
 import DisplayEditTasks from "./DisplayEditTasks";
 import ViewRewardsHistoryModal from "./ViewRewardsHistoryModal";
@@ -62,6 +63,10 @@ class Circle extends React.Component {
       editingTaskID: "",
       penalty: "", // For overdue tasks
       handledOverdue: false,
+<<<<<<< HEAD
+=======
+      deleteCircleError: ""
+>>>>>>> 304334735b4eb94cfbf043143533d3cc7eb1aa0b
     };
 
     //input form local state
@@ -332,6 +337,7 @@ class Circle extends React.Component {
         rewardTitle: "",
         rewardDescription: "",
         rewardPoints: "",
+        deleteCircleError: ""
       });
     }
   }
@@ -412,21 +418,29 @@ class Circle extends React.Component {
   }
 
   handleDeleteCircle() {
+    // console.log(inputBox.value);
     var currentCircle = this.props.firestoreCircleRedux[0];
-    var allUsersCurrentCircle = this.props.firestoreUsersRedux.filter(
-      (user) => {
-        if (!user) {
-          return false;
-        }
-        return Object.keys(user.circleList).includes(currentCircle.id);
+    var inputBox = document.getElementById("confirmDeletionCircleName");
+    var whatTheyPut = inputBox.value;
+    if (whatTheyPut !== currentCircle.circleName) {
+      console.log("wrong thing");
+      this.setState({
+        deleteCircleError:
+          "Given circle name does not match " + currentCircle.circleName
+      });
+      return;
+    }
+    var allUsersCurrentCircle = this.props.firestoreUsersRedux.filter(user => {
+      if (!user) {
+        return false;
       }
-    );
+    });
     var allUsersCurrentCircleMap = {};
     allUsersCurrentCircle.map(
       (user) => (allUsersCurrentCircleMap[user.id] = user)
     );
     var allTasksCurrentCircle = this.props.firestoreTasksRedux;
-    // console.log("deleting circle");
+    console.log("deleting circle");
     this.props.dispatchDeleteCircle(
       currentCircle.id,
       allUsersCurrentCircleMap,
@@ -463,7 +477,7 @@ class Circle extends React.Component {
       showEditTaskModal: true,
       completeBy: editTask.completeBy,
       editingTaskID: editTask.taskID,
-      penalty: editTask.penalty,
+      penalty: editTask.penalty
     });
   }
 
@@ -692,6 +706,10 @@ class Circle extends React.Component {
                   style={{ width: "100%", borderColor: "white" }}
                   size="lg"
                   variant="outline-primary"
+                  style={{ width: "100%", borderColor: "white" }}
+                  onClick={this.handleClick}
+                  name="viewMembersButton"
+                  size="lg"
                 >
                   Promote/Demote
                 </Dropdown.Item>
@@ -777,6 +795,10 @@ class Circle extends React.Component {
             leaders={currentCircle.leaderList}
             members={currentCircle.memberList}
             handleClose={this.handleClose}
+            userID={userID}
+            profileData={profileData}
+            friendRequests={this.props.firestoreFriendRequestsRedux}
+            dispatchSendFriendRequest={this.props.dispatchSendFriendRequest}
           ></ViewMembersModal>
           <CreateRewardsModal
             showCreateRewardsModal={this.state.showCreateRewardsModal}
@@ -901,8 +923,19 @@ class Circle extends React.Component {
             <Modal.Body>
               <p>
                 You are about to DELETE this Circle. Are you sure you want to
-                DELETE it?
+                DELETE it? Everyone will be removed from this circle, all tasks
+                and rewards will be removed, and there is no undoing this
+                process. Please type the name of the circle undeneath to confirm
+                that you understand the consequences. Reference:
+                <b style={{ color: "red" }}>{" " + currentCircle.circleName}</b>
+                <br />
+                Case Sensitive!
               </p>
+              <input
+                style={{ color: "red" }}
+                id={"confirmDeletionCircleName"}
+              ></input>
+              <p>{this.state.deleteCircleError}</p>
               <div style={{ display: "flex", justifyContent: "center" }}>
                 <Button
                   style={{ margin: "10px 10px" }}
@@ -976,6 +1009,7 @@ const mapStateToProps = (state, ownProps) => {
     firestoreCircleRedux: state.firestore.ordered.circles,
     firebaseAuthRedux: state.firebase.auth,
     firebaseProfileRedux: state.firebase.profile,
+    firestoreFriendRequestsRedux: state.firestore.ordered.friendRequests
   };
 };
 
@@ -1009,6 +1043,8 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(
         deleteCircle(circleID, allUsersCurrentCircleMap, allTasksCurrentCircle)
       ),
+    dispatchSendFriendRequest: friendInfo =>
+      dispatch(sendFriendRequest(friendInfo))
   };
 };
 
@@ -1029,6 +1065,12 @@ export default compose(
       },
       { collection: "users" },
       { collection: "circles", doc: props.match.params.id },
+      {
+        collection: "friendRequests",
+        where: [
+          ["allUsersRelated", "array-contains", props.firebaseAuthRedux.uid]
+        ]
+      }
     ];
   })
 )(Circle);
