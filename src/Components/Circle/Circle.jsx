@@ -30,6 +30,7 @@ import {
   claimReward,
   deleteReward
 } from "../../Store/Actions/RewardActions";
+import { sendFriendRequest } from "../../Store/Actions/FriendActions";
 import ViewMembersModal from "./ViewMembersModal";
 import LeaderEditTasksModal from "./LeaderEditTasksModal";
 import ViewRewardsHistoryModal from "./ViewRewardsHistoryModal";
@@ -468,7 +469,7 @@ class Circle extends React.Component {
       showEditTaskModal: true,
       completeBy: editTask.completeBy,
       editingTaskID: editTask.taskID,
-      penalty: editTask.penalty,
+      penalty: editTask.penalty
     });
   }
 
@@ -670,48 +671,50 @@ class Circle extends React.Component {
               </Dropdown.Menu>
             </Dropdown>
             &nbsp;
-            {isLeader ? (
-              <Dropdown>
-                <Dropdown.Toggle
-                  style={{ margin: "7.5px", height: "100%" }}
-                  size="lg"
-                  variant="success"
-                  id="dropdown-basic"
+            <Dropdown>
+              <Dropdown.Toggle
+                style={{ margin: "7.5px", height: "100%" }}
+                size="lg"
+                variant="success"
+                id="dropdown-basic"
+                variant="outline-primary"
+              >
+                Manage Users
+              </Dropdown.Toggle>
+              <Dropdown.Menu style={{ width: "100%" }}>
+                <Button
                   variant="outline-primary"
+                  style={{ width: "100%", borderColor: "white" }}
+                  onClick={this.handleClick}
+                  name="viewMembersButton"
+                  size="lg"
                 >
-                  Manage Users
-                </Dropdown.Toggle>
-                <Dropdown.Menu style={{ width: "100%" }}>
-                  <Button
-                    variant="outline-primary"
-                    style={{ width: "100%", borderColor: "white" }}
-                    onClick={this.handleClick}
-                    name="viewMembersButton"
-                    size="lg"
-                  >
-                    View Users
-                  </Button>
-                  <Button
-                    name="inviteMembersButton"
-                    onClick={this.handleClick}
-                    style={{ width: "100%", borderColor: "white" }}
-                    size="lg"
-                    variant="outline-primary"
-                  >
-                    Invite Members
-                  </Button>
-                  <Button
-                    name="promoteDemoteButton"
-                    onClick={this.handleClick}
-                    style={{ width: "100%", borderColor: "white" }}
-                    size="lg"
-                    variant="outline-primary"
-                  >
-                    Promote/Demote
-                  </Button>
-                </Dropdown.Menu>
-              </Dropdown>
-            ) : null}
+                  View Users
+                </Button>
+                {isLeader ? (
+                  <div>
+                    <Button
+                      name="inviteMembersButton"
+                      onClick={this.handleClick}
+                      style={{ width: "100%", borderColor: "white" }}
+                      size="lg"
+                      variant="outline-primary"
+                    >
+                      Invite Members
+                    </Button>
+                    <Button
+                      name="promoteDemoteButton"
+                      onClick={this.handleClick}
+                      style={{ width: "100%", borderColor: "white" }}
+                      size="lg"
+                      variant="outline-primary"
+                    >
+                      Promote/Demote
+                    </Button>
+                  </div>
+                ) : null}
+              </Dropdown.Menu>
+            </Dropdown>
             &nbsp;
             <Dropdown>
               <Dropdown.Toggle
@@ -793,6 +796,10 @@ class Circle extends React.Component {
             leaders={currentCircle.leaderList}
             members={currentCircle.memberList}
             handleClose={this.handleClose}
+            userID={userID}
+            profileData={profileData}
+            friendRequests={this.props.firestoreFriendRequestsRedux}
+            dispatchSendFriendRequest={this.props.dispatchSendFriendRequest}
           ></ViewMembersModal>
           <CreateRewardsModal
             showCreateRewardsModal={this.state.showCreateRewardsModal}
@@ -1002,7 +1009,8 @@ const mapStateToProps = (state, ownProps) => {
     firestoreUsersRedux: state.firestore.ordered.users,
     firestoreCircleRedux: state.firestore.ordered.circles,
     firebaseAuthRedux: state.firebase.auth,
-    firebaseProfileRedux: state.firebase.profile
+    firebaseProfileRedux: state.firebase.profile,
+    firestoreFriendRequestsRedux: state.firestore.ordered.friendRequests
   };
 };
 
@@ -1035,7 +1043,9 @@ const mapDispatchToProps = dispatch => {
     ) =>
       dispatch(
         deleteCircle(circleID, allUsersCurrentCircleMap, allTasksCurrentCircle)
-      )
+      ),
+    dispatchSendFriendRequest: friendInfo =>
+      dispatch(sendFriendRequest(friendInfo))
   };
 };
 
@@ -1058,7 +1068,13 @@ export default compose(
         where: ["circleID", "==", props.match.params.id]
       },
       { collection: "users" },
-      { collection: "circles", doc: props.match.params.id }
+      { collection: "circles", doc: props.match.params.id },
+      {
+        collection: "friendRequests",
+        where: [
+          ["allUsersRelated", "array-contains", props.firebaseAuthRedux.uid]
+        ]
+      }
     ];
   })
 )(Circle);
