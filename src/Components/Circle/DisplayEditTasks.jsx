@@ -27,6 +27,8 @@ class LeaderEditTasksModal extends Component {
         displayAssignedByMe: false,
       });
     }
+    var dropdown = document.getElementById("dropdown");
+    dropdown.innerHTML = e.target.name === "me" ? "You" : "Other Leaders";
   }
 
   render() {
@@ -94,7 +96,7 @@ class LeaderEditTasksModal extends Component {
         <Modal.Body>
           {this.props.isLeader && (
             <DropdownButton
-              id="dropdown-basic-button"
+              id="dropdown"
               title="View Tasks Assigned By "
               variant="outline-primary"
             >
