@@ -13,25 +13,25 @@ import {
   deleteTask,
   disapproveTask,
   editTask,
-  removeOverdueTasks
+  removeOverdueTasks,
 } from "../../Store/Actions/TaskActions";
 import {
   updateCircleMembers,
   updateCirclePromoteDemote,
   leaveCircle,
-  deleteCircle
+  deleteCircle,
 } from "../../Store/Actions/CircleActions";
 import { firestoreConnect } from "react-redux-firebase"; // so this allows us to connect this component to a firebase collection
 import { compose } from "redux";
 import { Redirect } from "react-router-dom";
-import { Button, Modal, Dropdown } from "react-bootstrap";
+import { Button, Modal, Dropdown, DropdownButton } from "react-bootstrap";
 import {
   createReward,
   claimReward,
-  deleteReward
+  deleteReward,
 } from "../../Store/Actions/RewardActions";
 import ViewMembersModal from "./ViewMembersModal";
-import LeaderEditTasksModal from "./LeaderEditTasksModal";
+import DisplayEditTasks from "./DisplayEditTasks";
 import ViewRewardsHistoryModal from "./ViewRewardsHistoryModal";
 
 class Circle extends React.Component {
@@ -61,7 +61,7 @@ class Circle extends React.Component {
       recurringReward: "Yes", // All rewards are recurring by default
       editingTaskID: "",
       penalty: "", // For overdue tasks
-      handledOverdue: false
+      handledOverdue: false,
     };
 
     //input form local state
@@ -87,6 +87,7 @@ class Circle extends React.Component {
     this.handleSubmitEditedTask = this.handleSubmitEditedTask.bind(this);
     this.handleRemoveOverdueTasks = this.handleRemoveOverdueTasks.bind(this);
     this.handleDeleteCircle = this.handleDeleteCircle.bind(this);
+    this.handleClose = this.handleClose.bind(this);
   }
 
   componentDidUpdate() {
@@ -153,13 +154,13 @@ class Circle extends React.Component {
           circleID
         );
         this.setState({
-          handledOverdue: true
+          handledOverdue: true,
         });
       }
     }
   }
 
-  deleteTask = taskId => {
+  deleteTask = (taskId) => {
     // Delete task
     this.props.dispatchDeleteTask(taskId);
   };
@@ -170,13 +171,13 @@ class Circle extends React.Component {
       var value = parseInt(e.target.value);
       var newValue = isNaN(value) ? "" : value;
       this.setState({
-        [e.target.name]: newValue
+        [e.target.name]: newValue,
       });
       return;
     }
     // Saves current form inputs in state
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
     // console.log(e.target.value);
   }
@@ -208,7 +209,7 @@ class Circle extends React.Component {
       taskDescription: this.state.taskDescription,
       completeBy: this.state.completeBy,
       reward: this.state.reward === "" ? 0 : this.state.reward,
-      penalty: this.state.penalty === "" ? 0 : this.state.penalty
+      penalty: this.state.penalty === "" ? 0 : this.state.penalty,
     };
     this.props.dispatchCreateTask(taskDetails);
 
@@ -226,7 +227,7 @@ class Circle extends React.Component {
       showPromoteDemoteModal: false,
       showApproveTasksModal: false,
       showViewMembersModal: false,
-      showEditTaskModal: false
+      showEditTaskModal: false,
     });
 
     // After creating the task, also create the notification
@@ -249,58 +250,58 @@ class Circle extends React.Component {
   }
 
   // For showing modal (creating new task)
-  handleClick = e => {
+  handleClick = (e) => {
     console.log(e.target.name);
     switch (e.target.name) {
       case "createTaskButton":
         this.setState({
-          showCreateTaskModal: true
+          showCreateTaskModal: true,
         });
         return;
       case "inviteMembersButton":
         this.setState({
-          showInviteMembersModal: true
+          showInviteMembersModal: true,
         });
         return;
       case "promoteDemoteButton":
         this.setState({
-          showPromoteDemoteModal: true
+          showPromoteDemoteModal: true,
         });
         return;
       case "approveTasksButton":
         this.setState({
-          showApproveTasksModal: true
+          showApproveTasksModal: true,
         });
         return;
       case "createRewardsButton":
         this.setState({
-          showCreateRewardsModal: true
+          showCreateRewardsModal: true,
         });
         return;
       case "leaveCircleButton":
         this.setState({
-          showLeaveCircleModal: true
+          showLeaveCircleModal: true,
         });
         return;
       case "viewMembersButton":
         this.setState({
-          showViewMembersModal: true
+          showViewMembersModal: true,
         });
         return;
       case "editTasksButton":
         this.setState({
-          showLeaderEditTasksModal: true
+          showLeaderEditTasksModal: true,
         });
         console.log("here");
         return;
       case "viewRewardsHistory":
         this.setState({
-          showViewRewardsHistoryModal: true
+          showViewRewardsHistoryModal: true,
         });
         return;
       case "deleteCircleButton":
         this.setState({
-          showDeleteCircleModal: true
+          showDeleteCircleModal: true,
         });
         return;
       default:
@@ -308,29 +309,35 @@ class Circle extends React.Component {
     }
   };
 
-  handleClose = () => {
-    this.setState({
-      showCreateTaskModal: false,
-      showInviteMembersModal: false,
-      showPromoteDemoteModal: false,
-      showApproveTasksModal: false,
-      showCreateRewardsModal: false,
-      showLeaveCircleModal: false,
-      showViewMembersModal: false,
-      showEditTaskModal: false,
-      showLeaderEditTasksModal: false,
-      showViewRewardsHistoryModal: false,
-      showDeleteCircleModal: false,
-      rewardTitle: "",
-      rewardDescription: "",
-      rewardPoints: ""
-    });
-  };
+  handleClose(e) {
+    // e.preventDefault();
+    if (this.state.showLeaderEditTasksModal && this.state.showEditTaskModal) {
+      // Close the second but not the first
+      this.setState({
+        showEditTaskModal: false,
+      });
+    } else {
+      this.setState({
+        showCreateTaskModal: false,
+        showInviteMembersModal: false,
+        showPromoteDemoteModal: false,
+        showApproveTasksModal: false,
+        showCreateRewardsModal: false,
+        showLeaveCircleModal: false,
+        showViewMembersModal: false,
+        showEditTaskModal: false,
+        showLeaderEditTasksModal: false,
+        showViewRewardsHistoryModal: false,
+        showDeleteCircleModal: false,
+        rewardTitle: "",
+        rewardDescription: "",
+        rewardPoints: "",
+      });
+    }
+  }
 
-  // For creating rewards
   handleCreateRewards(event) {
     event.preventDefault();
-    // Make sure user fills out each field
     if (
       this.state.rewardTitle === "" ||
       this.state.rewardDescription === "" ||
@@ -345,7 +352,7 @@ class Circle extends React.Component {
       rewardTitle: this.state.rewardTitle,
       rewardDescription: this.state.rewardDescription,
       rewardPoints: this.state.rewardPoints,
-      recurringReward: this.state.recurringReward
+      recurringReward: this.state.recurringReward,
     };
     // Create and call the dispatchCreateReward function?
     this.props.dispatchCreateReward(rewardDetails);
@@ -357,7 +364,7 @@ class Circle extends React.Component {
       rewardDescription: "",
       rewardPoints: 0,
       showCreateRewardsModal: false,
-      recurringReward: "Yes"
+      recurringReward: "Yes",
     });
   }
 
@@ -400,21 +407,23 @@ class Circle extends React.Component {
     var currentUserID = auth.uid;
     this.props.dispatchLeaveCircle(currentCircle.circleID, currentUserID);
     this.setState({
-      leftCircle: true
+      leftCircle: true,
     });
   }
 
   handleDeleteCircle() {
     var currentCircle = this.props.firestoreCircleRedux[0];
-    var allUsersCurrentCircle = this.props.firestoreUsersRedux.filter(user => {
-      if (!user) {
-        return false;
+    var allUsersCurrentCircle = this.props.firestoreUsersRedux.filter(
+      (user) => {
+        if (!user) {
+          return false;
+        }
+        return Object.keys(user.circleList).includes(currentCircle.id);
       }
-      return Object.keys(user.circleList).includes(currentCircle.id);
-    });
+    );
     var allUsersCurrentCircleMap = {};
     allUsersCurrentCircle.map(
-      user => (allUsersCurrentCircleMap[user.id] = user)
+      (user) => (allUsersCurrentCircleMap[user.id] = user)
     );
     var allTasksCurrentCircle = this.props.firestoreTasksRedux;
     // console.log("deleting circle");
@@ -481,7 +490,8 @@ class Circle extends React.Component {
       taskDescription: this.state.taskDescription,
       reward: this.state.reward === "" ? 0 : this.state.reward,
       taskID: this.state.editingTaskID,
-      completeBy: this.state.completeBy
+      completeBy: this.state.completeBy,
+      penalty: this.state.penalty,
     };
     this.props.dispatchEditTask(newTaskDetails);
     // Find the form and reset form inputs
@@ -499,7 +509,7 @@ class Circle extends React.Component {
       showPromoteDemoteModal: false,
       showApproveTasksModal: false,
       showViewMembersModal: false,
-      showEditTaskModal: false
+      showEditTaskModal: false,
     });
   }
 
@@ -561,7 +571,7 @@ class Circle extends React.Component {
       //   console.log(user.username);
       //   console.log(Object.keys(user.circleList).includes(currentCircle.id));
       // });
-      var allUsersCurrentCircle = allUsers.filter(user => {
+      var allUsersCurrentCircle = allUsers.filter((user) => {
         if (!user) {
           return false;
         }
@@ -569,7 +579,7 @@ class Circle extends React.Component {
       });
       var allUsersCurrentCircleMap = {};
       allUsersCurrentCircle.map(
-        user => (allUsersCurrentCircleMap[user.id] = user)
+        (user) => (allUsersCurrentCircleMap[user.id] = user)
       );
 
       if (!Object.keys(allUsersCurrentCircleMap).includes(userID)) {
@@ -577,7 +587,7 @@ class Circle extends React.Component {
       }
       // Figure out which tasks were assigned by you (either leader or member)
       var needApproval = 0;
-      var tasksAssignedByMe = allTasks.filter(task => {
+      var tasksAssignedByMe = allTasks.filter((task) => {
         if (task.taskStage !== "toDo") {
           return false;
         } else if (task.assignedByID !== userID) {
@@ -586,7 +596,7 @@ class Circle extends React.Component {
           return true;
         }
       });
-      needApproval = allTasks.filter(task => task.taskStage === "pending")
+      needApproval = allTasks.filter((task) => task.taskStage === "pending")
         .length;
     }
 
@@ -613,125 +623,110 @@ class Circle extends React.Component {
               Create Task
             </Button>
             &nbsp;
-            <Dropdown>
-              <Dropdown.Toggle
-                style={{ margin: "7.5px", height: "100%" }}
-                size="lg"
-                variant="success"
-                id="dropdown-basic"
-                variant={needApproval ? "outline-danger" : "outline-primary"}
-              >
-                Manage Tasks
-              </Dropdown.Toggle>
-              <Dropdown.Menu style={{ width: "100%" }}>
-                {isLeader ? (
-                  <Button
-                    name="approveTasksButton"
-                    onClick={this.handleClick}
-                    style={{ width: "100%", borderColor: "white" }}
-                    size="lg"
-                    variant={
-                      needApproval ? "outline-danger" : "outline-primary"
-                    }
-                  >
-                    Approve Tasks
-                  </Button>
-                ) : null}
-                <Button
-                  name="editTasksButton"
+            <DropdownButton
+              style={{ margin: "7.5px", height: "100%" }}
+              variant="success"
+              id="dropdown-basic"
+              variant={needApproval ? "outline-danger" : "outline-primary"}
+              title="Manage Tasks"
+              size="lg"
+            >
+              {isLeader ? (
+                <Dropdown.Item
+                  name="approveTasksButton"
                   onClick={this.handleClick}
                   style={{ width: "100%", borderColor: "white" }}
-                  size="lg"
-                  variant="outline-primary"
+                  variant={needApproval ? "outline-danger" : "outline-primary"}
                 >
-                  Edit Tasks
-                </Button>
-                <Button
-                  style={{ width: "100%", borderColor: "white" }}
-                  size="lg"
-                  variant="outline-primary"
-                >
-                  Tasks History
-                </Button>
-              </Dropdown.Menu>
-            </Dropdown>
+                  Approve Tasks
+                </Dropdown.Item>
+              ) : null}
+              <Dropdown.Item
+                name="editTasksButton"
+                onClick={this.handleClick}
+                style={{ width: "100%", borderColor: "white" }}
+                size="lg"
+                variant="outline-primary"
+              >
+                Edit Tasks
+              </Dropdown.Item>
+              <Dropdown.Item
+                style={{ width: "100%", borderColor: "white" }}
+                size="lg"
+                variant="outline-primary"
+              >
+                Tasks History
+              </Dropdown.Item>
+            </DropdownButton>
             &nbsp;
             {isLeader ? (
-              <Dropdown>
-                <Dropdown.Toggle
-                  style={{ margin: "7.5px", height: "100%" }}
-                  size="lg"
-                  variant="success"
-                  id="dropdown-basic"
-                  variant="outline-primary"
-                >
-                  Manage Users
-                </Dropdown.Toggle>
-                <Dropdown.Menu style={{ width: "100%" }}>
-                  <Button
-                    variant="outline-primary"
-                    style={{ width: "100%", borderColor: "white" }}
-                    onClick={this.handleClick}
-                    name="viewMembersButton"
-                    size="lg"
-                  >
-                    View Users
-                  </Button>
-                  <Button
-                    name="inviteMembersButton"
-                    onClick={this.handleClick}
-                    style={{ width: "100%", borderColor: "white" }}
-                    size="lg"
-                    variant="outline-primary"
-                  >
-                    Invite Members
-                  </Button>
-                  <Button
-                    name="promoteDemoteButton"
-                    onClick={this.handleClick}
-                    style={{ width: "100%", borderColor: "white" }}
-                    size="lg"
-                    variant="outline-primary"
-                  >
-                    Promote/Demote
-                  </Button>
-                </Dropdown.Menu>
-              </Dropdown>
-            ) : null}
-            &nbsp;
-            <Dropdown>
-              <Dropdown.Toggle
+              <DropdownButton
                 style={{ margin: "7.5px", height: "100%" }}
                 size="lg"
                 variant="success"
                 id="dropdown-basic"
                 variant="outline-primary"
+                title="Manage Users"
               >
-                Manage Rewards
-              </Dropdown.Toggle>
-              <Dropdown.Menu style={{ width: "100%" }}>
-                <Button
+                <Dropdown.Item
                   variant="outline-primary"
                   style={{ width: "100%", borderColor: "white" }}
-                  size="lg"
-                  name="viewRewardsHistory"
                   onClick={this.handleClick}
+                  name="viewMembersButton"
+                  size="lg"
                 >
-                  Rewards History
-                </Button>
-                {isLeader ? (
-                  <Button
-                    name="createRewardsButton"
-                    onClick={this.handleClick}
-                    style={{ width: "100%", borderColor: "white" }}
-                    size="lg"
-                    variant="outline-primary"
-                  >
-                    Create Rewards
-                  </Button>
-                ) : null}
-              </Dropdown.Menu>
-            </Dropdown>
+                  View Users
+                </Dropdown.Item>
+                <Dropdown.Item
+                  name="inviteMembersButton"
+                  onClick={this.handleClick}
+                  style={{ width: "100%", borderColor: "white" }}
+                  size="lg"
+                  variant="outline-primary"
+                >
+                  Invite Members
+                </Dropdown.Item>
+                <Dropdown.Item
+                  name="promoteDemoteButton"
+                  onClick={this.handleClick}
+                  style={{ width: "100%", borderColor: "white" }}
+                  size="lg"
+                  variant="outline-primary"
+                >
+                  Promote/Demote
+                </Dropdown.Item>
+              </DropdownButton>
+            ) : null}
+            &nbsp;
+            <DropdownButton
+              style={{ margin: "7.5px", height: "100%" }}
+              size="lg"
+              variant="success"
+              id="dropdown-basic"
+              variant="outline-primary"
+              title="Manage Rewards"
+            >
+              <Dropdown.Item
+                variant="outline-primary"
+                style={{ width: "100%", borderColor: "white" }}
+                size="lg"
+                name="viewRewardsHistory"
+                onClick={this.handleClick}
+              >
+                Rewards History
+              </Dropdown.Item>
+              {isLeader ? (
+                <Dropdown.Item
+                  name="createRewardsButton"
+                  onClick={this.handleClick}
+                  style={{ width: "100%", borderColor: "white" }}
+                  size="lg"
+                  variant="outline-primary"
+                >
+                  Create Rewards
+                </Dropdown.Item>
+              ) : null}
+            </DropdownButton>
             {!isLeader ? (
               <Button
                 variant="outline-danger"
@@ -759,12 +754,15 @@ class Circle extends React.Component {
             handleClose={this.handleClose}
             rewardsHistory={
               currentCircle.rewardsHistoryForUsers
-                ? currentCircle.rewardsHistoryForUsers[userID]
+                ? currentCircle.rewardsHistoryForUsers
                 : null
             }
-            allRewards={currentCircle.rewardsList}
+            isLeader={isLeader}
+            userID={userID}
+            leaders={currentCircle.leaderList}
+            members={currentCircle.memberList}
           ></ViewRewardsHistoryModal>
-          <LeaderEditTasksModal
+          <DisplayEditTasks
             showLeaderEditTasksModal={this.state.showLeaderEditTasksModal}
             handleClose={this.handleClose}
             tasksAssignedByMe={tasksAssignedByMe}
@@ -773,7 +771,7 @@ class Circle extends React.Component {
             deleteTask={this.deleteTask}
             userID={userID}
             isLeader={isLeader}
-          ></LeaderEditTasksModal>
+          ></DisplayEditTasks>
           <ViewMembersModal
             showViewMembersModal={this.state.showViewMembersModal}
             leaders={currentCircle.leaderList}
@@ -977,30 +975,30 @@ const mapStateToProps = (state, ownProps) => {
     firestoreUsersRedux: state.firestore.ordered.users,
     firestoreCircleRedux: state.firestore.ordered.circles,
     firebaseAuthRedux: state.firebase.auth,
-    firebaseProfileRedux: state.firebase.profile
+    firebaseProfileRedux: state.firebase.profile,
   };
 };
 
 //dispatchCreateTask is a method to dispatch the create task event upon submitting the form
 //createTask is a functional action creator from TaskActions
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    dispatchCreateTask: task => dispatch(createTask(task)),
+    dispatchCreateTask: (task) => dispatch(createTask(task)),
     dispatchMoveTask: (task, userID) => dispatch(moveTask(task, userID)),
-    dispatchDeleteTask: taskId => dispatch(deleteTask(taskId)),
-    dispatchUpdateCircleMembers: newCircleDetails =>
+    dispatchDeleteTask: (taskId) => dispatch(deleteTask(taskId)),
+    dispatchUpdateCircleMembers: (newCircleDetails) =>
       dispatch(updateCircleMembers(newCircleDetails)),
-    dispatchUpdateCirclePromoteDemote: newCircleDetails =>
+    dispatchUpdateCirclePromoteDemote: (newCircleDetails) =>
       dispatch(updateCirclePromoteDemote(newCircleDetails)),
-    dispatchCreateReward: reward => dispatch(createReward(reward)),
+    dispatchCreateReward: (reward) => dispatch(createReward(reward)),
     dispatchClaimReward: (rewardID, userID, circleID, recurringReward) =>
       dispatch(claimReward(rewardID, userID, circleID, recurringReward)),
     dispatchDeleteReward: (rewardID, circleID) =>
       dispatch(deleteReward(rewardID, circleID)),
     dispatchLeaveCircle: (circleID, userID) =>
       dispatch(leaveCircle(circleID, userID)),
-    dispatchDisapproveTask: taskID => dispatch(disapproveTask(taskID)),
-    dispatchEditTask: newTaskDetails => dispatch(editTask(newTaskDetails)),
+    dispatchDisapproveTask: (taskID) => dispatch(disapproveTask(taskID)),
+    dispatchEditTask: (newTaskDetails) => dispatch(editTask(newTaskDetails)),
     dispatchRemoveOverdueTasks: (deleteThisTaskID, userID, circleID) =>
       dispatch(removeOverdueTasks(deleteThisTaskID, userID, circleID)),
     dispatchDeleteCircle: (
@@ -1010,7 +1008,7 @@ const mapDispatchToProps = dispatch => {
     ) =>
       dispatch(
         deleteCircle(circleID, allUsersCurrentCircleMap, allTasksCurrentCircle)
-      )
+      ),
   };
 };
 
@@ -1018,22 +1016,19 @@ const mapDispatchToProps = dispatch => {
 //whenever database for this collection is changed, it will induce the firestoreReducer, which will sync firestore/redux store state
 //and then this component will "hear" it.
 export default compose(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  ),
+  connect(mapStateToProps, mapDispatchToProps),
   //firestoreConnect takes in an array of of objects that say which collection you want to connect to
   //whenever database for this collection is changed, it will induce the firestoreReducer, which will sync store state
   // and then this component will "hear" that because we connected that. Then state will change for the store
-  firestoreConnect(props => {
+  firestoreConnect((props) => {
     // console.log(props);
     return [
       {
         collection: "tasks",
-        where: ["circleID", "==", props.match.params.id]
+        where: ["circleID", "==", props.match.params.id],
       },
       { collection: "users" },
-      { collection: "circles", doc: props.match.params.id }
+      { collection: "circles", doc: props.match.params.id },
     ];
   })
 )(Circle);

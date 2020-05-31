@@ -4,14 +4,14 @@
 
 .carousel-control-next-icon:after {
     content: "▶";
-    color: blue;
+    color: #007bff
 }
 
 .carousel-control-prev-icon:after {
     content: "◀";
-    color: blue;
+    color: #007bff
 }
 
 .carousel-indicators li {
-    background-color: blue !important;
+    background-color: #007bff !important;
 }

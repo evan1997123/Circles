@@ -41,7 +41,6 @@ class LeaderEditTasksModal extends Component {
         <Task
           key={index}
           task={task}
-          buttonText={"Edit"}
           forLeaderEdits={true}
           handleEditTask={this.props.handleEditTask}
           deleteTask={this.props.deleteTask}
