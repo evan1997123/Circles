@@ -761,7 +761,7 @@ class Circle extends React.Component {
                   variant="outline-primary"
                   style={{ width: "100%", borderColor: "white" }}
                   onClick={this.handleClick}
-                  name="viewMembersButton"
+                  name="promoteDemoteButton"
                   size="lg"
                 >
                   Promote/Demote
