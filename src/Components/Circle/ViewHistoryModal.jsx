@@ -3,14 +3,14 @@ import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Carousel from "react-bootstrap/Carousel";
 import Reward from "./Reward";
-import "./ViewRewardsHistoryModal.css";
+import "./ViewHistoryModal.css";
 import { DropdownButton, Dropdown } from "react-bootstrap";
 
 class ViewRewardsHistoryModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      displayTheseRewards: [],
+      displayTheseItems: [],
       noUserSelected: true,
       selectedName: "",
     };
@@ -32,33 +32,42 @@ class ViewRewardsHistoryModal extends Component {
     });
     var dropdown = document.getElementById("dropdown");
     dropdown.innerHTML = name;
-    var displayTheseRewards = this.props.rewardsHistory[userID];
-    if (!displayTheseRewards) {
-      this.setState({
-        displayTheseRewards: [],
-      });
+
+    var displayTheseItems;
+    if (this.props.forRewards) {
+      displayTheseItems = this.props.rewardsHistory[userID];
     } else {
-      displayTheseRewards = Object.keys(displayTheseRewards).map(
+      displayTheseItems = this.props.tasksHistory[userID];
+    }
+
+    console.log(displayTheseItems);
+
+    if (!displayTheseItems) {
+      this.setState({
+        displayTheseItems: [],
+      });
+    } else if (this.props.forRewards) {
+      displayTheseItems = Object.keys(displayTheseItems).map(
         (rewardID, index) => {
           return (
             <Reward
-              reward={displayTheseRewards[rewardID]}
+              reward={displayTheseItems[rewardID]}
               key={index}
               forViewingHistory={true}
-              claimedDate={displayTheseRewards[rewardID].claimedDate}
+              claimedDate={displayTheseItems[rewardID].claimedDate}
             ></Reward>
           );
         }
       );
-      this.setState({
-        displayTheseRewards: displayTheseRewards,
-      });
     }
+    this.setState({
+      displayTheseItems: displayTheseItems,
+    });
   }
 
   handleClose(e) {
     this.setState({
-      displayTheseRewards: [],
+      displayTheseItems: [],
       noUserSelected: true,
       selectedName: "",
     });
@@ -78,41 +87,39 @@ class ViewRewardsHistoryModal extends Component {
       </Dropdown.Item>
     ));
     if (this.props.isLeader) {
-      // If you are the leader, you can view everyone's rewards history!
-      // Display rewards in carousel format
       var listOfCarouselItems = [];
-      var displayTheseRewards =
-        this.state && this.state.displayTheseRewards
-          ? this.state.displayTheseRewards
+      var displayTheseItems =
+        this.state && this.state.displayTheseItems
+          ? this.state.displayTheseItems
           : [];
-      console.log(displayTheseRewards[Object.keys(displayTheseRewards)[0]]);
-      for (var i = 0; i < Object.keys(displayTheseRewards).length; i++) {
+      console.log(displayTheseItems[Object.keys(displayTheseItems)[0]]);
+      for (var i = 0; i < Object.keys(displayTheseItems).length; i += 3) {
         var carouselItem = (
           <Carousel.Item>
             <div
               style={{
                 display: "flex",
                 padding: "0 5% 2.5%",
-                margin: "2.5% 0%",
+                margin: "5% 0%",
               }}
             >
-              {i < displayTheseRewards.length ? (
+              {i < displayTheseItems.length ? (
                 <div style={{ flex: "1" }}>
-                  {displayTheseRewards[Object.keys(displayTheseRewards)[i]]}
+                  {displayTheseItems[Object.keys(displayTheseItems)[i]]}
                 </div>
               ) : (
                 <div style={{ flex: "1" }}></div>
               )}
-              {i + 1 < displayTheseRewards.length ? (
+              {i + 1 < displayTheseItems.length ? (
                 <div style={{ flex: "1" }}>
-                  {displayTheseRewards[Object.keys(displayTheseRewards)[i + 1]]}
+                  {displayTheseItems[Object.keys(displayTheseItems)[i + 1]]}
                 </div>
               ) : (
                 <div style={{ flex: "1" }}></div>
               )}
-              {i + 2 < displayTheseRewards.length ? (
+              {i + 2 < displayTheseItems.length ? (
                 <div style={{ flex: "1" }}>
-                  {displayTheseRewards[Object.keys(displayTheseRewards)[i + 2]]}
+                  {displayTheseItems[Object.keys(displayTheseItems)[i + 2]]}
                 </div>
               ) : (
                 <div style={{ flex: "1" }}></div>
@@ -123,9 +130,10 @@ class ViewRewardsHistoryModal extends Component {
         listOfCarouselItems.push(carouselItem);
       }
       console.log(listOfCarouselItems);
+      var title = this.props.forRewards ? "Rewards" : "Tasks";
       return (
         <Modal
-          show={this.props.showViewRewardsHistoryModal}
+          show={this.props.showViewHistoryModal}
           dialogClassName="modal-80w"
           onHide={this.handleClose}
         >
@@ -135,42 +143,76 @@ class ViewRewardsHistoryModal extends Component {
           <Modal.Body>
             <DropdownButton
               variant="outline-primary"
-              title="Select to View User Rewards History"
+              title={"Select to View User " + title + " History"}
               id="dropdown"
             >
               {dropdownLeaders}
               {dropdownMembers}
             </DropdownButton>
-            {this.state.noUserSelected && (
+            {this.state.noUserSelected && this.props.forRewards && (
               <p>
                 Select a user from the dropdown above to view their rewards
                 history 😊
               </p>
             )}
+            {this.state.noUserSelected && !this.props.forRewards && (
+              <p>
+                Select a user from the dropdown above to view their tasks
+                history 😊
+              </p>
+            )}
             {!this.state.noUserSelected &&
-              Object.keys(listOfCarouselItems).length === 0 && (
+              Object.keys(listOfCarouselItems).length === 0 &&
+              this.props.forRewards && (
                 <p>
                   Uh oh, looks like this user hasn't claimed any rewards yet 🤧
                 </p>
               )}
-            {Object.keys(listOfCarouselItems).length > 0 && (
-              <div>
-                <p>Here is {this.state.selectedName}'s rewards history 🌟</p>
-                <Carousel
-                  interval={null}
-                  indicators={true}
-                  nextIcon={
-                    <span
-                      aria-hidden="true"
-                      className="carousel-control-next-icon"
-                    />
-                  }
-                  style={{ padding: "0% 5%" }}
-                >
-                  {listOfCarouselItems}
-                </Carousel>
-              </div>
-            )}
+            {!this.state.noUserSelected &&
+              Object.keys(listOfCarouselItems).length === 0 &&
+              !this.props.forRewards && (
+                <p>
+                  Uh oh, looks like this user hasn't completed any tasks yet 🤧
+                </p>
+              )}
+            {Object.keys(listOfCarouselItems).length > 0 &&
+              this.props.forRewards && (
+                <div>
+                  <p>Here is {this.state.selectedName}'s rewards history 🌟</p>
+                  <Carousel
+                    interval={null}
+                    indicators={true}
+                    nextIcon={
+                      <span
+                        aria-hidden="true"
+                        className="carousel-control-next-icon"
+                      />
+                    }
+                    style={{ padding: "0% 5%" }}
+                  >
+                    {listOfCarouselItems}
+                  </Carousel>
+                </div>
+              )}
+            {Object.keys(listOfCarouselItems).length > 0 &&
+              !this.props.forRewards && (
+                <div>
+                  <p>Here is {this.state.selectedName}'s tasks history 🌟</p>
+                  <Carousel
+                    interval={null}
+                    indicators={true}
+                    nextIcon={
+                      <span
+                        aria-hidden="true"
+                        className="carousel-control-next-icon"
+                      />
+                    }
+                    style={{ padding: "0% 5%" }}
+                  >
+                    {listOfCarouselItems}
+                  </Carousel>
+                </div>
+              )}
           </Modal.Body>
           <Modal.Footer>
             <Button variant="outline-primary" onClick={this.handleClose}>
@@ -239,7 +281,7 @@ class ViewRewardsHistoryModal extends Component {
 
       return (
         <Modal
-          show={this.props.showViewRewardsHistoryModal}
+          show={this.props.showViewHistoryModal}
           onHide={this.props.handleClose}
           dialogClassName="modal-80w"
         >

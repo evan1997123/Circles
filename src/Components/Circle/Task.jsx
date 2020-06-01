@@ -111,6 +111,7 @@ class Task extends React.Component {
 
             {!forNotification &&
               !forLeaderEdits &&
+              buttonText &&
               buttonText !== "Requesting Approval" && (
                 <Button
                   variant={"outline-primary"}

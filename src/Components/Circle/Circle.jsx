@@ -33,7 +33,8 @@ import {
 import { sendFriendRequest } from "../../Store/Actions/FriendActions";
 import ViewMembersModal from "./ViewMembersModal";
 import DisplayEditTasks from "./DisplayEditTasks";
-import ViewRewardsHistoryModal from "./ViewRewardsHistoryModal";
+import ViewHistoryModal from "./ViewHistoryModal";
+import Task from "./Task";
 
 class Circle extends React.Component {
   constructor(props) {
@@ -55,6 +56,7 @@ class Circle extends React.Component {
       showEditTaskModal: false,
       showLeaderEditTasksModal: false,
       showDeleteCircleModal: false,
+      showViewTasksHistoryModal: false,
       rewardTitle: "",
       rewardDescription: "",
       rewardPoints: "",
@@ -306,6 +308,11 @@ class Circle extends React.Component {
           showDeleteCircleModal: true,
         });
         return;
+      case "viewTasksHistoryButton":
+        this.setState({
+          showViewTasksHistoryModal: true,
+        });
+        return;
       default:
         return;
     }
@@ -331,6 +338,7 @@ class Circle extends React.Component {
         showLeaderEditTasksModal: false,
         showViewRewardsHistoryModal: false,
         showDeleteCircleModal: false,
+        showViewTasksHistoryModal: false,
         rewardTitle: "",
         rewardDescription: "",
         rewardPoints: "",
@@ -611,9 +619,50 @@ class Circle extends React.Component {
       });
       needApproval = allTasks.filter((task) => task.taskStage === "pending")
         .length;
+      // Build tasks history for this Circle
+      var tasksHistory = {};
+      for (var i = 0; i < Object.keys(currentCircle.leaderList).length; i++) {
+        var leaderID = Object.keys(currentCircle.leaderList)[i];
+        tasksHistory[leaderID] = [];
+      }
+      for (var i = 0; i < Object.keys(currentCircle.memberList).length; i++) {
+        var memberID = Object.keys(currentCircle.memberList)[i];
+        tasksHistory[memberID] = [];
+      }
+      var dismissedTasks = allTasks.filter((task) => {
+        return task.taskStage === "dismissed";
+      });
+      var dismissedTasksMap = {};
+      for (var i = 0; i < dismissedTasks.length; i++) {
+        var task = dismissedTasks[i];
+        dismissedTasksMap[task.taskID] = task;
+      }
+      console.log(allTasks);
+      console.log(dismissedTasksMap);
+      for (var i = 0; i < Object.keys(dismissedTasks).length; i++) {
+        var task = dismissedTasks[i];
+        var taskID = task.taskID;
+        var assignedForID = task.assignedForID;
+        tasksHistory[assignedForID].push(taskID);
+      }
+      console.log(tasksHistory);
+      var displayTasksHistory = {};
+      for (var i = 0; i < Object.keys(tasksHistory).length; i++) {
+        var personID = Object.keys(tasksHistory)[i];
+        var listOfTaskIDs = tasksHistory[personID];
+        displayTasksHistory[personID] = listOfTaskIDs.map((taskID, index) => {
+          return (
+            <Task
+              task={dismissedTasksMap[taskID]}
+              key={index}
+              forNotification={false}
+              taskStage="dismissed"
+            ></Task>
+          );
+        });
+      }
     }
 
-    // console.log(currentCircle.rewardsList);
     if (currentCircle) {
       return (
         <div className="overallContainer">
@@ -648,8 +697,11 @@ class Circle extends React.Component {
                 <Dropdown.Item
                   name="approveTasksButton"
                   onClick={this.handleClick}
-                  style={{ width: "100%", borderColor: "white" }}
-                  variant={needApproval ? "outline-danger" : "outline-primary"}
+                  style={{
+                    width: "100%",
+                    backgroundColor: needApproval ? "#dc3545" : "white",
+                    color: needApproval ? "white" : "#212529",
+                  }}
                 >
                   Approve Tasks
                 </Dropdown.Item>
@@ -657,16 +709,18 @@ class Circle extends React.Component {
               <Dropdown.Item
                 name="editTasksButton"
                 onClick={this.handleClick}
-                style={{ width: "100%", borderColor: "white" }}
+                style={{ width: "100%" }}
                 size="lg"
                 variant="outline-primary"
               >
                 Edit Tasks
               </Dropdown.Item>
               <Dropdown.Item
-                style={{ width: "100%", borderColor: "white" }}
+                style={{ width: "100%" }}
                 size="lg"
                 variant="outline-primary"
+                name="viewTasksHistoryButton"
+                onClick={this.handleClick}
               >
                 Tasks History
               </Dropdown.Item>
@@ -766,8 +820,8 @@ class Circle extends React.Component {
               </Button>
             )}
           </div>
-          <ViewRewardsHistoryModal
-            showViewRewardsHistoryModal={this.state.showViewRewardsHistoryModal}
+          <ViewHistoryModal
+            showViewHistoryModal={this.state.showViewRewardsHistoryModal}
             handleClose={this.handleClose}
             rewardsHistory={
               currentCircle.rewardsHistoryForUsers
@@ -778,7 +832,18 @@ class Circle extends React.Component {
             userID={userID}
             leaders={currentCircle.leaderList}
             members={currentCircle.memberList}
-          ></ViewRewardsHistoryModal>
+            forRewards={true}
+          ></ViewHistoryModal>
+          <ViewHistoryModal
+            showViewHistoryModal={this.state.showViewTasksHistoryModal}
+            handleClose={this.handleClose}
+            tasksHistory={displayTasksHistory}
+            isLeader={isLeader}
+            userID={userID}
+            leaders={currentCircle.leaderList}
+            members={currentCircle.memberList}
+            forRewards={false}
+          ></ViewHistoryModal>
           <DisplayEditTasks
             showLeaderEditTasksModal={this.state.showLeaderEditTasksModal}
             handleClose={this.handleClose}
