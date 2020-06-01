@@ -142,7 +142,7 @@ class ViewRewardsHistoryModal extends Component {
           onHide={this.handleClose}
         >
           <Modal.Header closeButton>
-            <Modal.Title>Rewards History</Modal.Title>
+            <Modal.Title>{title} History</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <DropdownButton
