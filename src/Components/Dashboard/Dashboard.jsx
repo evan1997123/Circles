@@ -16,14 +16,12 @@ class Dashboard extends React.Component {
     this.handleDismiss = this.handleDismiss.bind(this);
     this.handleRemoveOverdueTasks = this.handleRemoveOverdueTasks.bind(this);
 
-    console.log("HELLO FROM THE DASHBOARD");
     this.props.handleNavBarUpdateProfile();
     // console.log(window.location.hostname);
   }
 
   // Dismiss button removes the notification from the toDoTasks list
   handleDismiss(task) {
-    console.log("dismiss");
     this.props.dispatchDismissTask(task);
   }
 
@@ -64,12 +62,10 @@ class Dashboard extends React.Component {
           59,
           59
         );
-        console.log(taskDueDate);
         if (taskDueDate.getTime() - currentDate.getTime() < 0) {
           tasksToDelete.push(task);
         }
       }
-      console.log(tasksToDelete);
       for (var i = 0; i < tasksToDelete.length; i++) {
         this.props.dispatchRemoveOverdueTasks(
           tasksToDelete[i].taskID,
@@ -115,7 +111,6 @@ class Dashboard extends React.Component {
     }
     // Tasks that are still to be done and are assigned to me
     allTasks = this.props.firestoreTasksRedux;
-    console.log(allCircles);
     if (allTasks) {
       allTasks = allTasks.filter(task => {
         if (task.assignedForID === userID && task.taskStage === "toDo") {
@@ -135,7 +130,6 @@ class Dashboard extends React.Component {
           });
         }
       }
-      console.log(circleIDToTasksMap);
       var circleIDToNumTasksLeftMap = {};
       if (allCircles) {
         for (var i = 0; i < allCircles.length; i++) {
@@ -144,7 +138,6 @@ class Dashboard extends React.Component {
           circleIDToNumTasksLeftMap[myCircle.circleID] = numTasksLeft;
         }
       }
-      console.log(circleIDToNumTasksLeftMap);
     }
     // Figure out list of Circles that this user is a leader of
     var userInfo = this.props.firebaseAuthRedux;
@@ -154,7 +147,6 @@ class Dashboard extends React.Component {
       for (var i = 0; i < allCircles.length; i++) {
         var circleInfo = allCircles[i];
         var leaders = circleInfo.leaderList;
-        console.log(leaders);
         if (leaders[userID]) {
           leaderInTheseCircles.push(circleInfo.circleID);
         }
@@ -162,20 +154,16 @@ class Dashboard extends React.Component {
     }
     // For each Circle that you're a leader of, figure out number of
     // tasks that still need to be approved
-    console.log(leaderInTheseCircles);
     var circleIDToNumPendingTasks = {};
     allTasks = this.props.firestoreTasksRedux;
     if (allTasks) {
       for (var i = 0; i < leaderInTheseCircles.length; i++) {
         var circleID = leaderInTheseCircles[i];
         circleIDToNumPendingTasks[circleID] = allTasks.filter(task => {
-          console.log(task.taskStage);
           return task.circleID === circleID && task.taskStage === "pending";
         }).length;
       }
     }
-    console.log(circleIDToNumPendingTasks);
-
     return (
       <div className="dashboard">
         <div className="panelContainer" style={{ padding: "0 10%" }}>

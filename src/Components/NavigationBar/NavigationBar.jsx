@@ -22,7 +22,6 @@ class NavigationBar extends Component {
     this.props.updateMyAppStateToIncludeYourNavBarUpdateProfile(
       this.handleUpdateProfile
     );
-    console.log("Navbar COMPONENT is rerendered");
   }
   //profile refers to the current user's profile. every profile should point to a different path
   handleUpdateProfile() {

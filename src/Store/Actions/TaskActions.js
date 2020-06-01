@@ -278,7 +278,6 @@ export const disapproveTask = taskID => {
 
 export const editTask = newTaskDetails => {
   return (dispatch, getState, { getFirebase, getFirestore }) => {
-    console.log(newTaskDetails);
     const firestore = getFirestore();
     firestore
       .collection("tasks")

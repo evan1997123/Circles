@@ -38,7 +38,7 @@ export const signUp = newUser => {
     const firestore = getFirestore();
 
     //check all fields have been filled out
-    console.log(newUser);
+
     var letters = /^[a-zA-Z0-9]+$/;
     if (
       !newUser.firstName ||
@@ -95,8 +95,6 @@ export const signUp = newUser => {
       .where("username", "==", newUser.username)
       .get()
       .then(snapshot => {
-        console.log("the snapshot");
-        console.log(snapshot);
         if (snapshot.empty == false) {
           dispatch({
             type: "SIGN_UP_ERROR",
@@ -108,8 +106,7 @@ export const signUp = newUser => {
             .createUserWithEmailAndPassword(newUser.email, newUser.password)
             .then(resp => {
               //.doc allows us to find the id record with a certain id (such as the random ID from createUser )
-              console.log("hello");
-              console.log(resp);
+
               return firestore
                 .collection("users")
                 .doc(resp.user.uid)

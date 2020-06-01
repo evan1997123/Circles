@@ -756,13 +756,9 @@ class Circle extends React.Component {
                 <Dropdown.Item
                   name="promoteDemoteButton"
                   onClick={this.handleClick}
-                  style={{ width: "100%", borderColor: "white" }}
                   size="lg"
                   variant="outline-primary"
                   style={{ width: "100%", borderColor: "white" }}
-                  onClick={this.handleClick}
-                  name="promoteDemoteButton"
-                  size="lg"
                 >
                   Promote/Demote
                 </Dropdown.Item>

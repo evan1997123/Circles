@@ -31,8 +31,6 @@ export const createCircle = circleDetails => {
     // newCircleDetails.leaderList.map(leader =>
     //   allUsersToUpdate.push(Object.keys(leader)[0])
     // );
-    console.log(allUsersToUpdate);
-    console.log(newCircleDetails);
 
     allUsersToUpdate.map(userID =>
       firestore
@@ -52,7 +50,6 @@ export const createCircle = circleDetails => {
               circleList: updatedCircleList
             })
             .then(() => {
-              console.log("updated");
               dispatch({
                 type: "UPDATED_USER_CIRCLELIST",
                 circle: newCircleDetails,
@@ -102,11 +99,11 @@ export const updateCircleMembers = newCircleDetails => {
     var allUsersToRemove = [];
     membersToAdd.map(nameAndID => allUsersToAdd.push(nameAndID.userID));
     membersToRemove.map(nameAndID => allUsersToRemove.push(nameAndID.userID));
-    console.log("in updateCircle");
+    // console.log("in updateCircle");
 
-    console.log(membersToAdd);
-    console.log(membersToRemove);
-    console.log(newCircleDetails);
+    // console.log(membersToAdd);
+    // console.log(membersToRemove);
+    // console.log(newCircleDetails);
 
     allUsersToAdd.map(userID =>
       firestore
@@ -129,7 +126,6 @@ export const updateCircleMembers = newCircleDetails => {
               circleList: updatedCircleList
             })
             .then(() => {
-              console.log("updated");
               dispatch({
                 type: "INVITED_MEMBER_UPDATE_CIRCLELIST",
                 updatedCircleList: updatedCircleList,
@@ -207,7 +203,6 @@ export const updateCirclePromoteDemote = newCircleDetails => {
     //do async calls to Database
     const firestore = getFirestore();
 
-    console.log(newCircleDetails);
     firestore
       .collection("circles")
       .doc(newCircleDetails.circleID)
@@ -259,7 +254,7 @@ export const leaveCircle = (circleID, userID) => {
                 var userDetails = doc.data();
                 var oldCircleList = userDetails.circleList;
                 var newCircleList = {};
-                console.log(oldCircleList);
+
                 for (var i = 0; i < Object.keys(oldCircleList).length; i++) {
                   var currentCircleID = Object.keys(oldCircleList)[i];
                   if (currentCircleID !== circleID) {
@@ -267,7 +262,7 @@ export const leaveCircle = (circleID, userID) => {
                       oldCircleList[currentCircleID];
                   }
                 }
-                console.log(newCircleList);
+
                 firestore
                   .collection("users")
                   .doc(userID)
@@ -307,13 +302,11 @@ export const deleteCircle = (
   allTasksCurrentCircle
 ) => {
   return (dispatch, getState, { getFirebase, getFirestore }) => {
-    console.log(circleID, allUsersCurrentCircleMap);
-
     const firestore = getFirestore();
-    console.log(allTasksCurrentCircle);
+
     // allUsersCurrentCircleMap.map();
     //delete the circle from the user's circleList
-    console.log("in delete Circle Actions");
+
     Object.keys(allUsersCurrentCircleMap).map(userID => {
       var currentUserCircleList = allUsersCurrentCircleMap[userID].circleList;
       // console.log(currentUserCircleList);
@@ -321,8 +314,6 @@ export const deleteCircle = (
       var updatedUserCircleList = { ...currentUserCircleList };
       delete updatedUserCircleList[circleID];
       // console.log(updatedUserCircleList);
-
-      console.log("deleting", userID);
 
       firestore
         .collection("users")
@@ -351,7 +342,6 @@ export const deleteCircle = (
     allTasksCurrentCircle.map(task => {
       var taskID = task.taskID;
       if (task.circleID === circleID) {
-        console.log("deleting", taskID);
         firestore
           .collection("tasks")
           .doc(taskID)
@@ -377,7 +367,6 @@ export const deleteCircle = (
     });
 
     //delete the circle
-    console.log("deleting circle", circleID);
     firestore
       .collection("circles")
       .doc(circleID)

@@ -193,7 +193,6 @@ class InviteMembersModal extends Component {
       fromName: profileData.firstName + " " + profileData.lastName,
       toList: newFriendList
     };
-    console.log(friendInfo);
 
     this.props.handleAddingFriend(friendInfo);
 
@@ -256,7 +255,6 @@ class InviteMembersModal extends Component {
       myID: userID,
       friendsToDelete: deleteFriendIDs
     };
-    console.log(deleteInfo);
 
     this.props.handleDeleteFriends(deleteInfo);
 
@@ -273,7 +271,6 @@ class InviteMembersModal extends Component {
     const allUsers = this.props.allUsers;
     const profileData = this.props.profileData;
 
-    console.log(this.state.currentForm);
     // var myCurrentFriendList = profileData.friendsList;
     // console.log(myCurrentFriendList);
 
