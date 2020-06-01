@@ -75,6 +75,10 @@ class ViewRewardsHistoryModal extends Component {
   }
 
   render() {
+    if (this.props.showViewHistoryModal) {
+      alert("Temporarily being fixed!");
+    }
+    return null;
     console.log(this.state);
     var dropdownLeaders = Object.keys(this.props.leaders).map(
       (leaderID, index) => (
