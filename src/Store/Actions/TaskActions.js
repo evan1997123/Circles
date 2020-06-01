@@ -4,10 +4,7 @@
 //action creator for creating a task and storing it in firestore database
 //input: task data object
 export const createTask = task => {
-  return (dispatch, getState, {
-    getFirebase,
-    getFirestore
-  }) => {
+  return (dispatch, getState, { getFirebase, getFirestore }) => {
     //pause dispatch
     //do async calls to Database
     //this is asynchronous and returns a Promise. This promise we can use then, which only fires when promise is returned
@@ -68,10 +65,7 @@ export const createTask = task => {
 //action creator for moving a task, i.e. modifying it's taskStage property in firestore database
 //input: task data object
 export const moveTask = (task, userID) => {
-  return (dispatch, getState, {
-    getFirebase,
-    getFirestore
-  }) => {
+  return (dispatch, getState, { getFirebase, getFirestore }) => {
     //console.log(task);
     //console.log(userID);
 
@@ -236,10 +230,7 @@ export const moveTask = (task, userID) => {
 export const deleteTask = taskId => {
   // Pause dispatch
   // Make asynchronous call to firebase
-  return (dispatch, getState, {
-    getFirebase,
-    getFirestore
-  }) => {
+  return (dispatch, getState, { getFirebase, getFirestore }) => {
     // Reference to firestore database
     const firestore = getFirestore();
     firestore
@@ -263,10 +254,7 @@ export const deleteTask = taskId => {
 };
 
 export const disapproveTask = taskID => {
-  return (dispatch, getState, {
-    getFirebase,
-    getFirestore
-  }) => {
+  return (dispatch, getState, { getFirebase, getFirestore }) => {
     const firestore = getFirestore();
     firestore
       .collection("tasks")
@@ -289,10 +277,7 @@ export const disapproveTask = taskID => {
 };
 
 export const editTask = newTaskDetails => {
-  return (dispatch, getState, {
-    getFirebase,
-    getFirestore
-  }) => {
+  return (dispatch, getState, { getFirebase, getFirestore }) => {
     console.log(newTaskDetails);
     const firestore = getFirestore();
     firestore
@@ -322,10 +307,7 @@ export const editTask = newTaskDetails => {
 };
 
 export const removeOverdueTasks = (deleteThisTaskID, userID, circleID) => {
-  return (dispatch, getState, {
-    getFirebase,
-    getFirestore
-  }) => {
+  return (dispatch, getState, { getFirebase, getFirestore }) => {
     const firestore = getFirestore();
     // Before removing the task, decrease the user's points
     firestore
@@ -347,8 +329,10 @@ export const removeOverdueTasks = (deleteThisTaskID, userID, circleID) => {
             var oldPoints = circleDetails.points;
             var newPoints = {
               ...oldPoints,
-              [userID]: oldPoints[userID] - penalty >= 0 ?
-                oldPoints[userID] - penalty : 0
+              [userID]:
+                oldPoints[userID] - penalty >= 0
+                  ? oldPoints[userID] - penalty
+                  : 0
             };
             // Update the Circle
             firestore

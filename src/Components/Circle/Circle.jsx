@@ -113,7 +113,7 @@ class Circle extends React.Component {
     if (this.props.firestoreCircleRedux && this.props.firestoreCircleRedux[0]) {
       circleID = this.props.firestoreCircleRedux[0].circleID;
     }
-    if (allTasks) {
+    if (allTasks && circleID) {
       var tasksToDelete = [];
       for (var i = 0; i < allTasks.length; i++) {
         var task = allTasks[i];
@@ -144,11 +144,13 @@ class Circle extends React.Component {
           59
         );
         // console.log(taskDueDate);
+
         if (taskDueDate.getTime() - currentDate.getTime() < 0) {
           tasksToDelete.push(task);
         }
       }
       // console.log(tasksToDelete);
+
       for (var i = 0; i < tasksToDelete.length; i++) {
         // console.log("deleting this task");
         // console.log(tasksToDelete[i]);
@@ -310,7 +312,7 @@ class Circle extends React.Component {
         return;
       case "viewTasksHistoryButton":
         this.setState({
-          showViewTasksHistoryModal: true,
+          showViewTasksHistoryModal: true
         });
         return;
       default:
@@ -627,7 +629,7 @@ class Circle extends React.Component {
         var memberID = Object.keys(currentCircle.memberList)[i];
         tasksHistory[memberID] = [];
       }
-      var dismissedTasks = allTasks.filter((task) => {
+      var dismissedTasks = allTasks.filter(task => {
         return task.taskStage === "dismissed";
       });
       var dismissedTasksMap = {};
@@ -698,7 +700,7 @@ class Circle extends React.Component {
                   style={{
                     width: "100%",
                     backgroundColor: needApproval ? "#dc3545" : "white",
-                    color: needApproval ? "white" : "#212529",
+                    color: needApproval ? "white" : "#212529"
                   }}
                 >
                   Approve Tasks
