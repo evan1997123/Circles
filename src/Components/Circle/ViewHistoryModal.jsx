@@ -76,16 +76,20 @@ class ViewRewardsHistoryModal extends Component {
 
   render() {
     console.log(this.state);
-    var dropdownLeaders = Object.keys(this.props.leaders).map((leaderID) => (
-      <Dropdown.Item onClick={this.handleClick} name={leaderID}>
-        {this.props.leaders[leaderID]}
-      </Dropdown.Item>
-    ));
-    var dropdownMembers = Object.keys(this.props.members).map((memberID) => (
-      <Dropdown.Item onClick={this.handleClick} name={memberID}>
-        {this.props.members[memberID]}
-      </Dropdown.Item>
-    ));
+    var dropdownLeaders = Object.keys(this.props.leaders).map(
+      (leaderID, index) => (
+        <Dropdown.Item onClick={this.handleClick} name={leaderID} key={index}>
+          {this.props.leaders[leaderID]}
+        </Dropdown.Item>
+      )
+    );
+    var dropdownMembers = Object.keys(this.props.members).map(
+      (memberID, index) => (
+        <Dropdown.Item onClick={this.handleClick} name={memberID} key={index}>
+          {this.props.members[memberID]}
+        </Dropdown.Item>
+      )
+    );
     if (this.props.isLeader) {
       var listOfCarouselItems = [];
       var displayTheseItems =
@@ -100,7 +104,7 @@ class ViewRewardsHistoryModal extends Component {
               style={{
                 display: "flex",
                 padding: "0 5% 2.5%",
-                margin: "5% 0%",
+                margin: "2.5% 0%",
               }}
             >
               {i < displayTheseItems.length ? (
