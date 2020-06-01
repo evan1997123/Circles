@@ -23,6 +23,7 @@ class ViewMembersModal extends Component {
   }
   render() {
     var leaders = this.props.leaders;
+    console.log(leaders);
     var members = this.props.members;
     var profileData = this.props.profileData;
     var friendRequests = this.props.friendRequests;
@@ -63,7 +64,12 @@ class ViewMembersModal extends Component {
                 alignItems: "center"
               }}
             >
-              {leaders[leaderID]}
+              {leaders[leaderID] +
+                " (" +
+                this.props.points[leaderID] +
+                " point" +
+                (this.props.points[leaderID] === 1 ? "" : "s") +
+                ")"}
               <Button
                 onClick={() =>
                   this.handleSendFriendRequest(leaderID, leaders[leaderID])
@@ -76,7 +82,16 @@ class ViewMembersModal extends Component {
           </ListGroup.Item>
         );
       } else {
-        return <ListGroup.Item key={index}>{leaders[leaderID]}</ListGroup.Item>;
+        return (
+          <ListGroup.Item key={index}>
+            {leaders[leaderID] +
+              " (" +
+              this.props.points[leaderID] +
+              " point" +
+              (this.props.points[leaderID] === 1 ? "" : "s") +
+              ")"}
+          </ListGroup.Item>
+        );
       }
     });
 
@@ -110,7 +125,12 @@ class ViewMembersModal extends Component {
                 alignItems: "center"
               }}
             >
-              {members[memberID]}
+              {members[memberID] +
+                " (" +
+                this.props.points[memberID] +
+                " point" +
+                (this.props.points[memberID] === 1 ? "" : "s") +
+                ")"}
               <Button
                 onClick={() =>
                   this.handleSendFriendRequest(memberID, members[memberID])
@@ -123,7 +143,16 @@ class ViewMembersModal extends Component {
           </ListGroup.Item>
         );
       } else {
-        return <ListGroup.Item key={index}>{members[memberID]}</ListGroup.Item>;
+        return (
+          <ListGroup.Item key={index}>
+            {members[memberID] +
+              " (" +
+              this.props.points[memberID] +
+              " point" +
+              (this.props.points[memberID] === 1 ? "" : "s") +
+              ")"}
+          </ListGroup.Item>
+        );
       }
     });
     return (

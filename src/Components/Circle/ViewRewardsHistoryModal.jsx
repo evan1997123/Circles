@@ -12,7 +12,7 @@ class ViewRewardsHistoryModal extends Component {
     this.state = {
       displayTheseRewards: [],
       noUserSelected: true,
-      selectedName: "",
+      selectedName: ""
     };
     this.handleClick = this.handleClick.bind(this);
     this.handleClose = this.handleClose.bind(this);
@@ -28,14 +28,14 @@ class ViewRewardsHistoryModal extends Component {
     }
     this.setState({
       noUserSelected: false,
-      selectedName: name,
+      selectedName: name
     });
     var dropdown = document.getElementById("dropdown");
     dropdown.innerHTML = name;
     var displayTheseRewards = this.props.rewardsHistory[userID];
     if (!displayTheseRewards) {
       this.setState({
-        displayTheseRewards: [],
+        displayTheseRewards: []
       });
     } else {
       displayTheseRewards = Object.keys(displayTheseRewards).map(
@@ -51,7 +51,7 @@ class ViewRewardsHistoryModal extends Component {
         }
       );
       this.setState({
-        displayTheseRewards: displayTheseRewards,
+        displayTheseRewards: displayTheseRewards
       });
     }
   }
@@ -60,23 +60,27 @@ class ViewRewardsHistoryModal extends Component {
     this.setState({
       displayTheseRewards: [],
       noUserSelected: true,
-      selectedName: "",
+      selectedName: ""
     });
     this.props.handleClose();
   }
 
   render() {
     console.log(this.state);
-    var dropdownLeaders = Object.keys(this.props.leaders).map((leaderID) => (
-      <Dropdown.Item onClick={this.handleClick} name={leaderID}>
-        {this.props.leaders[leaderID]}
-      </Dropdown.Item>
-    ));
-    var dropdownMembers = Object.keys(this.props.members).map((memberID) => (
-      <Dropdown.Item onClick={this.handleClick} name={memberID}>
-        {this.props.members[memberID]}
-      </Dropdown.Item>
-    ));
+    var dropdownLeaders = Object.keys(this.props.leaders).map(
+      (leaderID, index) => (
+        <Dropdown.Item onClick={this.handleClick} name={leaderID} key={index}>
+          {this.props.leaders[leaderID]}
+        </Dropdown.Item>
+      )
+    );
+    var dropdownMembers = Object.keys(this.props.members).map(
+      (memberID, index) => (
+        <Dropdown.Item onClick={this.handleClick} name={memberID} key={index}>
+          {this.props.members[memberID]}
+        </Dropdown.Item>
+      )
+    );
     if (this.props.isLeader) {
       // If you are the leader, you can view everyone's rewards history!
       // Display rewards in carousel format
@@ -93,7 +97,7 @@ class ViewRewardsHistoryModal extends Component {
               style={{
                 display: "flex",
                 padding: "0 5% 2.5%",
-                margin: "2.5% 0%",
+                margin: "2.5% 0%"
               }}
             >
               {i < displayTheseRewards.length ? (
@@ -266,7 +270,7 @@ class ViewRewardsHistoryModal extends Component {
                     style={{
                       padding: "5%",
                       margin: "5% 0%",
-                      textAlign: "center",
+                      textAlign: "center"
                     }}
                   >
                     <p>
