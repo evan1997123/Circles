@@ -55,6 +55,8 @@ class NavigationBar extends Component {
           className={friendRequestClassName + " smallImage"}
           // style={{ border: "1px solid #ddd" }}
         ></Image>
+        &nbsp;
+        {this.props.profile.firstName}
       </Nav.Link>
     );
     let profilePage =

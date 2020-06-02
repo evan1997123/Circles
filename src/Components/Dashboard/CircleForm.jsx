@@ -352,6 +352,9 @@ class CircleForm extends React.Component {
             <p style={{ color: "red" }}>
               Note: you must include a name, description, at least one leader,
               and you must be a part of the circle.
+              <br />
+              You may only include your FRIENDS. Add friends{" "}
+              <a href="/profile">here</a>.
             </p>
             <Form name="newCircleForm">
               <Form.Group>
