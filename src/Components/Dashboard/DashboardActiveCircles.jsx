@@ -41,7 +41,7 @@ class ActiveCircles extends React.Component {
 
   render() {
     var circles;
-    if (this.props.myCircles && this.props.toDoTasks) {
+    if (this.props.myCircles && this.props.toDoTasks && this.props.authUID) {
       circles = this.props.myCircles.map((circle, index) => {
         var needsAttention;
         var className;
@@ -63,9 +63,10 @@ class ActiveCircles extends React.Component {
           this.props.circleIDToNumPendingTasks &&
           this.props.circleIDToNumPendingTasks[circle.circleID]
         ) {
-          numPendingTasks = this.props.circleIDToNumPendingTasks[
-            circle.circleID
-          ];
+          if (Object.keys(circle.leaderList).includes(this.props.authUID))
+            numPendingTasks = this.props.circleIDToNumPendingTasks[
+              circle.circleID
+            ];
         }
 
         if (needsAttention || numPendingTasks > 0) {

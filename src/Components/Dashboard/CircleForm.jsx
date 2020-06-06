@@ -19,7 +19,9 @@ class CircleForm extends React.Component {
       newCircleDescription: "",
       newCircleName: "",
       currentLeadersOfNewCircle: [],
-      filterState: ""
+      filterState: "",
+      circleColor: "0x0275d8",
+      circleHighlight: "0xff495c"
     };
 
     this.createNewCircle = this.createNewCircle.bind(this);
@@ -136,6 +138,7 @@ class CircleForm extends React.Component {
       allCurrentUsersSelectedID.push(leader.userID);
     });
 
+    var forHex = /^0x[0-9a-fA-F]{6}$/;
     //check for empty things and I must be a leader/member and there must be a leader
     if (
       this.state.newCircleName === "" ||
@@ -144,7 +147,17 @@ class CircleForm extends React.Component {
       !allCurrentUsersSelectedID.includes(yourID)
     ) {
       console.log("invalid paramaters");
-      alert("All fields are required");
+      alert(
+        "Circle Name, Circle Description, atleast 1 leader must be selected, and you must be a part of the circle."
+      );
+      return;
+    } else if (!new RegExp(forHex).test(this.state.circleColor)) {
+      console.log("Invalid Circle Color");
+      alert("Invalid Circle Color");
+      return;
+    } else if (!new RegExp(forHex).test(this.state.circleHighlight)) {
+      console.log("Invalid Circle Highlight");
+      alert("Invalid Circle Highlight");
       return;
     }
 
@@ -188,6 +201,7 @@ class CircleForm extends React.Component {
       numberOfPeople:
         Object.keys(newMemberList).length + Object.keys(newLeaderList).length,
       points: currentPoints
+      // circleColor: this.state.circleColor.length === 0 ? "" : "0x"
     };
 
     this.props.createCircleDispatch(circleDetails);
@@ -342,6 +356,25 @@ class CircleForm extends React.Component {
       }
     }
 
+    console.log(this.state);
+
+    var circleColorTextColor;
+    var forHex = /^0x[0-9a-fA-F]{6}$/;
+    // var forHex = /#[0-9a-fA-f]{6}/;
+
+    console.log(this.state.circleColor);
+    console.log(new RegExp(forHex).test(this.state.circleColor));
+    if (
+      this.state.circleColor.length === 8 &&
+      new RegExp(forHex).test(this.state.circleColor)
+    ) {
+      console.log("valid color");
+      circleColorTextColor = this.state.circleColor.slice(2);
+    } else if (this.state.circleColor.length === 0) {
+      circleColorTextColor = "0275d8";
+    } else {
+      circleColorTextColor = "212529";
+    }
     return (
       <div style={{ marginTop: 25 }}>
         <Modal show={this.props.show} onHide={this.props.hideModal}>
@@ -368,6 +401,7 @@ class CircleForm extends React.Component {
                       name="newCircleName"
                       placeholder="Circle name"
                       onChange={this.handleChanges}
+                      required={true}
                     ></Form.Control>
                   </Col>
                 </Form.Row>
@@ -384,6 +418,47 @@ class CircleForm extends React.Component {
                       name="newCircleDescription"
                       placeholder="Circle Description"
                       onChange={this.handleChanges}
+                      required={true}
+                    ></Form.Control>
+                  </Col>
+                </Form.Row>
+              </Form.Group>
+
+              <Form.Group>
+                <Form.Row>
+                  <Col id="flexColSmall">
+                    <Form.Label style={{ color: "#" + circleColorTextColor }}>
+                      Circle Color
+                    </Form.Label>
+                  </Col>
+                  <Col id="myFlexColBig">
+                    <Form.Control
+                      type="text"
+                      name="circleColor"
+                      placeholder="Default: 0x0275d8"
+                      onChange={this.handleChanges}
+                    ></Form.Control>
+                  </Col>
+                </Form.Row>
+              </Form.Group>
+
+              <Form.Group>
+                <Form.Row>
+                  <Col id="flexColSmall">
+                    <Form.Label
+                      style={{
+                        color: "#" + this.state.circleHighlight.slice(2)
+                      }}
+                    >
+                      Circle Highlight
+                    </Form.Label>
+                  </Col>
+                  <Col id="myFlexColBig">
+                    <Form.Control
+                      type="text"
+                      name="circleHighlight"
+                      placeholder="Default 0xff495c"
+                      onChange={this.handleChanges}
                     ></Form.Control>
                   </Col>
                 </Form.Row>
@@ -395,26 +470,6 @@ class CircleForm extends React.Component {
                     <Form.Label>Leaders</Form.Label>
                   </Col>
                   <Col id="myFlexColBig">
-                    {/* <Dropdown onSelect={this.handleAdding}>
-                      @
-                      <Dropdown.Toggle
-                        variant="success"
-                        as="Input"
-                        onChange={this.handleChanges}
-                        name="filterState"
-                      >
-                        Select new leaders
-                      </Dropdown.Toggle> */}
-                    {/* <Form.Control
-                        type="text"
-                        name="username"
-                        placeholder="username"
-                        onChange={this.handleChanges}
-                      ></Form.Control> */}
-                    {/* {!emptyLeaderDropDown && (
-                        <Dropdown.Menu>{dropDownLeaderUsers}</Dropdown.Menu>
-                      )}
-                    </Dropdown> */}
                     <Dropdown
                       onSelect={this.handleAdding}
                       style={{ minWidth: "70%" }}
@@ -442,14 +497,6 @@ class CircleForm extends React.Component {
                     <Form.Label>Members</Form.Label>
                   </Col>
                   <Col id="myFlexColBig">
-                    {/* <Dropdown onSelect={this.handleAdding}>
-                      <Dropdown.Toggle variant="success">
-                        Select new members
-                      </Dropdown.Toggle>
-                      {!emptyMemberDropDown && (
-                        <Dropdown.Menu>{dropDownMembersUsers}</Dropdown.Menu>
-                      )}
-                    </Dropdown> */}
                     <Dropdown
                       onSelect={this.handleAdding}
                       style={{ minWidth: "70%" }}

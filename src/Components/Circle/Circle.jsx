@@ -617,8 +617,10 @@ class Circle extends React.Component {
           return true;
         }
       });
-      needApproval = allTasks.filter(task => task.taskStage === "pending")
-        .length;
+      if (Object.keys(currentCircle.leaderList).includes(userID)) {
+        needApproval = allTasks.filter(task => task.taskStage === "pending")
+          .length;
+      }
       // Build tasks history for this Circle
       var tasksHistory = {};
       for (var i = 0; i < Object.keys(currentCircle.leaderList).length; i++) {
@@ -726,44 +728,46 @@ class Circle extends React.Component {
               </Dropdown.Item>
             </DropdownButton>
             &nbsp;
-            {isLeader ? (
-              <DropdownButton
-                style={{ margin: "7.5px", height: "100%" }}
-                size="lg"
-                variant="success"
-                id="dropdown-basic"
+            <DropdownButton
+              style={{ margin: "7.5px", height: "100%" }}
+              size="lg"
+              variant="success"
+              id="dropdown-basic"
+              variant="outline-primary"
+              title="Manage Users"
+            >
+              <Dropdown.Item
                 variant="outline-primary"
-                title="Manage Users"
+                style={{ width: "100%", borderColor: "white" }}
+                onClick={this.handleClick}
+                name="viewMembersButton"
+                size="lg"
               >
-                <Dropdown.Item
-                  variant="outline-primary"
-                  style={{ width: "100%", borderColor: "white" }}
-                  onClick={this.handleClick}
-                  name="viewMembersButton"
-                  size="lg"
-                >
-                  View Users
-                </Dropdown.Item>
-                <Dropdown.Item
-                  name="inviteMembersButton"
-                  onClick={this.handleClick}
-                  style={{ width: "100%", borderColor: "white" }}
-                  size="lg"
-                  variant="outline-primary"
-                >
-                  Invite Members
-                </Dropdown.Item>
-                <Dropdown.Item
-                  name="promoteDemoteButton"
-                  onClick={this.handleClick}
-                  size="lg"
-                  variant="outline-primary"
-                  style={{ width: "100%", borderColor: "white" }}
-                >
-                  Promote/Demote
-                </Dropdown.Item>
-              </DropdownButton>
-            ) : null}
+                View Users
+              </Dropdown.Item>
+              {isLeader ? (
+                <div>
+                  <Dropdown.Item
+                    name="inviteMembersButton"
+                    onClick={this.handleClick}
+                    style={{ width: "100%", borderColor: "white" }}
+                    size="lg"
+                    variant="outline-primary"
+                  >
+                    Invite Members
+                  </Dropdown.Item>
+                  <Dropdown.Item
+                    name="promoteDemoteButton"
+                    onClick={this.handleClick}
+                    size="lg"
+                    variant="outline-primary"
+                    style={{ width: "100%", borderColor: "white" }}
+                  >
+                    Promote/Demote
+                  </Dropdown.Item>
+                </div>
+              ) : null}
+            </DropdownButton>
             &nbsp;
             <DropdownButton
               style={{ margin: "7.5px", height: "100%" }}

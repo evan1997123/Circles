@@ -171,6 +171,7 @@ class Dashboard extends React.Component {
             <CircleContainer
               friendsList={this.props.firebaseProfileRedux.friendsList}
               toDoTasks={toDoTasks}
+              authUID={this.props.firebaseAuthRedux.uid}
               circleIDToNumTasksLeftMap={circleIDToNumTasksLeftMap}
               circleIDToNumPendingTasks={circleIDToNumPendingTasks}
             />
