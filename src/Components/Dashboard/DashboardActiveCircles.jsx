@@ -73,6 +73,25 @@ class ActiveCircles extends React.Component {
           className = "needsAttention";
         }
 
+        var styleToUse;
+        if (className !== "needsAttention") {
+          styleToUse = {
+            backgroundColor: circle.circleColor ? circle.circleColor : null,
+            borderColor: circle.circleColor ? circle.circleColor : null
+          };
+        } else {
+          console.log(circle.circleName);
+          console.log(circle.circleHighlight);
+          styleToUse = {
+            backgroundColor: circle.circleColor ? circle.circleColor : null,
+            borderWidth: "5px",
+            borderColor: circle.circleHighlight
+              ? circle.circleHighlight
+              : "#ff495c"
+          };
+          console.log(styleToUse);
+        }
+
         return (
           <div className="activeCircle" key={index}>
             <div>
@@ -85,7 +104,7 @@ class ActiveCircles extends React.Component {
               <form action={"/circle/" + circle.id}>
                 <button
                   type="submit"
-                  className={"myButton btn btn-primary " + className}
+                  className={"myButton btn btn-primary "}
                   // onClick={() => this.setRedirect(circle.id)}
                   // onClick={() =>
                   //   this.props.history.push("/circle/" + circle.id)
@@ -96,6 +115,7 @@ class ActiveCircles extends React.Component {
                   onMouseLeave={e =>
                     this.changeVisibility(circle.circleID, false)
                   }
+                  style={styleToUse}
                   // name={circle.circleID}
                 >
                   <div style={{ position: "relative", display: "inlineBlock" }}>

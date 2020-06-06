@@ -454,6 +454,10 @@ class Circle extends React.Component {
       allUsersCurrentCircleMap,
       allTasksCurrentCircle
     );
+
+    this.setState({
+      leftCircle: true
+    });
   }
 
   handleDisapproveTask(taskID) {

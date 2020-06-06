@@ -20,8 +20,8 @@ class CircleForm extends React.Component {
       newCircleName: "",
       currentLeadersOfNewCircle: [],
       filterState: "",
-      circleColor: "0x0275d8",
-      circleHighlight: "0xff495c"
+      circleColor: "#007bff",
+      circleHighlight: "#ff495c"
     };
 
     this.createNewCircle = this.createNewCircle.bind(this);
@@ -138,7 +138,7 @@ class CircleForm extends React.Component {
       allCurrentUsersSelectedID.push(leader.userID);
     });
 
-    var forHex = /^0x[0-9a-fA-F]{6}$/;
+    var forHex = /^#[0-9a-fA-F]{6}$/;
     //check for empty things and I must be a leader/member and there must be a leader
     if (
       this.state.newCircleName === "" ||
@@ -151,11 +151,17 @@ class CircleForm extends React.Component {
         "Circle Name, Circle Description, atleast 1 leader must be selected, and you must be a part of the circle."
       );
       return;
-    } else if (!new RegExp(forHex).test(this.state.circleColor)) {
-      console.log("Invalid Circle Color");
+    } else if (
+      !new RegExp(forHex).test(this.state.circleColor) &&
+      this.state.circleColor.length !== 0
+    ) {
+      console.log("Invalid Circle Color,", this.state.circleColor);
       alert("Invalid Circle Color");
       return;
-    } else if (!new RegExp(forHex).test(this.state.circleHighlight)) {
+    } else if (
+      !new RegExp(forHex).test(this.state.circleHighlight) &&
+      this.state.circleColor.length !== 0
+    ) {
       console.log("Invalid Circle Highlight");
       alert("Invalid Circle Highlight");
       return;
@@ -200,8 +206,15 @@ class CircleForm extends React.Component {
       leaderList: newLeaderList,
       numberOfPeople:
         Object.keys(newMemberList).length + Object.keys(newLeaderList).length,
-      points: currentPoints
-      // circleColor: this.state.circleColor.length === 0 ? "" : "0x"
+      points: currentPoints,
+      circleColor:
+        this.state.circleColor.length === 0
+          ? "#007bff"
+          : this.state.circleColor,
+      circleHighlight:
+        this.state.circleHighlight.length === 0
+          ? "#007bff"
+          : this.state.circleHighlight
     };
 
     this.props.createCircleDispatch(circleDetails);
@@ -359,21 +372,34 @@ class CircleForm extends React.Component {
     console.log(this.state);
 
     var circleColorTextColor;
-    var forHex = /^0x[0-9a-fA-F]{6}$/;
+    var circleHighlightTextColor;
+    var forHex = /^#[0-9a-fA-F]{6}$/;
     // var forHex = /#[0-9a-fA-f]{6}/;
 
     console.log(this.state.circleColor);
     console.log(new RegExp(forHex).test(this.state.circleColor));
     if (
-      this.state.circleColor.length === 8 &&
+      this.state.circleColor.length === 7 &&
       new RegExp(forHex).test(this.state.circleColor)
     ) {
-      console.log("valid color");
-      circleColorTextColor = this.state.circleColor.slice(2);
+      console.log("valid circle color");
+      circleColorTextColor = this.state.circleColor;
     } else if (this.state.circleColor.length === 0) {
-      circleColorTextColor = "0275d8";
+      circleColorTextColor = "#007bff"; //blue
     } else {
-      circleColorTextColor = "212529";
+      circleColorTextColor = "#212529"; //black
+    }
+
+    if (
+      this.state.circleHighlight.length === 7 &&
+      new RegExp(forHex).test(this.state.circleHighlight)
+    ) {
+      console.log("valid circle color");
+      circleHighlightTextColor = this.state.circleHighlight;
+    } else if (this.state.circleHighlight.length === 0) {
+      circleHighlightTextColor = "#ff495c"; //red
+    } else {
+      circleHighlightTextColor = "#212529"; //black
     }
     return (
       <div style={{ marginTop: 25 }}>
@@ -427,7 +453,7 @@ class CircleForm extends React.Component {
               <Form.Group>
                 <Form.Row>
                   <Col id="flexColSmall">
-                    <Form.Label style={{ color: "#" + circleColorTextColor }}>
+                    <Form.Label style={{ color: circleColorTextColor }}>
                       Circle Color
                     </Form.Label>
                   </Col>
@@ -435,7 +461,7 @@ class CircleForm extends React.Component {
                     <Form.Control
                       type="text"
                       name="circleColor"
-                      placeholder="Default: 0x0275d8"
+                      placeholder="Default: #007bff"
                       onChange={this.handleChanges}
                     ></Form.Control>
                   </Col>
@@ -447,7 +473,7 @@ class CircleForm extends React.Component {
                   <Col id="flexColSmall">
                     <Form.Label
                       style={{
-                        color: "#" + this.state.circleHighlight.slice(2)
+                        color: circleHighlightTextColor
                       }}
                     >
                       Circle Highlight
@@ -457,7 +483,7 @@ class CircleForm extends React.Component {
                     <Form.Control
                       type="text"
                       name="circleHighlight"
-                      placeholder="Default 0xff495c"
+                      placeholder="Default #ff495c"
                       onChange={this.handleChanges}
                     ></Form.Control>
                   </Col>
