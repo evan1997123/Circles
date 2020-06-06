@@ -1,5 +1,6 @@
 const initState = {
-  circles: [{
+  circles: [
+    {
       id: "1",
       name: "Gym",
       numberOfPeople: "10",
@@ -51,20 +52,20 @@ const CircleReducer = (state = initState, action) => {
     case "UPDATED_USER_CIRCLELIST":
       console.log(
         "updated user " +
-        action.userID +
-        "to have circleList include " +
-        action.circle.circleID
+          action.userID +
+          "to have circleList include " +
+          action.circle.circleID
       );
       return state;
     case "UPDATE_CIRCLE_MEMBER_SUCCESS":
       console.log(
         "updated circle:" +
-        action.update.circleID +
-        "to have memberList of" +
-        action.update.memberList +
-        " and " +
-        action.update.numberOfPeople +
-        " number of people"
+          action.update.circleID +
+          "to have memberList of" +
+          action.update.memberList +
+          " and " +
+          action.update.numberOfPeople +
+          " number of people"
       );
       return state;
     case "UPDATE_CIRCLE_MEMBER_ERROR":
@@ -73,9 +74,9 @@ const CircleReducer = (state = initState, action) => {
     case "INVITED_MEMBER_UPDATE_CIRCLELIST":
       console.log(
         "updated user " +
-        action.userID +
-        "to have circleList " +
-        action.updatedCircleList
+          action.userID +
+          "to have circleList " +
+          action.updatedCircleList
       );
       return state;
     case "ERROR_INVITED_MEMBER_UPDATE_CIRCLELIST":
@@ -85,10 +86,10 @@ const CircleReducer = (state = initState, action) => {
     case "UPDATE_CIRCLE_PROMOTE_DEMOTE_SUCCESS":
       console.log(
         "updated circle: " +
-        action.update.circleID +
-        "to have new member and leader lists" +
-        action.update.leaderList +
-        action.update.memberList
+          action.update.circleID +
+          "to have new member and leader lists" +
+          action.update.leaderList +
+          action.update.memberList
       );
       return state;
 
@@ -100,6 +101,21 @@ const CircleReducer = (state = initState, action) => {
       return state;
     case "LEAVE_CIRCLE_ERROR":
       console.log("leave circle error: " + action.err);
+      return state;
+    case "DELETE_CIRCLE_SUCCESS":
+      console.log(
+        "while deleting circle, deleted " + action.who + " " + action.what
+      );
+      return state;
+    case "DELETE_CIRCLE_ERROR":
+      console.log(
+        "Error while deleting circle, deleted " +
+          action.who +
+          " " +
+          action.what +
+          ". Error is: " +
+          action.err
+      );
       return state;
     default:
       return state;

@@ -26,7 +26,7 @@ export const sendFriendRequest = friendInfo => {
     // newCircleDetails.leaderList.map(leader =>
     //   allUsersToUpdate.push(Object.keys(leader)[0])
     // );
-    console.log(Object.entries(friendInfo.toList));
+
     var keyValueIDName = Object.entries(friendInfo.toList);
 
     console.log("creating friend Requests");
@@ -129,7 +129,6 @@ export const acceptFriendRequest = friendRequest => {
             friendsList: updatedFriendsList
           })
           .then(() => {
-            console.log("updated 'from' user");
             dispatch({
               type: "UPDATED_USER_FRIENDS_LIST",
               acceptedFriendRequestDetails: {
@@ -172,7 +171,6 @@ export const acceptFriendRequest = friendRequest => {
             friendsList: updatedFriendsList
           })
           .then(() => {
-            console.log("updated 'to' user");
             dispatch({
               type: "UPDATED_USER_FRIENDS_LIST",
               acceptedFriendRequestDetails: {
@@ -224,7 +222,6 @@ export const deleteFriends = deleteInfo => {
     // const profile = getState().firebase.profile;
     // const assignedByID = getState().firebase.auth.uid;
 
-    console.log(deleteInfo);
     firestore
       .collection("users")
       .doc(deleteInfo.myID)
@@ -235,7 +232,6 @@ export const deleteFriends = deleteInfo => {
         // console.log(updatingUser);
 
         var myCurrentFriendsList = updatingUser.friendsList;
-        console.log(myCurrentFriendsList);
 
         var updatedFriendsList = { ...myCurrentFriendsList };
         //friendsToDelete is list of all Id's to delete
@@ -286,19 +282,19 @@ export const deleteFriends = deleteInfo => {
           // console.log(updatingUser);
 
           var currentUserFriendsList = updatingUser.friendsList;
-          console.log(currentUserFriendsList);
 
           var updatedFriendsList = { ...currentUserFriendsList };
 
           delete updatedFriendsList[deleteInfo.myID];
 
-          var toUse = updatingUser;
-          toUse["friendsList"] = updatedFriendsList;
+          // var toUse = updatingUser;
+          // toUse["friendsList"] = updatedFriendsList;
+          var toUse = { friendsList: updatedFriendsList };
 
           firestore
             .collection("users")
             .doc(userID)
-            .set(toUse)
+            .update(toUse)
             .then(() => {
               dispatch({
                 type: "DELETE_FRIEND_SUCCESS",

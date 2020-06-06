@@ -59,17 +59,17 @@ class Profile extends Component {
   }
 
   handleCancelFriendRequest(friedRequestDocumentID) {
-    console.log("inside Profile: delete", friedRequestDocumentID);
+    console.log("inside Profile: delete friend request");
     this.props.dispatchCancelFriendRequest(friedRequestDocumentID);
   }
 
   handleAcceptFriendRequest(friendRequest) {
-    console.log("inside Profile: accept", friendRequest);
+    console.log("inside Profile: accept friend request");
     this.props.dispatchAcceptFriendRequest(friendRequest);
   }
 
   handleDeleteFriends(deleteInfo) {
-    console.log("deleting friends", deleteInfo);
+    console.log("deleting friends");
     this.props.dispatchDeleteFriends(deleteInfo);
   }
 
@@ -152,56 +152,66 @@ class Profile extends Component {
         }
       }
 
-      console.log(this.props.firebaseAuthRedux.uid);
       return (
-        <div>
-          <div className="panelContainer">
-            <div className="settings">
-              <AccountSettings />
-            </div>
-            <div className="panelItem">
-              <Picture
-                auth={this.props.firebaseAuthRedux}
-                handleNavBarUpdateProfile={this.props.handleNavBarUpdateProfile}
-              />
-              {/* <ProfileStatus profileData={profileData} /> */}
-            </div>
+        <div style={{ padding: "1%" }}>
+          <div className="settings">
+            <AccountSettings />
           </div>
-          <div>
-            <h2 style={{ textAlign: "center" }}>Friends List</h2>
-            {allLoaded ? (
-              <div style={{ textAlign: "center", padding: "1%" }}>
-                <Button
-                  name="friendOptionsButton"
-                  onClick={this.handleClick}
-                  style={{ margin: "7.5px" }}
-                  size="lg"
-                  variant={
-                    friendRequestClassName
-                      ? friendRequestClassName
-                      : "outline-primary"
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-evenly",
+              padding: "5%"
+            }}
+          >
+            <div className="panelContainer" style={{ width: "30%" }}>
+              <div className="panelItem" style={{ width: "100%" }}>
+                <Picture
+                  auth={this.props.firebaseAuthRedux}
+                  handleNavBarUpdateProfile={
+                    this.props.handleNavBarUpdateProfile
                   }
-                >
-                  Manage Friends
-                </Button>
+                />
+                {/* <ProfileStatus profileData={profileData} /> */}
               </div>
-            ) : null}
-            {myFriends ? myFriends : null}
-            <FriendOptionsModal
-              showFriendOptionsModal={this.state.showFriendOptionsModal}
-              handleClose={this.handleClose}
-              handleAddingFriend={this.handleAddingFriend}
-              profileData={profileData}
-              allUsers={allUsers}
-              userID={userID}
-              myFriendRequests={myFriendRequests}
-              myIncomingFriendRequests={incomingFriendRequests}
-              handleCancelFriendRequest={this.handleCancelFriendRequest}
-              handleAcceptFriendRequest={this.handleAcceptFriendRequest}
-              handleDeleteFriends={this.handleDeleteFriends}
-              firebase={this.props.firebase}
-              friendRequestClassName={friendRequestClassName}
-            />
+            </div>
+            <div style={{ width: "50%" }}>
+              <h2 style={{ textAlign: "center" }}>Friends List</h2>
+              {allLoaded ? (
+                <div style={{ textAlign: "center", padding: "1%" }}>
+                  <Button
+                    name="friendOptionsButton"
+                    onClick={this.handleClick}
+                    style={{ margin: "7.5px 7.5px 15.5px 7.5px" }}
+                    size="lg"
+                    variant={
+                      friendRequestClassName
+                        ? friendRequestClassName
+                        : "outline-primary"
+                    }
+                  >
+                    Manage Friends
+                  </Button>
+                </div>
+              ) : null}
+              {myFriends ? myFriends : null}
+              <FriendOptionsModal
+                showFriendOptionsModal={this.state.showFriendOptionsModal}
+                handleClose={this.handleClose}
+                handleAddingFriend={this.handleAddingFriend}
+                profileData={profileData}
+                allUsers={allUsers}
+                userID={userID}
+                myFriendRequests={myFriendRequests}
+                myIncomingFriendRequests={incomingFriendRequests}
+                handleCancelFriendRequest={this.handleCancelFriendRequest}
+                handleAcceptFriendRequest={this.handleAcceptFriendRequest}
+                handleDeleteFriends={this.handleDeleteFriends}
+                firebase={this.props.firebase}
+                friendRequestClassName={friendRequestClassName}
+              />
+            </div>
           </div>
         </div>
       );

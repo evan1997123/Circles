@@ -1,0 +1,25 @@
+.container {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+}
+
+.title {
+}
+.explanation {
+}
+
+.imageContainer {
+  display: flex;
+  justify-content: space-evenly;
+  width: 100%;
+  margin: auto;
+}
+.eachImage {
+  flex: 1;
+}
+.inImage {
+  width: 95%;
+  height: 95%;
+}

@@ -1,9 +1,6 @@
 // Action creators return a function that will be passed to the dispatch function
 export const createReward = reward => {
-  return (dispatch, getState, {
-    getFirebase,
-    getFirestore
-  }) => {
+  return (dispatch, getState, { getFirebase, getFirestore }) => {
     const firestore = getFirestore();
     const circleID = reward.circleID;
     firestore
@@ -50,25 +47,21 @@ export const createReward = reward => {
             });
         }
       });
-  }
+  };
 };
 
 export const claimReward = (rewardID, userID, circleID) => {
-  return (dispatch, getState, {
-    getFirebase,
-    getFirestore
-  }) => {
+  return (dispatch, getState, { getFirebase, getFirestore }) => {
     const firestore = getFirestore();
     // First, find the reward in the rewards collection
-    console.log(rewardID);
+
     firestore
       .collection("circles")
       .doc(circleID)
       .get()
       .then(doc => {
         var reward = doc.data().rewardsList[rewardID];
-        console.log(reward);
-        console.log(doc);
+
         firestore
           .collection("circles")
           .doc(circleID)
@@ -92,15 +85,15 @@ export const claimReward = (rewardID, userID, circleID) => {
               var newRewardHistory = {
                 ...ourReward,
                 claimedDate: new Date()
-              }
+              };
               var newRewardHistoryForCurrentUser = {
                 ...rewardHistoryForCurrentUser,
                 [uuid]: newRewardHistory
-              }
+              };
               var newRewardsHistoryForUsers = {
                 ...rewardsHistoryForUsers,
                 [userID]: newRewardHistoryForCurrentUser
-              }
+              };
               firestore
                 .collection("circles")
                 .doc(circleID)
@@ -111,38 +104,34 @@ export const claimReward = (rewardID, userID, circleID) => {
                 .then(() => {
                   dispatch({
                     type: "CLAIM_POINTS"
-                  })
+                  });
                 })
                 .catch(err => {
                   dispatch({
                     type: "CLAIM_POINTS_ERROR",
                     err
-                  })
-                })
+                  });
+                });
             }
           })
           .catch(err => {
             dispatch({
               type: "CLAIM_POINTS_ERROR",
               err: err
-            })
-          })
+            });
+          });
       })
       .catch(err => {
         dispatch({
           type: "CLAIM_POINTS_ERROR",
           err: err
-        })
-      })
-  }
-}
+        });
+      });
+  };
+};
 
 export const deleteReward = (rewardID, circleID) => {
-  console.log(rewardID);
-  return (dispatch, getState, {
-    getFirebase,
-    getFirestore
-  }) => {
+  return (dispatch, getState, { getFirebase, getFirestore }) => {
     const firestore = getFirestore();
     // Delete from the Circle's rewards list
     firestore
@@ -153,10 +142,10 @@ export const deleteReward = (rewardID, circleID) => {
         var listOfRewards = doc.data().rewardsList;
         var newRewardsList = {};
         var mapKeys = Object.keys(listOfRewards);
-        console.log(rewardID);
+
         for (var i = 0; i < mapKeys.length; i++) {
           var currentReward = listOfRewards[mapKeys[i]];
-          console.log("current reward", currentReward);
+
           if (currentReward.rewardID !== rewardID) {
             newRewardsList[currentReward.rewardID] = currentReward;
           }

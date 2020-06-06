@@ -1,10 +1,10 @@
 import React from "react";
 import "./App.css";
-import { BrowserRouter, Route, Redirect } from "react-router-dom";
+import { BrowserRouter, Route, Redirect, Switch } from "react-router-dom";
 import Dashboard from "./Components/Dashboard/Dashboard";
 import Circle from "./Components/Circle/Circle";
-import CircleColumn from "./Components/Circle/CircleColumn";
 import Profile from "./Components/Profile/Profile";
+import NotFound404 from "./Components/NotFound/NotFound404";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import Nav from "react-bootstrap/Nav";
@@ -80,16 +80,16 @@ class App extends React.Component {
     ) : null;
     return (
       <BrowserRouter basename="/">
-        <div>
-          <NavigationBar
-            profile={profile}
-            signInUpOrOut={signInUpOrOut}
-            isAuthed={auth.uid}
-            friendRequests={friendRequests}
-            updateMyAppStateToIncludeYourNavBarUpdateProfile={
-              this.updateMyAppStateToIncludeYourNavBarUpdateProfile
-            }
-          />
+        <NavigationBar
+          profile={profile}
+          signInUpOrOut={signInUpOrOut}
+          isAuthed={auth.uid}
+          friendRequests={friendRequests}
+          updateMyAppStateToIncludeYourNavBarUpdateProfile={
+            this.updateMyAppStateToIncludeYourNavBarUpdateProfile
+          }
+        />
+        <Switch>
           <Route
             path="/dashboard"
             component={() => (
@@ -109,15 +109,7 @@ class App extends React.Component {
               />
             )}
           />
-
-          {/* <Route path="/circle" component={Circle} /> */}
           <Route path="/circle/:id" component={Circle} />
-          {/* <Route path="/signin" component={SignInPage} />
-          <Route path="/signup" component={SignUpPage} /> */}
-
-          {/*<Route path="/testing" component={CircleColumn} >*/}
-          {/* <Route path="/circle/:id" component={Circle} /> */}
-
           <Route
             exact
             path="/"
@@ -125,7 +117,17 @@ class App extends React.Component {
               auth.uid ? <Redirect to="/dashboard" /> : <Landing />
             }
           />
-        </div>
+          <Route component={NotFound404}></Route>
+          {/* <Route path="/circle" component={Circle} /> */}
+          {/* <Route path="/signin" component={SignInPage} />
+          <Route path="/signup" component={SignUpPage} /> */}
+
+          {/*<Route path="/testing" component={CircleColumn} >*/}
+          {/* <Route path="/circle/:id" component={Circle} /> */}
+
+          {/*  if you want to go back to dashboard/landing
+          <Route render={() => <Redirect to={{ pathname: "/" }} />} /> */}
+        </Switch>
       </BrowserRouter>
     );
   }
@@ -153,8 +155,6 @@ export default compose(
   firestoreConnect(props => {
     if (props.firebaseAuthRedux.uid) {
       return [
-        { collection: "circles" },
-        { collection: "users" },
         {
           collection: "friendRequests",
           where: [
@@ -164,8 +164,6 @@ export default compose(
       ];
     } else {
       return [
-        { collection: "circles" },
-        { collection: "users" },
         {
           collection: "friendRequests"
         }

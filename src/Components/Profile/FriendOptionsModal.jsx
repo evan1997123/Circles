@@ -193,7 +193,6 @@ class InviteMembersModal extends Component {
       fromName: profileData.firstName + " " + profileData.lastName,
       toList: newFriendList
     };
-    console.log(friendInfo);
 
     this.props.handleAddingFriend(friendInfo);
 
@@ -256,7 +255,6 @@ class InviteMembersModal extends Component {
       myID: userID,
       friendsToDelete: deleteFriendIDs
     };
-    console.log(deleteInfo);
 
     this.props.handleDeleteFriends(deleteInfo);
 
@@ -273,7 +271,6 @@ class InviteMembersModal extends Component {
     const allUsers = this.props.allUsers;
     const profileData = this.props.profileData;
 
-    console.log(this.state.currentForm);
     // var myCurrentFriendList = profileData.friendsList;
     // console.log(myCurrentFriendList);
 
@@ -786,14 +783,26 @@ const CustomMenu = React.forwardRef(
       );
     }
 
-    var allShow = React.Children.toArray(children).filter(
-      child =>
-        !value ||
-        child.props.children
-          .toString()
-          .toLowerCase()
-          .startsWith(value, 1)
-    );
+    var allShow = React.Children.toArray(children).filter(child => {
+      var checkBasic = !value;
+      var usernameAndFullName = child.props.children;
+      var checkUsername = usernameAndFullName
+        .toString()
+        .toLowerCase()
+        .startsWith(value.toLowerCase(), 1);
+      var leftBracket = usernameAndFullName.indexOf("[");
+      var slicedName = usernameAndFullName.slice(
+        leftBracket + 1,
+        usernameAndFullName.length - 1
+      );
+      var fullName = slicedName;
+
+      var checkFullName = fullName
+        .toString()
+        .toLowerCase()
+        .startsWith(value.toLowerCase(), 0);
+      return checkBasic || checkUsername || checkFullName;
+    });
 
     allShow.sort(function(user1, user2) {
       var user1Name = user1.props.children;
@@ -847,21 +856,32 @@ const CustomMenuDelete = React.forwardRef(
   ({ children, style, className, "aria-labelledby": labeledBy }, ref) => {
     const [value, setValue] = useState("");
 
-    var allShow = React.Children.toArray(children).filter(
-      child =>
-        !value ||
-        child.props.children
-          .toString()
-          .toLowerCase()
-          .startsWith(value, 1)
-    );
+    var allShow = React.Children.toArray(children).filter(child => {
+      var checkBasic = !value;
+      var usernameAndFullName = child.props.children;
+      var checkUsername = usernameAndFullName
+        .toString()
+        .toLowerCase()
+        .startsWith(value.toLowerCase(), 1);
+      var leftBracket = usernameAndFullName.indexOf("[");
+      var slicedName = usernameAndFullName.slice(
+        leftBracket + 1,
+        usernameAndFullName.length - 1
+      );
+      var fullName = slicedName;
+
+      var checkFullName = fullName
+        .toString()
+        .toLowerCase()
+        .startsWith(value.toLowerCase(), 0);
+      return checkBasic || checkUsername || checkFullName;
+    });
 
     allShow.sort(function(user1, user2) {
       var user1Name = user1.props.children;
       var user2Name = user2.props.children;
       return user1Name.localeCompare(user2Name);
     });
-
     return (
       <div
         ref={ref}

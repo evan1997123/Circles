@@ -20,6 +20,7 @@ class CircleContainer extends React.Component {
             myCircles={circles}
             toDoTasks={toDoTasks}
             friendsList={this.props.friendsList}
+            authUID={this.props.authUID}
             circleIDToNumTasksLeftMap={this.props.circleIDToNumTasksLeftMap}
             circleIDToNumPendingTasks={this.props.circleIDToNumPendingTasks}
           />
@@ -47,9 +48,9 @@ const mapStateToProps = (state, ownProps) => {
   if (state.firestore.ordered.circles) {
     return {
       myCirclesRedux: state.firestore.ordered.circles
-        .filter((circle) => myCirclesID.includes(circle.id))
+        .filter(circle => myCirclesID.includes(circle.id))
         .sort(circleNameSort),
-      firebaseProfileRedux: state.firebase.profile,
+      firebaseProfileRedux: state.firebase.profile
     };
   } else {
     return {};

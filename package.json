@@ -25,15 +25,18 @@
     "redux-firestore": "^0.13.0",
     "redux-form": "^8.3.5",
     "redux-thunk": "^2.3.0",
+    "serve": "^11.3.1",
     "typescript": "^3.9.3",
     "uuid": "^3.1.0",
     "uuidv4": "^6.0.9"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "dev": "GENERATE_SOURCEMAP=false react-scripts start",
+    "start": "GENERATE_SOURCEMAP=false serve -s build",
     "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "heroku-postbuild": "npm run build"
   },
   "eslintConfig": {
     "extends": "react-app"

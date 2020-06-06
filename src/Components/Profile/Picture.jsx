@@ -42,7 +42,6 @@ class Picture extends Component {
     } else if (this.isFileImage(file)) {
       this.setState({ loading: true });
       storageRef.put(file).then(() => {
-        console.log("HELLO");
         alert("You have changed the profile picture");
         this.props.handleNavBarUpdateProfile();
         this.handleUpdateProfile();
@@ -68,7 +67,6 @@ class Picture extends Component {
   }
 
   render() {
-    console.log();
     let buttonText =
       this.state.source === defaultPic
         ? "Add Profile Picture"
@@ -78,8 +76,9 @@ class Picture extends Component {
       <div
         style={{
           border: "1px solid #ddd",
-          padding: "5%",
-          borderRadius: "4px"
+          padding: "10%",
+          borderRadius: "4px",
+          width: "100%"
         }}
       >
         <div style={{ textAlign: "center" }}>

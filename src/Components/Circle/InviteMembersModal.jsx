@@ -124,6 +124,7 @@ class InviteMembersModal extends Component {
       this.setState({ membersToAdd: newMembersToAdd });
       return null;
     });
+
     this.state.membersToRemove.map((member, index) => {
       var leftBracket = member.name.indexOf("[");
       var slicedName = member.name.slice(
@@ -140,16 +141,19 @@ class InviteMembersModal extends Component {
     });
 
     var newMembersList = { ...this.props.currentCircle.memberList };
+    var newPointsList = { ...this.props.currentCircle.points };
 
     //removeing anyone that is in our membersToRemove with Map.delete()
     this.state.membersToRemove.map(nameAndUser => {
       delete newMembersList[nameAndUser.userID];
+      delete newPointsList[nameAndUser.userID];
     });
 
     // add users specified in membersToAdd
-    this.state.membersToAdd.map(
-      nameAndID => (newMembersList[nameAndID.userID] = nameAndID.name)
-    );
+    this.state.membersToAdd.map(nameAndID => {
+      newMembersList[nameAndID.userID] = nameAndID.name;
+      newPointsList[nameAndID.userID] = 0;
+    });
 
     // update total number of people in the circle
     var newNumberOfPeople =
@@ -159,6 +163,7 @@ class InviteMembersModal extends Component {
     var newCircleDetails = {
       memberList: newMembersList,
       numberOfPeople: newNumberOfPeople,
+      points: newPointsList,
       circleID: this.props.currentCircle.circleID,
       circleName: this.props.currentCircle.circleName,
       membersToRemove: this.state.membersToRemove,
@@ -178,7 +183,7 @@ class InviteMembersModal extends Component {
   }
 
   filterAlreadySelected(currentUser) {
-    if( !currentUser) {
+    if (!currentUser) {
       return false;
     }
     for (var i = 0; i < this.state.membersToAdd.length; i++) {
@@ -197,9 +202,9 @@ class InviteMembersModal extends Component {
   }
 
   filterFriendsOnly(currentUser) {
-    if(this.props.profileData){
+    if (this.props.profileData) {
       var friendsListIDs = Object.keys(this.props.profileData.friendsList);
-      if (friendsListIDs.includes(currentUser.id)){
+      if (friendsListIDs.includes(currentUser.id)) {
         return true;
       }
     }
@@ -207,7 +212,7 @@ class InviteMembersModal extends Component {
   }
 
   render() {
-    let { allUsers, currentCircle} = this.props;
+    let { allUsers, currentCircle } = this.props;
     //currentCircle is object from firestore
     var listOfUsersForAdding;
     var listOfUsersForRemoving;
@@ -462,14 +467,26 @@ const CustomMenu = React.forwardRef(
   ({ children, style, className, "aria-labelledby": labeledBy }, ref) => {
     const [value, setValue] = useState("");
 
-    var allShow = React.Children.toArray(children).filter(
-      child =>
-        !value ||
-        child.props.children
-          .toString()
-          .toLowerCase()
-          .startsWith(value, 1)
-    );
+    var allShow = React.Children.toArray(children).filter(child => {
+      var checkBasic = !value;
+      var usernameAndFullName = child.props.children;
+      var checkUsername = usernameAndFullName
+        .toString()
+        .toLowerCase()
+        .startsWith(value.toLowerCase(), 1);
+      var leftBracket = usernameAndFullName.indexOf("[");
+      var slicedName = usernameAndFullName.slice(
+        leftBracket + 1,
+        usernameAndFullName.length - 1
+      );
+      var fullName = slicedName;
+
+      var checkFullName = fullName
+        .toString()
+        .toLowerCase()
+        .startsWith(value.toLowerCase(), 0);
+      return checkBasic || checkUsername || checkFullName;
+    });
 
     allShow.sort(function(user1, user2) {
       var user1Name = user1.props.children;

@@ -19,19 +19,22 @@ import {
   updateCircleMembers,
   updateCirclePromoteDemote,
   leaveCircle,
+  deleteCircle,
 } from "../../Store/Actions/CircleActions";
 import { firestoreConnect } from "react-redux-firebase"; // so this allows us to connect this component to a firebase collection
 import { compose } from "redux";
 import { Redirect } from "react-router-dom";
-import { Button, Modal, Dropdown } from "react-bootstrap";
+import { Button, Modal, Dropdown, DropdownButton } from "react-bootstrap";
 import {
   createReward,
   claimReward,
   deleteReward,
 } from "../../Store/Actions/RewardActions";
+import { sendFriendRequest } from "../../Store/Actions/FriendActions";
 import ViewMembersModal from "./ViewMembersModal";
-import LeaderEditTasksModal from "./LeaderEditTasksModal";
-import ViewRewardsHistoryModal from "./ViewRewardsHistoryModal";
+import DisplayEditTasks from "./DisplayEditTasks";
+import ViewHistoryModal from "./ViewHistoryModal";
+import Task from "./Task";
 
 class Circle extends React.Component {
   constructor(props) {
@@ -52,6 +55,8 @@ class Circle extends React.Component {
       showViewMembersModal: false,
       showEditTaskModal: false,
       showLeaderEditTasksModal: false,
+      showDeleteCircleModal: false,
+      showViewTasksHistoryModal: false,
       rewardTitle: "",
       rewardDescription: "",
       rewardPoints: "",
@@ -60,6 +65,7 @@ class Circle extends React.Component {
       editingTaskID: "",
       penalty: "", // For overdue tasks
       handledOverdue: false,
+      deleteCircleError: "",
     };
 
     //input form local state
@@ -84,28 +90,30 @@ class Circle extends React.Component {
     this.handleEditTask = this.handleEditTask.bind(this);
     this.handleSubmitEditedTask = this.handleSubmitEditedTask.bind(this);
     this.handleRemoveOverdueTasks = this.handleRemoveOverdueTasks.bind(this);
+    this.handleDeleteCircle = this.handleDeleteCircle.bind(this);
+    this.handleClose = this.handleClose.bind(this);
   }
 
   componentDidUpdate() {
     var allTasks = this.props.firestoreTasksRedux;
     // console.log(allTasks);
-    console.log("handledOverdue");
-    console.log(this.state.handledOverdue);
+    // console.log("handledOverdue");
+    // console.log(this.state.handledOverdue);
     if (this.state.handledOverdue === false) {
       this.handleRemoveOverdueTasks();
     }
   }
 
   handleRemoveOverdueTasks() {
-    console.log("handle remove overdue tasks");
-    console.log("changing state");
+    // console.log("handle remove overdue tasks");
+    // console.log("changing state");
     var allTasks = this.props.firestoreTasksRedux;
     var userID = this.props.firebaseAuthRedux.uid;
     var circleID;
     if (this.props.firestoreCircleRedux && this.props.firestoreCircleRedux[0]) {
       circleID = this.props.firestoreCircleRedux[0].circleID;
     }
-    if (allTasks) {
+    if (allTasks && circleID) {
       var tasksToDelete = [];
       for (var i = 0; i < allTasks.length; i++) {
         var task = allTasks[i];
@@ -135,15 +143,17 @@ class Circle extends React.Component {
           59,
           59
         );
-        console.log(taskDueDate);
+        // console.log(taskDueDate);
+
         if (taskDueDate.getTime() - currentDate.getTime() < 0) {
           tasksToDelete.push(task);
         }
       }
-      console.log(tasksToDelete);
+      // console.log(tasksToDelete);
+
       for (var i = 0; i < tasksToDelete.length; i++) {
-        console.log("deleting this task");
-        console.log(tasksToDelete[i]);
+        // console.log("deleting this task");
+        // console.log(tasksToDelete[i]);
         this.props.dispatchRemoveOverdueTasks(
           tasksToDelete[i].taskID,
           userID,
@@ -191,8 +201,13 @@ class Circle extends React.Component {
     ) {
       alert("All fields are required");
       return;
+    } else if (this.state.reward < 0 || this.state.penalty < 0) {
+      alert(
+        "No negative values. Reward is how many points you will increase by. Penalty is how many points you will decrease by."
+      );
+      return;
     }
-    //dispatch creation of task data object
+
     var taskDetails = {
       circleID: this.state.circleID,
       taskName: this.state.taskName,
@@ -204,7 +219,8 @@ class Circle extends React.Component {
     };
     this.props.dispatchCreateTask(taskDetails);
 
-    //find form
+    // Call dispatch in for loop with different assignedForID
+
     var frm = document.getElementsByName("TaskForm")[0];
     frm.reset();
     this.setState({
@@ -232,7 +248,7 @@ class Circle extends React.Component {
   }
 
   handleUpdateCircleMembers(newCircleDetails) {
-    console.log("updating circle");
+    // console.log("updating circle");
     this.props.dispatchUpdateCircleMembers(newCircleDetails);
   }
 
@@ -243,7 +259,7 @@ class Circle extends React.Component {
 
   // For showing modal (creating new task)
   handleClick = (e) => {
-    console.log("handle click");
+    console.log(e.target.name);
     switch (e.target.name) {
       case "createTaskButton":
         this.setState({
@@ -284,10 +300,22 @@ class Circle extends React.Component {
         this.setState({
           showLeaderEditTasksModal: true,
         });
+        console.log("here");
         return;
       case "viewRewardsHistory":
         this.setState({
           showViewRewardsHistoryModal: true,
+        });
+        console.log("view rewards history");
+        return;
+      case "deleteCircleButton":
+        this.setState({
+          showDeleteCircleModal: true,
+        });
+        return;
+      case "viewTasksHistoryButton":
+        this.setState({
+          showViewTasksHistoryModal: true,
         });
         return;
       default:
@@ -295,28 +323,37 @@ class Circle extends React.Component {
     }
   };
 
-  handleClose = () => {
-    this.setState({
-      showCreateTaskModal: false,
-      showInviteMembersModal: false,
-      showPromoteDemoteModal: false,
-      showApproveTasksModal: false,
-      showCreateRewardsModal: false,
-      showLeaveCircleModal: false,
-      showViewMembersModal: false,
-      showEditTaskModal: false,
-      showLeaderEditTasksModal: false,
-      showViewRewardsHistoryModal: false,
-      rewardTitle: "",
-      rewardDescription: "",
-      rewardPoints: "",
-    });
-  };
+  handleClose(e) {
+    // e.preventDefault();
+    if (this.state.showLeaderEditTasksModal && this.state.showEditTaskModal) {
+      // Close the second but not the first
+      this.setState({
+        showEditTaskModal: false,
+      });
+    } else {
+      this.setState({
+        showCreateTaskModal: false,
+        showInviteMembersModal: false,
+        showPromoteDemoteModal: false,
+        showApproveTasksModal: false,
+        showCreateRewardsModal: false,
+        showLeaveCircleModal: false,
+        showViewMembersModal: false,
+        showEditTaskModal: false,
+        showLeaderEditTasksModal: false,
+        showViewRewardsHistoryModal: false,
+        showDeleteCircleModal: false,
+        showViewTasksHistoryModal: false,
+        rewardTitle: "",
+        rewardDescription: "",
+        rewardPoints: "",
+        deleteCircleError: "",
+      });
+    }
+  }
 
-  // For creating rewards
   handleCreateRewards(event) {
     event.preventDefault();
-    // Make sure user fills out each field
     if (
       this.state.rewardTitle === "" ||
       this.state.rewardDescription === "" ||
@@ -390,15 +427,52 @@ class Circle extends React.Component {
     });
   }
 
+  handleDeleteCircle() {
+    // console.log(inputBox.value);
+    var currentCircle = this.props.firestoreCircleRedux[0];
+    var inputBox = document.getElementById("confirmDeletionCircleName");
+    var whatTheyPut = inputBox.value;
+    if (whatTheyPut !== currentCircle.circleName) {
+      console.log("wrong thing");
+      this.setState({
+        deleteCircleError:
+          "Given circle name does not match " + currentCircle.circleName,
+      });
+      return;
+    }
+    var allUsersCurrentCircle = this.props.firestoreUsersRedux.filter(
+      (user) => {
+        if (!user) {
+          return false;
+        }
+      }
+    );
+    var allUsersCurrentCircleMap = {};
+    allUsersCurrentCircle.map(
+      (user) => (allUsersCurrentCircleMap[user.id] = user)
+    );
+    var allTasksCurrentCircle = this.props.firestoreTasksRedux;
+    console.log("deleting circle");
+    this.props.dispatchDeleteCircle(
+      currentCircle.id,
+      allUsersCurrentCircleMap,
+      allTasksCurrentCircle
+    );
+
+    this.setState({
+      leftCircle: true,
+    });
+  }
+
   handleDisapproveTask(taskID) {
-    console.log("disapproved task");
+    // console.log("disapproved task");
     this.props.dispatchDisapproveTask(taskID);
   }
 
   // When click on the edit button inside the task
   // Using this function to set the state so that the form autofills the information from before
   handleEditTask(taskID) {
-    console.log("edit task");
+    // console.log("edit task");
     // Edit the state of the Circle component to the current task info
     var allTasks = this.props.firestoreTasksRedux;
     const profileData = this.props.firebaseProfileRedux;
@@ -419,6 +493,7 @@ class Circle extends React.Component {
       showEditTaskModal: true,
       completeBy: editTask.completeBy,
       editingTaskID: editTask.taskID,
+      penalty: editTask.penalty,
     });
   }
 
@@ -446,6 +521,7 @@ class Circle extends React.Component {
       reward: this.state.reward === "" ? 0 : this.state.reward,
       taskID: this.state.editingTaskID,
       completeBy: this.state.completeBy,
+      penalty: this.state.penalty,
     };
     this.props.dispatchEditTask(newTaskDetails);
     // Find the form and reset form inputs
@@ -473,7 +549,11 @@ class Circle extends React.Component {
     const userID = auth.uid;
     var currentCircle;
     var isLeader = false;
-    if (this.props.firestoreCircleRedux && this.props.firestoreCircleRedux[0]) {
+    if (
+      this.props.firestoreCircleRedux &&
+      this.props.firestoreCircleRedux.length === 1 &&
+      this.props.firestoreCircleRedux[0].circleID === this.props.match.params.id
+    ) {
       currentCircle = this.props.firestoreCircleRedux[0];
       isLeader = Object.keys(currentCircle.leaderList).includes(userID)
         ? true
@@ -482,13 +562,20 @@ class Circle extends React.Component {
 
     //if not logged in, then redirect to signin page
     if (!userID) {
-      return <Redirect to="/signin" />;
+      return <Redirect to="/" />;
     }
 
     if (this.state.leftCircle) {
+      console.log("left circle");
       return <Redirect to="/dashboard" />;
     }
 
+    if (
+      this.props.firestoreCircleRedux &&
+      this.props.firestoreCircleRedux.length === 0
+    ) {
+      return <Redirect to="/error/invalidCircle" />;
+    }
     //IDEALLY allTasks should get all the tasks from a particular circle, without having to fetch all the tasks and filter out via circle ID
     //similarily, allUsers should only be all the users in this circle
     //isn't that bad security design?
@@ -528,21 +615,66 @@ class Circle extends React.Component {
       if (!Object.keys(allUsersCurrentCircleMap).includes(userID)) {
         return <Redirect to="/dashboard" />;
       }
-      // Figure out which tasks were assigned by you (the leader)
-      if (isLeader) {
-        var tasksAssignedByMe = allTasks.filter((task) => {
-          // Only need to edit the task if it is in the to-do stage
-          if (task.taskStage !== "toDo") {
-            return false;
-          } else if (task.assignedByID !== userID) {
-            return false;
-          } else {
-            return true;
-          }
+      // Figure out which tasks were assigned by you (either leader or member)
+      var needApproval = 0;
+      var tasksAssignedByMe = allTasks.filter((task) => {
+        if (task.taskStage !== "toDo") {
+          return false;
+        } else if (task.assignedByID !== userID) {
+          return false;
+        } else {
+          return true;
+        }
+      });
+      if (Object.keys(currentCircle.leaderList).includes(userID)) {
+        needApproval = allTasks.filter((task) => task.taskStage === "pending")
+          .length;
+      }
+      // Build tasks history for this Circle
+      var tasksHistory = {};
+      for (var i = 0; i < Object.keys(currentCircle.leaderList).length; i++) {
+        var leaderID = Object.keys(currentCircle.leaderList)[i];
+        tasksHistory[leaderID] = [];
+      }
+      for (var i = 0; i < Object.keys(currentCircle.memberList).length; i++) {
+        var memberID = Object.keys(currentCircle.memberList)[i];
+        tasksHistory[memberID] = [];
+      }
+      var dismissedTasks = allTasks.filter((task) => {
+        return task.taskStage === "dismissed";
+      });
+      var dismissedTasksMap = {};
+      for (var i = 0; i < dismissedTasks.length; i++) {
+        var task = dismissedTasks[i];
+        dismissedTasksMap[task.taskID] = task;
+      }
+      console.log(allTasks);
+      console.log(dismissedTasksMap);
+      for (var i = 0; i < Object.keys(dismissedTasks).length; i++) {
+        var task = dismissedTasks[i];
+        var taskID = task.taskID;
+        var assignedForID = task.assignedForID;
+        tasksHistory[assignedForID].push(taskID);
+      }
+      console.log(tasksHistory);
+      var displayTasksHistory = {};
+      for (var i = 0; i < Object.keys(tasksHistory).length; i++) {
+        var personID = Object.keys(tasksHistory)[i];
+        var listOfTaskIDs = tasksHistory[personID];
+        displayTasksHistory[personID] = listOfTaskIDs.map((taskID, index) => {
+          return (
+            <Task
+              task={dismissedTasksMap[taskID]}
+              key={index}
+              forNotification={false}
+              taskStage="dismissed"
+            ></Task>
+          );
         });
       }
+    }
 
-      // console.log(currentCircle.rewardsList);
+    if (currentCircle) {
       return (
         <div className="overallContainer">
           <div className="text-center">
@@ -564,64 +696,67 @@ class Circle extends React.Component {
               Create Task
             </Button>
             &nbsp;
-            <Dropdown>
-              <Dropdown.Toggle
-                style={{ margin: "7.5px", height: "100%" }}
+            <DropdownButton
+              style={{ margin: "7.5px", height: "100%" }}
+              variant="success"
+              id="dropdown-basic"
+              variant={needApproval ? "outline-danger" : "outline-primary"}
+              title="Manage Tasks"
+              size="lg"
+            >
+              {isLeader ? (
+                <Dropdown.Item
+                  name="approveTasksButton"
+                  onClick={this.handleClick}
+                  style={{
+                    width: "100%",
+                    backgroundColor: needApproval ? "#dc3545" : "white",
+                    color: needApproval ? "white" : "#212529",
+                  }}
+                >
+                  Approve Tasks
+                </Dropdown.Item>
+              ) : null}
+              <Dropdown.Item
+                name="editTasksButton"
+                onClick={this.handleClick}
+                style={{ width: "100%" }}
                 size="lg"
-                variant="success"
-                id="dropdown-basic"
                 variant="outline-primary"
               >
-                Manage Tasks
-              </Dropdown.Toggle>
-              <Dropdown.Menu style={{ width: "100%" }}>
-                {isLeader ? (
-                  <Button
-                    name="approveTasksButton"
-                    onClick={this.handleClick}
-                    style={{ width: "100%", borderColor: "white" }}
-                    size="lg"
-                    variant="outline-primary"
-                  >
-                    Approve Tasks
-                  </Button>
-                ) : null}
-                {isLeader && (
-                  <Button
-                    name="editTasksButton"
-                    onClick={this.handleClick}
-                    style={{ width: "100%", borderColor: "white" }}
-                    size="lg"
-                    variant="outline-primary"
-                  >
-                    Edit Tasks
-                  </Button>
-                )}
-              </Dropdown.Menu>
-            </Dropdown>
+                Edit Tasks
+              </Dropdown.Item>
+              <Dropdown.Item
+                style={{ width: "100%" }}
+                size="lg"
+                variant="outline-primary"
+                name="viewTasksHistoryButton"
+                onClick={this.handleClick}
+              >
+                Tasks History
+              </Dropdown.Item>
+            </DropdownButton>
             &nbsp;
-            {isLeader ? (
-              <Dropdown>
-                <Dropdown.Toggle
-                  style={{ margin: "7.5px", height: "100%" }}
-                  size="lg"
-                  variant="success"
-                  id="dropdown-basic"
-                  variant="outline-primary"
-                >
-                  Manage Users
-                </Dropdown.Toggle>
-                <Dropdown.Menu style={{ width: "100%" }}>
-                  <Button
-                    variant="outline-primary"
-                    style={{ width: "100%", borderColor: "white" }}
-                    onClick={this.handleClick}
-                    name="viewMembersButton"
-                    size="lg"
-                  >
-                    View Members
-                  </Button>
-                  <Button
+            <DropdownButton
+              style={{ margin: "7.5px", height: "100%" }}
+              size="lg"
+              variant="success"
+              id="dropdown-basic"
+              variant="outline-primary"
+              title="Manage Users"
+            >
+              <Dropdown.Item
+                variant="outline-primary"
+                style={{ width: "100%", borderColor: "white" }}
+                onClick={this.handleClick}
+                name="viewMembersButton"
+                size="lg"
+              >
+                View Users
+              </Dropdown.Item>
+              {isLeader ? (
+                <div>
+                  <Dropdown.Item
                     name="inviteMembersButton"
                     onClick={this.handleClick}
                     style={{ width: "100%", borderColor: "white" }}
@@ -629,55 +764,50 @@ class Circle extends React.Component {
                     variant="outline-primary"
                   >
                     Invite Members
-                  </Button>
-                  <Button
+                  </Dropdown.Item>
+                  <Dropdown.Item
                     name="promoteDemoteButton"
                     onClick={this.handleClick}
-                    style={{ width: "100%", borderColor: "white" }}
                     size="lg"
                     variant="outline-primary"
+                    style={{ width: "100%", borderColor: "white" }}
                   >
                     Promote/Demote
-                  </Button>
-                </Dropdown.Menu>
-              </Dropdown>
-            ) : null}
+                  </Dropdown.Item>
+                </div>
+              ) : null}
+            </DropdownButton>
             &nbsp;
-            {isLeader ? (
-              <Dropdown>
-                <Dropdown.Toggle
-                  style={{ margin: "7.5px", height: "100%" }}
+            <DropdownButton
+              style={{ margin: "7.5px", height: "100%" }}
+              size="lg"
+              variant="success"
+              id="dropdown-basic"
+              variant="outline-primary"
+              title="Manage Rewards"
+            >
+              <Dropdown.Item
+                variant="outline-primary"
+                style={{ width: "100%", borderColor: "white" }}
+                size="lg"
+                name="viewRewardsHistory"
+                onClick={this.handleClick}
+              >
+                Rewards History
+              </Dropdown.Item>
+              {isLeader ? (
+                <Dropdown.Item
+                  name="createRewardsButton"
+                  onClick={this.handleClick}
+                  style={{ width: "100%", borderColor: "white" }}
                   size="lg"
-                  variant="success"
-                  id="dropdown-basic"
                   variant="outline-primary"
                 >
-                  Manage Rewards
-                </Dropdown.Toggle>
-
-                <Dropdown.Menu style={{ width: "100%" }}>
-                  <Button
-                    variant="outline-primary"
-                    style={{ width: "100%", borderColor: "white" }}
-                    size="lg"
-                    name="viewRewardsHistory"
-                    onClick={this.handleClick}
-                  >
-                    Rewards History
-                  </Button>
-                  <Button
-                    name="createRewardsButton"
-                    onClick={this.handleClick}
-                    style={{ width: "100%", borderColor: "white" }}
-                    size="lg"
-                    variant="outline-primary"
-                  >
-                    Create Rewards
-                  </Button>
-                </Dropdown.Menu>
-              </Dropdown>
-            ) : null}
-            {!isLeader && (
+                  Create Rewards
+                </Dropdown.Item>
+              ) : null}
+            </DropdownButton>
+            {!isLeader ? (
               <Button
                 variant="outline-danger"
                 size="lg"
@@ -687,30 +817,62 @@ class Circle extends React.Component {
               >
                 Leave Circle
               </Button>
+            ) : (
+              <Button
+                variant="outline-danger"
+                size="lg"
+                style={{ margin: "7.5px" }}
+                onClick={this.handleClick}
+                name="deleteCircleButton"
+              >
+                Delete Circle
+              </Button>
             )}
           </div>
-          <ViewRewardsHistoryModal
-            showViewRewardsHistoryModal={this.state.showViewRewardsHistoryModal}
+          <ViewHistoryModal
+            showViewHistoryModal={this.state.showViewRewardsHistoryModal}
             handleClose={this.handleClose}
             rewardsHistory={
               currentCircle.rewardsHistoryForUsers
-                ? currentCircle.rewardsHistoryForUsers[userID]
+                ? currentCircle.rewardsHistoryForUsers
                 : null
             }
-            allRewards={currentCircle.rewardsList}
-          ></ViewRewardsHistoryModal>
-          <LeaderEditTasksModal
+            isLeader={isLeader}
+            userID={userID}
+            leaders={currentCircle.leaderList}
+            members={currentCircle.memberList}
+            forRewards={true}
+          ></ViewHistoryModal>
+          <ViewHistoryModal
+            showViewHistoryModal={this.state.showViewTasksHistoryModal}
+            handleClose={this.handleClose}
+            tasksHistory={displayTasksHistory}
+            isLeader={isLeader}
+            userID={userID}
+            leaders={currentCircle.leaderList}
+            members={currentCircle.memberList}
+            forRewards={false}
+          ></ViewHistoryModal>
+          <DisplayEditTasks
             showLeaderEditTasksModal={this.state.showLeaderEditTasksModal}
             handleClose={this.handleClose}
             tasksAssignedByMe={tasksAssignedByMe}
+            allTasks={allTasks}
             handleEditTask={this.handleEditTask}
             deleteTask={this.deleteTask}
-          ></LeaderEditTasksModal>
+            userID={userID}
+            isLeader={isLeader}
+          ></DisplayEditTasks>
           <ViewMembersModal
             showViewMembersModal={this.state.showViewMembersModal}
             leaders={currentCircle.leaderList}
             members={currentCircle.memberList}
             handleClose={this.handleClose}
+            userID={userID}
+            profileData={profileData}
+            points={currentCircle.points}
+            friendRequests={this.props.firestoreFriendRequestsRedux}
+            dispatchSendFriendRequest={this.props.dispatchSendFriendRequest}
           ></ViewMembersModal>
           <CreateRewardsModal
             showCreateRewardsModal={this.state.showCreateRewardsModal}
@@ -825,6 +987,48 @@ class Circle extends React.Component {
             </Modal.Body>
             <Modal.Footer></Modal.Footer>
           </Modal>
+          <Modal
+            show={this.state.showDeleteCircleModal}
+            onHide={this.handleClose}
+          >
+            <Modal.Header>
+              <Modal.Title>DELETE Circle</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <p>
+                You are about to DELETE this Circle. Are you sure you want to
+                DELETE it? Everyone will be removed from this circle, all tasks
+                and rewards will be removed, and there is no undoing this
+                process. Please type the name of the circle undeneath to confirm
+                that you understand the consequences. Reference:
+                <b style={{ color: "red" }}>{" " + currentCircle.circleName}</b>
+                <br />
+                Case Sensitive!
+              </p>
+              <input
+                style={{ color: "red" }}
+                id={"confirmDeletionCircleName"}
+              ></input>
+              <p>{this.state.deleteCircleError}</p>
+              <div style={{ display: "flex", justifyContent: "center" }}>
+                <Button
+                  style={{ margin: "10px 10px" }}
+                  variant="outline-danger"
+                  onClick={this.handleDeleteCircle}
+                >
+                  Yes, I would like to DELETE this
+                </Button>
+                <Button
+                  style={{ margin: "10px 10px" }}
+                  variant="outline-success"
+                  onClick={this.handleClose}
+                >
+                  No, I want it
+                </Button>
+              </div>
+            </Modal.Body>
+            <Modal.Footer></Modal.Footer>
+          </Modal>
 
           <div className="centered">
             <CircleColumns
@@ -879,6 +1083,7 @@ const mapStateToProps = (state, ownProps) => {
     firestoreCircleRedux: state.firestore.ordered.circles,
     firebaseAuthRedux: state.firebase.auth,
     firebaseProfileRedux: state.firebase.profile,
+    firestoreFriendRequestsRedux: state.firestore.ordered.friendRequests,
   };
 };
 
@@ -904,6 +1109,16 @@ const mapDispatchToProps = (dispatch) => {
     dispatchEditTask: (newTaskDetails) => dispatch(editTask(newTaskDetails)),
     dispatchRemoveOverdueTasks: (deleteThisTaskID, userID, circleID) =>
       dispatch(removeOverdueTasks(deleteThisTaskID, userID, circleID)),
+    dispatchDeleteCircle: (
+      circleID,
+      allUsersCurrentCircleMap,
+      allTasksCurrentCircle
+    ) =>
+      dispatch(
+        deleteCircle(circleID, allUsersCurrentCircleMap, allTasksCurrentCircle)
+      ),
+    dispatchSendFriendRequest: (friendInfo) =>
+      dispatch(sendFriendRequest(friendInfo)),
   };
 };
 
@@ -924,6 +1139,12 @@ export default compose(
       },
       { collection: "users" },
       { collection: "circles", doc: props.match.params.id },
+      {
+        collection: "friendRequests",
+        where: [
+          ["allUsersRelated", "array-contains", props.firebaseAuthRedux.uid],
+        ],
+      },
     ];
   })
 )(Circle);

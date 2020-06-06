@@ -22,7 +22,6 @@ class NavigationBar extends Component {
     this.props.updateMyAppStateToIncludeYourNavBarUpdateProfile(
       this.handleUpdateProfile
     );
-    console.log("Navbar COMPONENT is rerendered");
   }
   //profile refers to the current user's profile. every profile should point to a different path
   handleUpdateProfile() {
@@ -47,8 +46,8 @@ class NavigationBar extends Component {
     }
     const profileCircle = (
       <Nav.Link href="/profile" className={"blueTextAndBigger"}>
-        {this.props.profile.initials &&
-          this.props.profile.initials.toUpperCase()}
+        {/* {this.props.profile.initials &&
+          this.props.profile.initials.toUpperCase()} */}
         &nbsp;
         <Image
           src={this.state.source}
@@ -56,6 +55,8 @@ class NavigationBar extends Component {
           className={friendRequestClassName + " smallImage"}
           // style={{ border: "1px solid #ddd" }}
         ></Image>
+        &nbsp;
+        {this.props.profile.firstName}
       </Nav.Link>
     );
     let profilePage =
