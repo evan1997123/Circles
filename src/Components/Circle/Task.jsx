@@ -143,7 +143,10 @@ class Task extends React.Component {
                 Disapprove
               </Button>
             )}
-            {!forNotification && (isLeader || assignedByMe) && deleteButton}
+            {!forNotification &&
+              (isLeader || assignedByMe) &&
+              task.taskStage === "toDo" &&
+              deleteButton}
             {!forNotification &&
               ((assignedByMe && task.taskStage === "toDo") ||
                 (forLeaderEdits && task.taskStage === "pending")) && (
