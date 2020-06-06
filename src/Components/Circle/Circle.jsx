@@ -304,6 +304,7 @@ class Circle extends React.Component {
         this.setState({
           showViewRewardsHistoryModal: true
         });
+        console.log("view rewards history");
         return;
       case "deleteCircleButton":
         this.setState({
