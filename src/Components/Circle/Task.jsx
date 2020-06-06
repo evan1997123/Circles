@@ -24,17 +24,16 @@ class Task extends React.Component {
     var ifExists = handleMoveTasks
       ? () => handleMoveTasks(task, userID)
       : () => "do nothing";
-    const deleteButton =
-      task.taskStage === "toDo" ? (
-        <Button
-          // className="deleteButton"
-          onClick={() => deleteTask(task.id)}
-          variant="outline-danger"
-          style={{ margin: "5px 10px 5px 0" }}
-        >
-          Delete
-        </Button>
-      ) : null;
+    const deleteButton = (
+      <Button
+        // className="deleteButton"
+        onClick={() => deleteTask(task.id)}
+        variant="outline-danger"
+        style={{ margin: "5px 10px 5px 0" }}
+      >
+        Delete
+      </Button>
+    );
     // How many days left before this task is due?
     var completeBy = task.completeBy;
     var completeByYear = completeBy.slice(0, completeBy.indexOf("-"));

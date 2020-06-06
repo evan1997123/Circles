@@ -12,7 +12,7 @@ class ViewRewardsHistoryModal extends Component {
     this.state = {
       displayTheseItems: [],
       noUserSelected: true,
-      selectedName: ""
+      selectedName: "",
     };
     this.handleClick = this.handleClick.bind(this);
     this.handleClose = this.handleClose.bind(this);
@@ -28,7 +28,7 @@ class ViewRewardsHistoryModal extends Component {
     }
     this.setState({
       noUserSelected: false,
-      selectedName: name
+      selectedName: name,
     });
     var dropdown = document.getElementById("dropdown");
     dropdown.innerHTML = name;
@@ -40,11 +40,9 @@ class ViewRewardsHistoryModal extends Component {
       displayTheseItems = this.props.tasksHistory[userID];
     }
 
-    console.log(displayTheseItems);
-
     if (!displayTheseItems) {
       this.setState({
-        displayTheseItems: []
+        displayTheseItems: [],
       });
     } else if (this.props.forRewards) {
       displayTheseItems = Object.keys(displayTheseItems).map(
@@ -61,7 +59,7 @@ class ViewRewardsHistoryModal extends Component {
       );
     }
     this.setState({
-      displayTheseItems: displayTheseItems
+      displayTheseItems: displayTheseItems,
     });
   }
 
@@ -69,17 +67,12 @@ class ViewRewardsHistoryModal extends Component {
     this.setState({
       displayTheseItems: [],
       noUserSelected: true,
-      selectedName: ""
+      selectedName: "",
     });
     this.props.handleClose();
   }
 
   render() {
-    if (this.props.showViewHistoryModal) {
-      alert("Temporarily being fixed!");
-    }
-    return null;
-    console.log(this.state);
     var dropdownLeaders = Object.keys(this.props.leaders).map(
       (leaderID, index) => (
         <Dropdown.Item onClick={this.handleClick} name={leaderID} key={index}>
@@ -100,7 +93,6 @@ class ViewRewardsHistoryModal extends Component {
         this.state && this.state.displayTheseItems
           ? this.state.displayTheseItems
           : [];
-      console.log(displayTheseItems[Object.keys(displayTheseItems)[0]]);
       for (var i = 0; i < Object.keys(displayTheseItems).length; i += 3) {
         var carouselItem = (
           <Carousel.Item>
@@ -108,7 +100,7 @@ class ViewRewardsHistoryModal extends Component {
               style={{
                 display: "flex",
                 padding: "0 5% 2.5%",
-                margin: "2.5% 0%"
+                margin: "2.5% 0%",
               }}
             >
               {i < displayTheseItems.length ? (
@@ -137,7 +129,6 @@ class ViewRewardsHistoryModal extends Component {
         );
         listOfCarouselItems.push(carouselItem);
       }
-      console.log(listOfCarouselItems);
       var title = this.props.forRewards ? "Rewards" : "Tasks";
       return (
         <Modal
@@ -230,106 +221,138 @@ class ViewRewardsHistoryModal extends Component {
         </Modal>
       );
     } else {
-      var memberRewardsHistory = this.props.rewardsHistory[this.props.userID];
-      var displayRewards;
       var listOfCarouselItems = [];
-      if (memberRewardsHistory) {
-        var sortedRewardsHistory = Object.keys(memberRewardsHistory).sort(
-          (rewardOne, rewardTwo) => {
-            if (
-              memberRewardsHistory[rewardOne].claimedDate &&
-              memberRewardsHistory[rewardTwo].claimedDate
-            ) {
+      var displayTheseItems;
+      if (this.props.forRewards === true) {
+        displayTheseItems = this.props.rewardsHistory[this.props.userID];
+        if (Object.keys(displayTheseItems).length > 0) {
+          displayTheseItems = Object.keys(displayTheseItems).map(
+            (rewardID, index) => {
               return (
-                memberRewardsHistory[rewardTwo].claimedDate.toDate().getTime() -
-                memberRewardsHistory[rewardOne].claimedDate.toDate().getTime()
+                <Reward
+                  reward={displayTheseItems[rewardID]}
+                  key={index}
+                  forViewingHistory={true}
+                  claimedDate={displayTheseItems[rewardID].claimedDate}
+                ></Reward>
               );
             }
-          }
-        );
-        // console.log(sortedRewardsHistory);
-        var displayRewards;
-        displayRewards = sortedRewardsHistory.map((rewardID, index) => (
-          <div style={{ flex: "1" }}>
-            <Reward
-              reward={memberRewardsHistory[rewardID]}
-              key={index}
-              forViewingHistory={true}
-              claimedDate={memberRewardsHistory[rewardID].claimedDate}
-            ></Reward>
-          </div>
-        ));
-        for (var i = 0; i < displayRewards.length; i += 3) {
-          var carouselItem = (
-            <Carousel.Item>
-              <div
-                style={{ display: "flex", padding: "0% 5%", margin: "5% 0%" }}
-              >
-                {i < displayRewards.length ? (
-                  displayRewards[i]
-                ) : (
-                  <div style={{ flex: "1" }}></div>
-                )}
-                {i + 1 < displayRewards.length ? (
-                  displayRewards[i + 1]
-                ) : (
-                  <div style={{ flex: "1" }}></div>
-                )}
-                {i + 2 < displayRewards.length ? (
-                  displayRewards[i + 2]
-                ) : (
-                  <div style={{ flex: "1" }}></div>
-                )}
-              </div>
-            </Carousel.Item>
           );
-          listOfCarouselItems.push(carouselItem);
         }
+      } else {
+        displayTheseItems = this.props.tasksHistory[this.props.userID];
+        // (Sorry for the horrible design, did not think this through) Tasks are turned into Task components
+        // one-level up in the Circle.jsx file, which is why I don't have to map them into Task components here!
+      }
+      // Check for null case
+      if (!displayTheseItems) {
+        displayTheseItems = [];
       }
 
+      // Store Tasks/Rewards components in carousel items
+      for (var i = 0; i < Object.keys(displayTheseItems).length; i += 3) {
+        var carouselItem = (
+          <Carousel.Item>
+            <div
+              style={{
+                display: "flex",
+                padding: "0 5% 2.5%",
+                margin: "2.5% 0%",
+              }}
+            >
+              {i < displayTheseItems.length ? (
+                <div style={{ flex: "1" }}>
+                  {displayTheseItems[Object.keys(displayTheseItems)[i]]}
+                </div>
+              ) : (
+                <div style={{ flex: "1" }}></div>
+              )}
+              {i + 1 < displayTheseItems.length ? (
+                <div style={{ flex: "1" }}>
+                  {displayTheseItems[Object.keys(displayTheseItems)[i + 1]]}
+                </div>
+              ) : (
+                <div style={{ flex: "1" }}></div>
+              )}
+              {i + 2 < displayTheseItems.length ? (
+                <div style={{ flex: "1" }}>
+                  {displayTheseItems[Object.keys(displayTheseItems)[i + 2]]}
+                </div>
+              ) : (
+                <div style={{ flex: "1" }}></div>
+              )}
+            </div>
+          </Carousel.Item>
+        );
+        listOfCarouselItems.push(carouselItem);
+      }
+      var title = this.props.forRewards ? "Rewards" : "Tasks";
+      // Return the modal
       return (
         <Modal
           show={this.props.showViewHistoryModal}
-          onHide={this.props.handleClose}
           dialogClassName="modal-80w"
+          onHide={this.handleClose}
         >
           <Modal.Header closeButton>
-            <Modal.Title>View Your Rewards History</Modal.Title>
+            <Modal.Title>{title} History</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <div>
-              <Carousel
-                interval={null}
-                indicators={true}
-                nextIcon={
-                  <span
-                    aria-hidden="true"
-                    className="carousel-control-next-icon"
-                  />
-                }
-                style={{ padding: "0% 5%" }}
-              >
-                {listOfCarouselItems.length > 0 ? (
-                  listOfCarouselItems
-                ) : (
-                  <div
-                    style={{
-                      padding: "5%",
-                      margin: "5% 0%",
-                      textAlign: "center"
-                    }}
+            {Object.keys(listOfCarouselItems).length === 0 &&
+              this.props.forRewards && (
+                <p>
+                  Uh oh, looks like this user hasn't claimed any rewards yet 🤧
+                </p>
+              )}
+            {Object.keys(listOfCarouselItems).length === 0 &&
+              !this.props.forRewards && (
+                <p>
+                  Uh oh, looks like this user hasn't completed any tasks yet 🤧
+                </p>
+              )}
+            {Object.keys(listOfCarouselItems).length > 0 &&
+              this.props.forRewards && (
+                <div>
+                  <p>Here is your rewards history 🌟</p>
+                  <Carousel
+                    interval={null}
+                    indicators={true}
+                    nextIcon={
+                      <span
+                        aria-hidden="true"
+                        className="carousel-control-next-icon"
+                      />
+                    }
+                    style={{ padding: "0% 5%" }}
                   >
-                    <p>
-                      You haven't claimed any rewards yet, try claiming one or
-                      two once you earn enough points!
-                    </p>
-                  </div>
-                )}
-              </Carousel>
-            </div>
+                    {listOfCarouselItems}
+                  </Carousel>
+                </div>
+              )}
+            {Object.keys(listOfCarouselItems).length > 0 &&
+              !this.props.forRewards && (
+                <div>
+                  <p>Here is your tasks history 🌟</p>
+                  <Carousel
+                    interval={null}
+                    indicators={true}
+                    nextIcon={
+                      <span
+                        aria-hidden="true"
+                        className="carousel-control-next-icon"
+                      />
+                    }
+                    style={{ padding: "0% 5%" }}
+                  >
+                    {listOfCarouselItems}
+                  </Carousel>
+                </div>
+              )}
           </Modal.Body>
           <Modal.Footer>
-            <Button onClick={this.props.handleClose}>Close</Button>
+            <Button variant="outline-primary" onClick={this.handleClose}>
+              Close
+            </Button>
           </Modal.Footer>
         </Modal>
       );

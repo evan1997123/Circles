@@ -10,7 +10,7 @@ class TaskForm extends Component {
       formData,
       allUsers,
       currentCircle,
-      editingTask
+      editingTask,
     } = this.props;
 
     if (allUsers && currentCircle) {
@@ -20,7 +20,7 @@ class TaskForm extends Component {
       );
 
       //filter allUsers to only have those in the given circle
-      var allUsersFiltered = allUsers.filter(user =>
+      var allUsersFiltered = allUsers.filter((user) =>
         allIDInCircle.includes(user.id)
       );
 
@@ -29,7 +29,7 @@ class TaskForm extends Component {
           <option value={user.id} key={index}>
             {user.firstName} {user.lastName}
           </option>
-        ))
+        )),
       ];
       listOfUsers.unshift(
         <option
@@ -54,7 +54,7 @@ class TaskForm extends Component {
               required={true}
               type="text"
               name="taskName"
-              placeholder="ex. Finish part of homework 0"
+              placeholder="e.g. Finish part of homework 0"
               onChange={handleChangeInput}
               value={formData.taskName}
             />
@@ -66,7 +66,7 @@ class TaskForm extends Component {
               required
               type="text"
               name="taskDescription"
-              placeholder="ex. Finish question 1-4"
+              placeholder="e.g. Finish question 1-4"
               onChange={handleChangeInput}
               value={formData.taskDescription}
             />
@@ -103,7 +103,7 @@ class TaskForm extends Component {
               required
               type="number"
               name="reward"
-              placeholder="ex. 10"
+              placeholder="e.g. 10"
               onChange={handleChangeInput}
               value={formData.reward}
             />
@@ -114,7 +114,7 @@ class TaskForm extends Component {
             <Form.Control
               required
               type="number"
-              placeholder="ex. 10"
+              placeholder="e.g. 10"
               name="penalty"
               onChange={handleChangeInput}
               value={formData.penalty}
