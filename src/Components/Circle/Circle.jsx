@@ -1,6 +1,6 @@
 import React from "react";
 import "./Circle.css";
-import TaskForm from "./TaskForm";
+import CreateTaskModal from "./CreateTaskModal";
 import CircleColumns from "./CircleColumns";
 import ApproveTasksModal from "./ApproveTasksModal";
 import InviteMembersModal from "./InviteMembersModal";
@@ -225,7 +225,7 @@ class Circle extends React.Component {
         assignedForID: selectedUserID,
       };
       this.props.dispatchCreateTask(taskDetails);
-    } 
+    }
 
     var frm = document.getElementsByName("TaskForm")[0];
     frm.reset();
@@ -910,17 +910,30 @@ class Circle extends React.Component {
             currentCircle={currentCircle}
             handlePromoteDemote={this.handlePromoteDemote}
           ></PromoteDemoteModal>
-          <TaskForm
+          <CreateTaskModal
             handleCreateTask={this.handleCreateTask}
+            handleSubmitEditedTask={null}
             handleChangeInput={this.handleChangeInput}
             formData={this.state}
             allUsers={allUsers}
             userID={userID}
             currentCircle={currentCircle}
-            showCreateTaskModal={this.state.showCreateTaskModal}
+            editingTask={false}
+            showModal={this.state.showCreateTaskModal}
             handleClose={this.handleClose}
           />
-          <Modal show={this.state.showEditTaskModal} onHide={this.handleClose}>
+          <CreateTaskModal
+            handleCreateTask={this.handleCreateTask}
+            handleSubmitEditedTask={this.handleSubmitEditedTask}
+            handleChangeInput={this.handleChangeInput}
+            formData={this.state}
+            allUsers={allUsers}
+            userID={userID}
+            currentCircle={currentCircle}
+            editingTask={true}
+            showModal={this.state.showEditTaskModal}
+          />
+          {/* <Modal show={this.state.showEditTaskModal} onHide={this.handleClose}>
             <Modal.Header>
               <Modal.Title>Edit a Task</Modal.Title>
             </Modal.Header>
@@ -946,7 +959,7 @@ class Circle extends React.Component {
                 Submit Edits
               </Button>
             </Modal.Footer>
-          </Modal>
+          </Modal> */}
 
           <Modal
             show={this.state.showLeaveCircleModal}

@@ -74,12 +74,11 @@ class TaskForm extends Component {
     const animatedComponents = makeAnimated();
 
     return (
-      <Modal
-        show={this.props.showCreateTaskModal}
-        onHide={this.props.handleClose}
-      >
+      <Modal show={this.props.showModal} onHide={this.props.handleClose}>
         <Modal.Header>
-          <Modal.Title>Create a New Task</Modal.Title>
+          <Modal.Title>
+            {this.props.editingTask ? "Edit Task" : "Create a New Task"}
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form name="TaskForm">
@@ -119,6 +118,7 @@ class TaskForm extends Component {
                 onChange={this.handleChange}
                 // name="assignedForIDs"
                 // value={this.state.selectedOption}
+                isDisabled={this.props.editingTask ? true : false}
               />
             </Form.Group>
 
@@ -162,8 +162,11 @@ class TaskForm extends Component {
         <Modal.Footer>
           <Button onClick={this.props.handleClose}>Close</Button>
           <Button
-            onClick={(e) =>
-              this.props.handleCreateTask(e, this.state.selectedOption)
+            onClick={
+              this.props.editingTask
+                ? this.props.handleSubmitEditedTask
+                : (e) =>
+                    this.props.handleCreateTask(e, this.state.selectedOption)
             }
           >
             Submit
