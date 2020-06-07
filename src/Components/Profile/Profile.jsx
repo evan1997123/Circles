@@ -114,37 +114,38 @@ class Profile extends Component {
       }
       var myFriends;
       if (profileData && profileData.friendsList) {
-        myFriends = Object.entries(profileData.friendsList).map(
-          (friendIDAndName, index) => {
-            return (
-              <Card
-                id="task-card"
+        var sortedList = Array.from(Object.entries(profileData.friendsList));
+        sortedList = sortedList.sort((a, b) => a[1].localeCompare(b[1]));
+        myFriends = sortedList.map((friendIDAndName, index) => {
+          return (
+            <Card
+              id="task-card"
+              style={{
+                width: "100%!important",
+                margin: "auto",
+                marginBottom: "10px",
+              }}
+              key={index}
+              className="card flex-row"
+              // key={index}
+            >
+              <Card.Body
+                className="flex-row"
                 style={{
-                  width: "100%!important",
-                  margin: "auto",
-                  marginBottom: "10px",
+                  width: 450,
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
                 }}
-                key={index}
-                className="card flex-row"
-                // key={index}
               >
-                <Card.Body
-                  className="flex-row"
+                <Card.Title
                   style={{
-                    width: 450,
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
+                    margin: 0,
                   }}
                 >
-                  <Card.Title
-                    style={{
-                      margin: 0,
-                    }}
-                  >
-                    {friendIDAndName[1]}
-                  </Card.Title>
-                  {/* <div>
+                  {friendIDAndName[1]}
+                </Card.Title>
+                {/* <div>
                     <Button
                       // value={request}
                       // onClick={() => this.handleAcceptFriendRequest(request)}
@@ -153,11 +154,10 @@ class Profile extends Component {
                       Accept
                     </Button>
                   </div> */}
-                </Card.Body>
-              </Card>
-            );
-          }
-        );
+              </Card.Body>
+            </Card>
+          );
+        });
       }
 
       var friendRequestClassName = null;

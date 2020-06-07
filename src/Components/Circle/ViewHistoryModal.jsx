@@ -12,7 +12,7 @@ class ViewRewardsHistoryModal extends Component {
     this.state = {
       displayTheseItems: [],
       noUserSelected: true,
-      selectedName: "",
+      selectedName: ""
     };
     this.handleClick = this.handleClick.bind(this);
     this.handleClose = this.handleClose.bind(this);
@@ -28,7 +28,7 @@ class ViewRewardsHistoryModal extends Component {
     }
     this.setState({
       noUserSelected: false,
-      selectedName: name,
+      selectedName: name
     });
     var dropdown = document.getElementById("dropdown");
     dropdown.innerHTML = name;
@@ -42,7 +42,7 @@ class ViewRewardsHistoryModal extends Component {
 
     if (!displayTheseItems) {
       this.setState({
-        displayTheseItems: [],
+        displayTheseItems: []
       });
     } else if (this.props.forRewards) {
       displayTheseItems = Object.keys(displayTheseItems).map(
@@ -59,7 +59,7 @@ class ViewRewardsHistoryModal extends Component {
       );
     }
     this.setState({
-      displayTheseItems: displayTheseItems,
+      displayTheseItems: displayTheseItems
     });
   }
 
@@ -67,7 +67,7 @@ class ViewRewardsHistoryModal extends Component {
     this.setState({
       displayTheseItems: [],
       noUserSelected: true,
-      selectedName: "",
+      selectedName: ""
     });
     this.props.handleClose();
   }
@@ -100,7 +100,7 @@ class ViewRewardsHistoryModal extends Component {
               style={{
                 display: "flex",
                 padding: "0 5% 2.5%",
-                margin: "2.5% 0%",
+                margin: "2.5% 0%"
               }}
             >
               {i < displayTheseItems.length ? (
@@ -225,7 +225,7 @@ class ViewRewardsHistoryModal extends Component {
       var displayTheseItems;
       if (this.props.forRewards === true) {
         displayTheseItems = this.props.rewardsHistory[this.props.userID];
-        if (Object.keys(displayTheseItems).length > 0) {
+        if (displayTheseItems && Object.keys(displayTheseItems).length > 0) {
           displayTheseItems = Object.keys(displayTheseItems).map(
             (rewardID, index) => {
               return (
@@ -257,7 +257,7 @@ class ViewRewardsHistoryModal extends Component {
               style={{
                 display: "flex",
                 padding: "0 5% 2.5%",
-                margin: "2.5% 0%",
+                margin: "2.5% 0%"
               }}
             >
               {i < displayTheseItems.length ? (
