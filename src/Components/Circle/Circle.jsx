@@ -189,37 +189,43 @@ class Circle extends React.Component {
   }
 
   //event handler for creating a task
-  handleCreateTask(e) {
+  handleCreateTask(e, selectedOption) {
     e.preventDefault();
-    if (
-      this.state.taskName === "" ||
-      this.state.assignedForID === "" ||
-      this.state.taskDescription === "" ||
-      this.state.completeBy === "" ||
-      this.state.reward === "" ||
-      this.state.penalty === ""
-    ) {
-      alert("All fields are required");
-      return;
-    } else if (this.state.reward < 0 || this.state.penalty < 0) {
-      alert(
-        "No negative values. Reward is how many points you will increase by. Penalty is how many points you will decrease by."
-      );
-      return;
-    }
-
-    var taskDetails = {
+    console.log(selectedOption);
+    // if (
+    //   this.state.taskName === "" ||
+    //   this.state.assignedForID === "" ||
+    //   this.state.taskDescription === "" ||
+    //   this.state.completeBy === "" ||
+    //   this.state.reward === "" ||
+    //   this.state.penalty === ""
+    // ) {
+    //   alert("All fields are required");
+    //   return;
+    // } else if (this.state.reward < 0 || this.state.penalty < 0) {
+    //   alert(
+    //     "No negative values. Reward is how many points you will increase by. Penalty is how many points you will decrease by."
+    //   );
+    //   return;
+    // }
+    var taskDetailsTemplate = {
       circleID: this.state.circleID,
       taskName: this.state.taskName,
-      assignedForID: this.state.assignedForID,
+      // assignedForID: this.state.assignedForID,
       taskDescription: this.state.taskDescription,
       completeBy: this.state.completeBy,
       reward: this.state.reward === "" ? 0 : this.state.reward,
       penalty: this.state.penalty === "" ? 0 : this.state.penalty,
     };
-    this.props.dispatchCreateTask(taskDetails);
-
-    // Call dispatch in for loop with different assignedForID
+    for (var i = 0; i < selectedOption.length; i++) {
+      var selectedUser = selectedOption[i];
+      var selectedUserID = selectedUser.value;
+      var taskDetails = {
+        ...taskDetailsTemplate,
+        assignedForID: selectedUserID,
+      };
+      this.props.dispatchCreateTask(taskDetails);
+    } 
 
     var frm = document.getElementsByName("TaskForm")[0];
     frm.reset();
@@ -237,8 +243,6 @@ class Circle extends React.Component {
       showViewMembersModal: false,
       showEditTaskModal: false,
     });
-
-    // After creating the task, also create the notification
   }
 
   //event handler for moving tasks to a different stage
@@ -906,28 +910,16 @@ class Circle extends React.Component {
             currentCircle={currentCircle}
             handlePromoteDemote={this.handlePromoteDemote}
           ></PromoteDemoteModal>
-          <Modal
-            show={this.state.showCreateTaskModal}
-            onHide={this.handleClose}
-          >
-            <Modal.Header>
-              <Modal.Title>Create a New Task</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <TaskForm
-                handleCreateTask={this.handleCreateTask}
-                handleChangeInput={this.handleChangeInput}
-                formData={this.state}
-                allUsers={allUsers}
-                userID={userID}
-                currentCircle={currentCircle}
-              />
-            </Modal.Body>
-            <Modal.Footer>
-              <Button onClick={this.handleClose}>Close</Button>
-              <Button onClick={this.handleCreateTask}>Submit</Button>
-            </Modal.Footer>
-          </Modal>
+          <TaskForm
+            handleCreateTask={this.handleCreateTask}
+            handleChangeInput={this.handleChangeInput}
+            formData={this.state}
+            allUsers={allUsers}
+            userID={userID}
+            currentCircle={currentCircle}
+            showCreateTaskModal={this.state.showCreateTaskModal}
+            handleClose={this.handleClose}
+          />
           <Modal show={this.state.showEditTaskModal} onHide={this.handleClose}>
             <Modal.Header>
               <Modal.Title>Edit a Task</Modal.Title>
