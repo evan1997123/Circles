@@ -9,12 +9,6 @@ import Button from "react-bootstrap/Button";
 
 import {setUsername, setFirstName, setLastName} from "../../Store/Actions/SettingsActions";
 
-//change username
-//change first name
-//change last name
-
-
-
 class AccountSettings extends Component {
   constructor(props) {
     super(props);
@@ -67,13 +61,11 @@ class AccountSettings extends Component {
       <h6>Account Settings</h6>
       <div>
         <h7>
-          {u ? u.id : ""}
+          {u ? "Username: " + u.username : ""}
           <br/>
-          {u ? "username: " + u.username : ""}
+          {u ? "First Name: " + u.firstName : ""}
           <br/>
-          {u ? u.firstName : ""}
-          <br/>
-          {u ? u.lastName : ""}
+          {u ? "Last Name: " + u.lastName : ""}
         </h7>
       </div>
       <Form onSubmit={this.handleSetUsername}>

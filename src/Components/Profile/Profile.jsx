@@ -198,6 +198,7 @@ class Profile extends Component {
                 {/* <ProfileStatus profileData={profileData} /> */}
               </div>
             </div>
+            
             <div style={{ width: "50%" }}>
               <h2 style={{ textAlign: "center" }}>Friends List</h2>
               {allLoaded ? (
@@ -234,6 +235,9 @@ class Profile extends Component {
                 friendRequestClassName={friendRequestClassName}
               />
             </div>
+
+
+            
           </div>
         </div>
       );
