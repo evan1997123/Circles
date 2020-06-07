@@ -5,7 +5,7 @@ import Button from "react-bootstrap/Button";
 class Reward extends Component {
   render() {
     if (this.props.claimedDate) {
-      console.log(this.props.claimedDate.toDate().toDateString());
+      // console.log(this.props.claimedDate.toDate().toDateString());
     }
     return (
       <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>

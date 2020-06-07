@@ -23,7 +23,6 @@ class ViewMembersModal extends Component {
   }
   render() {
     var leaders = this.props.leaders;
-    console.log(leaders);
     var members = this.props.members;
     var profileData = this.props.profileData;
     var friendRequests = this.props.friendRequests;

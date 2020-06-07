@@ -41,7 +41,7 @@ class ActiveCircles extends React.Component {
 
   render() {
     var circles;
-    if (this.props.myCircles && this.props.toDoTasks) {
+    if (this.props.myCircles && this.props.toDoTasks && this.props.authUID) {
       circles = this.props.myCircles.map((circle, index) => {
         var needsAttention;
         var className;
@@ -63,13 +63,33 @@ class ActiveCircles extends React.Component {
           this.props.circleIDToNumPendingTasks &&
           this.props.circleIDToNumPendingTasks[circle.circleID]
         ) {
-          numPendingTasks = this.props.circleIDToNumPendingTasks[
-            circle.circleID
-          ];
+          if (Object.keys(circle.leaderList).includes(this.props.authUID))
+            numPendingTasks = this.props.circleIDToNumPendingTasks[
+              circle.circleID
+            ];
         }
 
         if (needsAttention || numPendingTasks > 0) {
           className = "needsAttention";
+        }
+
+        var styleToUse;
+        if (className !== "needsAttention") {
+          styleToUse = {
+            backgroundColor: circle.circleColor ? circle.circleColor : null,
+            borderColor: circle.circleColor ? circle.circleColor : null
+          };
+        } else {
+          console.log(circle.circleName);
+          console.log(circle.circleHighlight);
+          styleToUse = {
+            backgroundColor: circle.circleColor ? circle.circleColor : null,
+            borderWidth: "5px",
+            borderColor: circle.circleHighlight
+              ? circle.circleHighlight
+              : "#ff495c"
+          };
+          console.log(styleToUse);
         }
 
         return (
@@ -84,7 +104,7 @@ class ActiveCircles extends React.Component {
               <form action={"/circle/" + circle.id}>
                 <button
                   type="submit"
-                  className={"myButton btn btn-primary " + className}
+                  className={"myButton btn btn-primary "}
                   // onClick={() => this.setRedirect(circle.id)}
                   // onClick={() =>
                   //   this.props.history.push("/circle/" + circle.id)
@@ -95,6 +115,7 @@ class ActiveCircles extends React.Component {
                   onMouseLeave={e =>
                     this.changeVisibility(circle.circleID, false)
                   }
+                  style={styleToUse}
                   // name={circle.circleID}
                 >
                   <div style={{ position: "relative", display: "inlineBlock" }}>

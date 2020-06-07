@@ -278,7 +278,6 @@ export const disapproveTask = taskID => {
 
 export const editTask = newTaskDetails => {
   return (dispatch, getState, { getFirebase, getFirestore }) => {
-    console.log(newTaskDetails);
     const firestore = getFirestore();
     firestore
       .collection("tasks")
@@ -327,6 +326,9 @@ export const removeOverdueTasks = (deleteThisTaskID, userID, circleID) => {
             // Update user's points
             var circleDetails = doc.data();
             var oldPoints = circleDetails.points;
+            console.log("oldPoints: " + oldPoints[userID]);
+            console.log("penalty: " + penalty);
+            console.log(oldPoints[userID] - penalty);
             var newPoints = {
               ...oldPoints,
               [userID]:

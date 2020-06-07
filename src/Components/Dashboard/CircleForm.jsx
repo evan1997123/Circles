@@ -19,7 +19,9 @@ class CircleForm extends React.Component {
       newCircleDescription: "",
       newCircleName: "",
       currentLeadersOfNewCircle: [],
-      filterState: ""
+      filterState: "",
+      circleColor: "#007bff",
+      circleHighlight: "#ff495c",
     };
 
     this.createNewCircle = this.createNewCircle.bind(this);
@@ -34,19 +36,19 @@ class CircleForm extends React.Component {
 
   createNewCircle() {
     this.setState({
-      show: true
+      show: true,
     });
   }
 
   hideModal() {
     this.setState({
-      show: false
+      show: false,
     });
   }
 
   handleChanges(e) {
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   }
 
@@ -60,44 +62,44 @@ class CircleForm extends React.Component {
 
     if (newMemberOrLeader === "newMember") {
       checkMembersList = this.state.currentMembersOfNewCircle.filter(
-        member => member.userID === userID
+        (member) => member.userID === userID
       );
       checkLeadersList = this.state.currentLeadersOfNewCircle.filter(
-        leader => leader.userID === userID
+        (leader) => leader.userID === userID
       );
       if (checkMembersList.length !== 0 || checkLeadersList.length !== 0) {
         return;
       }
       copyList = [
         ...this.state.currentMembersOfNewCircle,
-        { userID: userID, name: name }
+        { userID: userID, name: name },
       ];
 
       this.setState({
-        currentMembersOfNewCircle: copyList
+        currentMembersOfNewCircle: copyList,
       });
     } else if (newMemberOrLeader === "newLeader") {
       checkMembersList = this.state.currentMembersOfNewCircle.filter(
-        member => member.userID === userID
+        (member) => member.userID === userID
       );
       checkLeadersList = this.state.currentLeadersOfNewCircle.filter(
-        leader => leader.userID === userID
+        (leader) => leader.userID === userID
       );
       if (checkMembersList.length !== 0 || checkLeadersList.length !== 0) {
         return;
       }
       copyList = [
         ...this.state.currentLeadersOfNewCircle,
-        { userID: userID, name: name }
+        { userID: userID, name: name },
       ];
       this.setState({
-        currentLeadersOfNewCircle: copyList
+        currentLeadersOfNewCircle: copyList,
       });
     }
 
     // Clear filter state
     this.setState({
-      filterState: ""
+      filterState: "",
     });
   }
 
@@ -108,17 +110,17 @@ class CircleForm extends React.Component {
     var copyList;
     if (e.target.name === "deleteMember") {
       copyList = this.state.currentMembersOfNewCircle.filter(
-        nameAndID => nameAndID.userID !== idToDelete
+        (nameAndID) => nameAndID.userID !== idToDelete
       );
       this.setState({
-        currentMembersOfNewCircle: copyList
+        currentMembersOfNewCircle: copyList,
       });
     } else if (newMemberOrLeader === "deleteLeader") {
       copyList = this.state.currentLeadersOfNewCircle.filter(
-        nameAndID => nameAndID.userID !== idToDelete
+        (nameAndID) => nameAndID.userID !== idToDelete
       );
       this.setState({
-        currentLeadersOfNewCircle: copyList
+        currentLeadersOfNewCircle: copyList,
       });
     }
   }
@@ -129,13 +131,14 @@ class CircleForm extends React.Component {
     var yourID = auth.uid;
 
     var allCurrentUsersSelectedID = [];
-    this.state.currentMembersOfNewCircle.forEach(member => {
+    this.state.currentMembersOfNewCircle.forEach((member) => {
       allCurrentUsersSelectedID.push(member.userID);
     });
-    this.state.currentLeadersOfNewCircle.forEach(leader => {
+    this.state.currentLeadersOfNewCircle.forEach((leader) => {
       allCurrentUsersSelectedID.push(leader.userID);
     });
 
+    var forHex = /^#[0-9a-fA-F]{6}$/;
     //check for empty things and I must be a leader/member and there must be a leader
     if (
       this.state.newCircleName === "" ||
@@ -144,7 +147,23 @@ class CircleForm extends React.Component {
       !allCurrentUsersSelectedID.includes(yourID)
     ) {
       console.log("invalid paramaters");
-      alert("All fields are required");
+      alert(
+        "Circle Name, Circle Description, atleast 1 leader must be selected, and you must be a part of the circle."
+      );
+      return;
+    } else if (
+      !new RegExp(forHex).test(this.state.circleColor) &&
+      this.state.circleColor.length !== 0
+    ) {
+      console.log("Invalid Circle Color,", this.state.circleColor);
+      alert("Invalid Circle Color");
+      return;
+    } else if (
+      !new RegExp(forHex).test(this.state.circleHighlight) &&
+      this.state.circleColor.length !== 0
+    ) {
+      console.log("Invalid Circle Highlight");
+      alert("Invalid Circle Highlight");
       return;
     }
 
@@ -152,7 +171,7 @@ class CircleForm extends React.Component {
     var newMemberList = {};
     var newLeaderList = {};
 
-    this.state.currentMembersOfNewCircle.map(member => {
+    this.state.currentMembersOfNewCircle.map((member) => {
       var leftBracket = member.name.indexOf("[");
       var slicedName = member.name.slice(
         leftBracket + 1,
@@ -161,7 +180,7 @@ class CircleForm extends React.Component {
       newMemberList[member.userID] = slicedName;
     });
 
-    this.state.currentLeadersOfNewCircle.map(leader => {
+    this.state.currentLeadersOfNewCircle.map((leader) => {
       var leftBracket = leader.name.indexOf("[");
       var slicedName = leader.name.slice(
         leftBracket + 1,
@@ -176,7 +195,7 @@ class CircleForm extends React.Component {
     );
 
     var currentPoints = {};
-    everyone.map(person => {
+    everyone.map((person) => {
       currentPoints[person.userID] = 0;
     });
 
@@ -187,7 +206,15 @@ class CircleForm extends React.Component {
       leaderList: newLeaderList,
       numberOfPeople:
         Object.keys(newMemberList).length + Object.keys(newLeaderList).length,
-      points: currentPoints
+      points: currentPoints,
+      circleColor:
+        this.state.circleColor.length === 0
+          ? "#007bff"
+          : this.state.circleColor,
+      circleHighlight:
+        this.state.circleHighlight.length === 0
+          ? "#007bff"
+          : this.state.circleHighlight,
     };
 
     this.props.createCircleDispatch(circleDetails);
@@ -199,7 +226,7 @@ class CircleForm extends React.Component {
       newCircleDescription: "",
       newCircleName: "",
       currentLeadersOfNewCircle: [],
-      show: false
+      show: false,
     });
   }
 
@@ -342,6 +369,38 @@ class CircleForm extends React.Component {
       }
     }
 
+    console.log(this.state);
+
+    var circleColorTextColor;
+    var circleHighlightTextColor;
+    var forHex = /^#[0-9a-fA-F]{6}$/;
+    // var forHex = /#[0-9a-fA-f]{6}/;
+
+    console.log(this.state.circleColor);
+    console.log(new RegExp(forHex).test(this.state.circleColor));
+    if (
+      this.state.circleColor.length === 7 &&
+      new RegExp(forHex).test(this.state.circleColor)
+    ) {
+      console.log("valid circle color");
+      circleColorTextColor = this.state.circleColor;
+    } else if (this.state.circleColor.length === 0) {
+      circleColorTextColor = "#007bff"; //blue
+    } else {
+      circleColorTextColor = "#212529"; //black
+    }
+
+    if (
+      this.state.circleHighlight.length === 7 &&
+      new RegExp(forHex).test(this.state.circleHighlight)
+    ) {
+      console.log("valid circle color");
+      circleHighlightTextColor = this.state.circleHighlight;
+    } else if (this.state.circleHighlight.length === 0) {
+      circleHighlightTextColor = "#ff495c"; //red
+    } else {
+      circleHighlightTextColor = "#212529"; //black
+    }
     return (
       <div style={{ marginTop: 25 }}>
         <Modal show={this.props.show} onHide={this.props.hideModal}>
@@ -351,7 +410,15 @@ class CircleForm extends React.Component {
           <Modal.Body>
             <p style={{ color: "red" }}>
               Note: you must include a name, description, at least one leader,
-              and you must be a part of the circle.
+              and you must be a part of the circle. You may only include your{" "}
+              <strong>friends</strong>. Add friends{" "}
+              <a
+                href="/profile"
+                style={{ color: "red", textDecoration: "underline" }}
+              >
+                here
+              </a>
+              .
             </p>
             <Form name="newCircleForm">
               <Form.Group>
@@ -365,6 +432,7 @@ class CircleForm extends React.Component {
                       name="newCircleName"
                       placeholder="Circle name"
                       onChange={this.handleChanges}
+                      required={true}
                     ></Form.Control>
                   </Col>
                 </Form.Row>
@@ -381,6 +449,47 @@ class CircleForm extends React.Component {
                       name="newCircleDescription"
                       placeholder="Circle Description"
                       onChange={this.handleChanges}
+                      required={true}
+                    ></Form.Control>
+                  </Col>
+                </Form.Row>
+              </Form.Group>
+
+              <Form.Group>
+                <Form.Row>
+                  <Col id="flexColSmall">
+                    <Form.Label style={{ color: circleColorTextColor }}>
+                      Circle Color
+                    </Form.Label>
+                  </Col>
+                  <Col id="myFlexColBig">
+                    <Form.Control
+                      type="text"
+                      name="circleColor"
+                      placeholder="Default: #007bff"
+                      onChange={this.handleChanges}
+                    ></Form.Control>
+                  </Col>
+                </Form.Row>
+              </Form.Group>
+
+              <Form.Group>
+                <Form.Row>
+                  <Col id="flexColSmall">
+                    <Form.Label
+                      style={{
+                        color: circleHighlightTextColor,
+                      }}
+                    >
+                      Circle Highlight
+                    </Form.Label>
+                  </Col>
+                  <Col id="myFlexColBig">
+                    <Form.Control
+                      type="text"
+                      name="circleHighlight"
+                      placeholder="Default #ff495c"
+                      onChange={this.handleChanges}
                     ></Form.Control>
                   </Col>
                 </Form.Row>
@@ -392,26 +501,6 @@ class CircleForm extends React.Component {
                     <Form.Label>Leaders</Form.Label>
                   </Col>
                   <Col id="myFlexColBig">
-                    {/* <Dropdown onSelect={this.handleAdding}>
-                      @
-                      <Dropdown.Toggle
-                        variant="success"
-                        as="Input"
-                        onChange={this.handleChanges}
-                        name="filterState"
-                      >
-                        Select new leaders
-                      </Dropdown.Toggle> */}
-                    {/* <Form.Control
-                        type="text"
-                        name="username"
-                        placeholder="username"
-                        onChange={this.handleChanges}
-                      ></Form.Control> */}
-                    {/* {!emptyLeaderDropDown && (
-                        <Dropdown.Menu>{dropDownLeaderUsers}</Dropdown.Menu>
-                      )}
-                    </Dropdown> */}
                     <Dropdown
                       onSelect={this.handleAdding}
                       style={{ minWidth: "70%" }}
@@ -439,14 +528,6 @@ class CircleForm extends React.Component {
                     <Form.Label>Members</Form.Label>
                   </Col>
                   <Col id="myFlexColBig">
-                    {/* <Dropdown onSelect={this.handleAdding}>
-                      <Dropdown.Toggle variant="success">
-                        Select new members
-                      </Dropdown.Toggle>
-                      {!emptyMemberDropDown && (
-                        <Dropdown.Menu>{dropDownMembersUsers}</Dropdown.Menu>
-                      )}
-                    </Dropdown> */}
                     <Dropdown
                       onSelect={this.handleAdding}
                       style={{ minWidth: "70%" }}
@@ -486,7 +567,7 @@ const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
   <Button
     href=""
     ref={ref}
-    onClick={e => {
+    onClick={(e) => {
       e.preventDefault();
       onClick(e);
     }}
@@ -505,7 +586,7 @@ const CustomMenu = React.forwardRef(
   ({ children, style, className, "aria-labelledby": labeledBy }, ref) => {
     const [value, setValue] = useState("");
 
-    var allShow = React.Children.toArray(children).filter(child => {
+    var allShow = React.Children.toArray(children).filter((child) => {
       var checkBasic = !value;
       var usernameAndFullName = child.props.children;
       var checkUsername = usernameAndFullName
@@ -526,7 +607,7 @@ const CustomMenu = React.forwardRef(
       return checkBasic || checkUsername || checkFullName;
     });
 
-    allShow.sort(function(user1, user2) {
+    allShow.sort(function (user1, user2) {
       var user1Name = user1.props.children;
       var user2Name = user2.props.children;
       return user1Name.localeCompare(user2Name);
@@ -544,7 +625,7 @@ const CustomMenu = React.forwardRef(
           autoFocus
           className="mx-3 my-2 w-auto"
           placeholder="Enter username"
-          onChange={e => setValue(e.target.value)}
+          onChange={(e) => setValue(e.target.value)}
           value={value}
         />
         <ul className="list-unstyled">{allShow}</ul>
@@ -556,22 +637,19 @@ const CustomMenu = React.forwardRef(
 const mapStateToProps = (state, ownProps) => {
   return {
     allUsersRedux: state.firestore.ordered.users,
-    firebaseAuthRedux: state.firebase.auth
+    firebaseAuthRedux: state.firebase.auth,
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     //this takes in a task ( which we pass in above) and calls dispatch which just calls a function on createTask
     // creatTask is created from above import, and that  takes us to TaskActions.js
-    createCircleDispatch: circle => dispatch(createCircle(circle))
+    createCircleDispatch: (circle) => dispatch(createCircle(circle)),
   };
 };
 export default compose(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  ),
+  connect(mapStateToProps, mapDispatchToProps),
   //firestoreConnect takes in an array of of objects that say which collection you want to connect to
   //whenever database for this collection is changed, it will induce the firestoreReducer, which will sync store state
   // and then this component will "hear" that because we connected that. Then state will change for the store

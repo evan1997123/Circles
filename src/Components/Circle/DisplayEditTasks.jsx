@@ -9,22 +9,20 @@ class LeaderEditTasksModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      displayAssignedByMe: true,
+      displayAssignedByMe: true
     };
     this.handleClick = this.handleClick.bind(this);
   }
 
   handleClick(e) {
-    console.log("click");
     e.preventDefault();
-    console.log(e.target.name);
     if (e.target.name === "me") {
       this.setState({
-        displayAssignedByMe: true,
+        displayAssignedByMe: true
       });
     } else if (e.target.name === "otherLeaders") {
       this.setState({
-        displayAssignedByMe: false,
+        displayAssignedByMe: false
       });
     }
     var dropdown = document.getElementById("dropdown");
@@ -32,7 +30,6 @@ class LeaderEditTasksModal extends Component {
   }
 
   render() {
-    console.log("render");
     if (!this.props.tasksAssignedByMe) {
       return null;
     }
@@ -62,7 +59,7 @@ class LeaderEditTasksModal extends Component {
         ></Task>
       ));
     } else {
-      displayTheseTasks = this.props.allTasks.filter((task) => {
+      displayTheseTasks = this.props.allTasks.filter(task => {
         if (
           task.assignedByID !== this.props.userID &&
           task.taskStage === "pending"
@@ -84,7 +81,6 @@ class LeaderEditTasksModal extends Component {
         ></Task>
       ));
     }
-    console.log("edit tasks");
     return (
       <Modal
         show={this.props.showLeaderEditTasksModal}

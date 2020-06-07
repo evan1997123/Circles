@@ -16,7 +16,7 @@ class Picture extends Component {
     super(props);
     this.state = {
       source: defaultPic,
-      loading: false,
+      loading: false
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -42,7 +42,6 @@ class Picture extends Component {
     } else if (this.isFileImage(file)) {
       this.setState({ loading: true });
       storageRef.put(file).then(() => {
-        console.log("HELLO");
         alert("You have changed the profile picture");
         this.props.handleNavBarUpdateProfile();
         this.handleUpdateProfile();
@@ -64,11 +63,10 @@ class Picture extends Component {
     let storageRef = this.props.firebase
       .storage()
       .ref(this.props.auth.uid + "/" + "profilepic");
-    storageRef.getDownloadURL().then((url) => this.setState({ source: url }));
+    storageRef.getDownloadURL().then(url => this.setState({ source: url }));
   }
 
   render() {
-    console.log();
     let buttonText =
       this.state.source === defaultPic
         ? "Add Profile Picture"
@@ -80,7 +78,7 @@ class Picture extends Component {
           border: "1px solid #ddd",
           padding: "10%",
           borderRadius: "4px",
-          width: "100%",
+          width: "100%"
         }}
       >
         <div style={{ textAlign: "center" }}>
@@ -123,8 +121,11 @@ class Picture extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    firebase: state.firebase,
+    firebase: state.firebase
   };
 };
 
-export default compose(connect(mapStateToProps), firebaseConnect())(Picture);
+export default compose(
+  connect(mapStateToProps),
+  firebaseConnect()
+)(Picture);
