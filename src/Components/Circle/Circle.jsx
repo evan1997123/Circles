@@ -194,7 +194,7 @@ class Circle extends React.Component {
     console.log(selectedOption);
     if (
       this.state.taskName === "" ||
-      this.state.assignedForID === "" ||
+      // this.state.assignedForID === "" ||
       this.state.taskDescription === "" ||
       this.state.completeBy === "" ||
       this.state.reward === "" ||
@@ -910,6 +910,7 @@ class Circle extends React.Component {
             currentCircle={currentCircle}
             handlePromoteDemote={this.handlePromoteDemote}
           ></PromoteDemoteModal>
+          {/* For creating a task */}
           <CreateTaskModal
             handleCreateTask={this.handleCreateTask}
             handleSubmitEditedTask={null}
@@ -922,6 +923,7 @@ class Circle extends React.Component {
             showModal={this.state.showCreateTaskModal}
             handleClose={this.handleClose}
           />
+          {/* For editing a task that already has been created */}
           <CreateTaskModal
             handleCreateTask={this.handleCreateTask}
             handleSubmitEditedTask={this.handleSubmitEditedTask}
@@ -932,35 +934,8 @@ class Circle extends React.Component {
             currentCircle={currentCircle}
             editingTask={true}
             showModal={this.state.showEditTaskModal}
+            handleClose={this.handleClose}
           />
-          {/* <Modal show={this.state.showEditTaskModal} onHide={this.handleClose}>
-            <Modal.Header>
-              <Modal.Title>Edit a Task</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <TaskForm
-                handleCreateTask={this.handleCreateTask}
-                handleChangeInput={this.handleChangeInput}
-                formData={this.state}
-                allUsers={allUsers}
-                userID={userID}
-                currentCircle={currentCircle}
-                editingTask={true}
-              />
-            </Modal.Body>
-            <Modal.Footer>
-              <Button onClick={this.handleClose} variant="outline-danger">
-                Cancel
-              </Button>
-              <Button
-                onClick={this.handleSubmitEditedTask}
-                variant="outline-primary"
-              >
-                Submit Edits
-              </Button>
-            </Modal.Footer>
-          </Modal> */}
-
           <Modal
             show={this.state.showLeaveCircleModal}
             onHide={this.handleClose}
