@@ -644,15 +644,14 @@ class Circle extends React.Component {
         var task = dismissedTasks[i];
         dismissedTasksMap[task.taskID] = task;
       }
-      console.log(allTasks);
-      console.log(dismissedTasksMap);
+
       for (var i = 0; i < Object.keys(dismissedTasks).length; i++) {
         var task = dismissedTasks[i];
         var taskID = task.taskID;
         var assignedForID = task.assignedForID;
         tasksHistory[assignedForID].push(taskID);
       }
-      console.log(tasksHistory);
+
       var displayTasksHistory = {};
       for (var i = 0; i < Object.keys(tasksHistory).length; i++) {
         var personID = Object.keys(tasksHistory)[i];
