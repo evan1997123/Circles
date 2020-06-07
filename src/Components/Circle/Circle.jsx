@@ -192,22 +192,22 @@ class Circle extends React.Component {
   handleCreateTask(e, selectedOption) {
     e.preventDefault();
     console.log(selectedOption);
-    // if (
-    //   this.state.taskName === "" ||
-    //   this.state.assignedForID === "" ||
-    //   this.state.taskDescription === "" ||
-    //   this.state.completeBy === "" ||
-    //   this.state.reward === "" ||
-    //   this.state.penalty === ""
-    // ) {
-    //   alert("All fields are required");
-    //   return;
-    // } else if (this.state.reward < 0 || this.state.penalty < 0) {
-    //   alert(
-    //     "No negative values. Reward is how many points you will increase by. Penalty is how many points you will decrease by."
-    //   );
-    //   return;
-    // }
+    if (
+      this.state.taskName === "" ||
+      this.state.assignedForID === "" ||
+      this.state.taskDescription === "" ||
+      this.state.completeBy === "" ||
+      this.state.reward === "" ||
+      this.state.penalty === ""
+    ) {
+      alert("All fields are required");
+      return;
+    } else if (this.state.reward < 0 || this.state.penalty < 0) {
+      alert(
+        "No negative values. Reward is how many points you will increase by. Penalty is how many points you will decrease by."
+      );
+      return;
+    }
     var taskDetailsTemplate = {
       circleID: this.state.circleID,
       taskName: this.state.taskName,
