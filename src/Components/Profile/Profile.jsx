@@ -154,9 +154,6 @@ class Profile extends Component {
 
       return (
         <div style={{ padding: "1%" }}>
-          <div className="settings">
-            <AccountSettings />
-          </div>
           <div
             style={{
               display: "flex",
@@ -165,6 +162,10 @@ class Profile extends Component {
               padding: "5%"
             }}
           >
+            <div className="panelContainer" style={{ width: "50%" }}>
+            <AccountSettings />
+            </div>
+
             <div className="panelContainer" style={{ width: "30%" }}>
               <div className="panelItem" style={{ width: "100%" }}>
                 <Picture
