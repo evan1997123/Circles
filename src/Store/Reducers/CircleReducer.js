@@ -117,6 +117,24 @@ const CircleReducer = (state = initState, action) => {
           action.err
       );
       return state;
+    case "UPDATE_CIRCLE_DETAILS_SUCCESS":
+      console.log(
+        "updated circleID: " +
+          action.circle +
+          " to have these details" +
+          action.newCircleDetails
+      );
+      return state;
+    case "UPDATE_CIRCLE_DETAILS_ERROR":
+      console.log(
+        "updated circleID: " +
+          action.circle +
+          " to have these details" +
+          action.newCircleDetails +
+          " but error: " +
+          action.err
+      );
+      return state;
     default:
       return state;
   }

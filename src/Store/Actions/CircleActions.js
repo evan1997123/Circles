@@ -312,7 +312,9 @@ export const deleteCircle = (
       // console.log(currentUserCircleList);
 
       var updatedUserCircleList = { ...currentUserCircleList };
+      console.log(updatedUserCircleList);
       delete updatedUserCircleList[circleID];
+      console.log(updatedUserCircleList);
       // console.log(updatedUserCircleList);
 
       firestore
@@ -383,6 +385,39 @@ export const deleteCircle = (
           type: "DELETE_CIRCLE_ERROR",
           who: circleID,
           what: "from circles",
+          err: err
+        });
+      });
+  };
+};
+
+export const editCircleDetails = (newCircleDetails, circleID) => {
+  return (dispatch, getState, { getFirebase, getFirestore }) => {
+    const firestore = getFirestore();
+
+    console.log(newCircleDetails);
+    console.log(circleID);
+    firestore
+      .collection("circles")
+      .doc(circleID)
+      .update({
+        circleName: newCircleDetails.newCircleName,
+        circleDescription: newCircleDetails.newCircleDescription,
+        circleColor: newCircleDetails.newCircleColor,
+        circleHighlight: newCircleDetails.newCircleHighlight
+      })
+      .then(() => {
+        dispatch({
+          type: "UPDATE_CIRCLE_DETAILS_SUCCESS",
+          circle: circleID,
+          newCircleDetails: newCircleDetails
+        });
+      })
+      .catch(err => {
+        dispatch({
+          type: "UPDATE_CIRCLE_DETAILS_ERROR",
+          circle: circleID,
+          newCircleDetails: newCircleDetails,
           err: err
         });
       });
