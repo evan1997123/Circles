@@ -3,9 +3,12 @@ import CircleReducer from "./CircleReducer";
 import TaskReducer from "./TaskReducer";
 import RewardReducer from "./RewardReducer";
 import FriendReducer from "./FriendReducer";
+import UserReducer from "./UserReducer";
+import SettingsReducer from "./SettingsReducer";
 import { combineReducers } from "redux";
 import { firestoreReducer } from "redux-firestore"; // syncs firestore
 import { firebaseReducer } from "react-redux-firebase"; // syncs Auth firebase status
+
 
 const rootReducer = combineReducers({
   auth: AuthReducer,
@@ -13,6 +16,8 @@ const rootReducer = combineReducers({
   task: TaskReducer,
   reward: RewardReducer,
   friend: FriendReducer,
+  settings: SettingsReducer,
+  user: UserReducer,
   firestore: firestoreReducer,
   firebase: firebaseReducer
 });

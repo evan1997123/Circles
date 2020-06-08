@@ -948,6 +948,7 @@ class Circle extends React.Component {
             currentCircle={currentCircle}
             handlePromoteDemote={this.handlePromoteDemote}
           ></PromoteDemoteModal>
+          {/* For creating a task */}
           <CreateTaskModal
             handleCreateTask={this.handleCreateTask}
             handleSubmitEditedTask={null}
@@ -960,6 +961,7 @@ class Circle extends React.Component {
             showModal={this.state.showCreateTaskModal}
             handleClose={this.handleClose}
           />
+          {/* For editing a task that already has been created */}
           <CreateTaskModal
             handleCreateTask={this.handleCreateTask}
             handleSubmitEditedTask={this.handleSubmitEditedTask}
@@ -970,6 +972,7 @@ class Circle extends React.Component {
             currentCircle={currentCircle}
             editingTask={true}
             showModal={this.state.showEditTaskModal}
+            handleClose={this.handleClose}
           />
           <EditCircleModal
             showModal={this.state.showEditCircleModal}

@@ -1,5 +1,8 @@
 export const sendFriendRequest = friendInfo => {
-  return (dispatch, getState, { getFirebase, getFirestore }) => {
+  return (dispatch, getState, {
+    getFirebase,
+    getFirestore
+  }) => {
     //pause dispatch
     //do async calls to Database
     const firestore = getFirestore();
@@ -32,17 +35,21 @@ export const sendFriendRequest = friendInfo => {
     console.log("creating friend Requests");
 
     keyValueIDName.map(toIDAndName => {
+      const uuidv4 = require("uuid/v4");
+      const uuid = uuidv4();
+      var newFriendRequestDetails = {
+        from: friendInfo.from,
+        fromName: friendInfo.fromName,
+        to: toIDAndName[0],
+        toName: toIDAndName[1],
+        allUsersRelated: [friendInfo.from, toIDAndName[0]],
+        createdAt: new Date(),
+        friendRequestID: uuid
+      }
       firestore
         .collection("friendRequests")
-        .add({
-          from: friendInfo.from,
-          fromName: friendInfo.fromName,
-          to: toIDAndName[0],
-          toName: toIDAndName[1],
-          allUsersRelated: [friendInfo.from, toIDAndName[0]],
-          createdAt: new Date()
-          // status: "requesting"
-        })
+        .doc(uuid)
+        .set(newFriendRequestDetails)
         .then(() => {
           dispatch({
             type: "CREATE_FRIEND_REQUEST",
@@ -67,7 +74,10 @@ export const sendFriendRequest = friendInfo => {
 };
 
 export const cancelFriendRequest = friendRequestDocumentID => {
-  return (dispatch, getState, { getFirebase, getFirestore }) => {
+  return (dispatch, getState, {
+    getFirebase,
+    getFirestore
+  }) => {
     //pause dispatch
     //do async calls to Database
     const firestore = getFirestore();
@@ -95,7 +105,10 @@ export const cancelFriendRequest = friendRequestDocumentID => {
 };
 
 export const acceptFriendRequest = friendRequest => {
-  return (dispatch, getState, { getFirebase, getFirestore }) => {
+  return (dispatch, getState, {
+    getFirebase,
+    getFirestore
+  }) => {
     //pause dispatch
     //do async calls to Database
     const firestore = getFirestore();
@@ -215,7 +228,10 @@ export const acceptFriendRequest = friendRequest => {
 };
 
 export const deleteFriends = deleteInfo => {
-  return (dispatch, getState, { getFirebase, getFirestore }) => {
+  return (dispatch, getState, {
+    getFirebase,
+    getFirestore
+  }) => {
     //pause dispatch
     //do async calls to Database
     const firestore = getFirestore();
@@ -233,7 +249,9 @@ export const deleteFriends = deleteInfo => {
 
         var myCurrentFriendsList = updatingUser.friendsList;
 
-        var updatedFriendsList = { ...myCurrentFriendsList };
+        var updatedFriendsList = {
+          ...myCurrentFriendsList
+        };
         //friendsToDelete is list of all Id's to delete
 
         deleteInfo.friendsToDelete.forEach(deleteFriendID => {
@@ -283,13 +301,17 @@ export const deleteFriends = deleteInfo => {
 
           var currentUserFriendsList = updatingUser.friendsList;
 
-          var updatedFriendsList = { ...currentUserFriendsList };
+          var updatedFriendsList = {
+            ...currentUserFriendsList
+          };
 
           delete updatedFriendsList[deleteInfo.myID];
 
           // var toUse = updatingUser;
           // toUse["friendsList"] = updatedFriendsList;
-          var toUse = { friendsList: updatedFriendsList };
+          var toUse = {
+            friendsList: updatedFriendsList
+          };
 
           firestore
             .collection("users")

@@ -1,5 +1,5 @@
 node_modules/
 build/
 public/
-package.json
-package-lock.json
+/package.json
+/package-lock.json
