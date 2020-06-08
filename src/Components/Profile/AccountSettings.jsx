@@ -7,7 +7,7 @@ import { compose } from "redux";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 
-import {setUsername, setFirstName, setLastName} from "../../Store/Actions/SettingsActions";
+import {setUsername, setFirstName, setLastName,setEmail, setPassword} from "../../Store/Actions/SettingsActions";
 
 class AccountSettings extends Component {
   constructor(props) {
@@ -15,10 +15,17 @@ class AccountSettings extends Component {
     this.state = {
       username: "",
       firstname: "",
-      lastname: ""
+      lastname: "",
+      email: "",
+      password: ""
     };
   }
 
+  handleChange = e => {
+    this.setState({
+      [e.target.id]: e.target.value
+    });
+  };
   
   handleSetUsername = (e) => {
     e.preventDefault();
@@ -37,12 +44,17 @@ class AccountSettings extends Component {
     this.props.dispatchSetLastName(this.state.lastname, this.props.firebaseAuthRedux.uid);
   }
 
-  handleChange = e => {
-    this.setState({
-      [e.target.id]: e.target.value
-    });
-  };
 
+  handleSetEmail = (e) => {
+    e.preventDefault();
+    this.props.dispatchSetEmail(this.state.email, this.props.firebaseAuthRedux.uid);
+  }
+
+
+  handleSetPassword = (e) => {
+    e.preventDefault();
+    this.props.dispatchSetPassword(this.state.password, this.props.firebaseAuthRedux.uid);
+  }
 
   getYourSettings(users, yourUID){
     var user = users.filter(user => (user.id == yourUID)? true: false);
@@ -56,9 +68,9 @@ class AccountSettings extends Component {
   render() {
     var userID = this.props.firebaseAuthRedux.uid;
     var u = (this.props.firestoreUsersRedux)? this.getYourSettings(this.props.firestoreUsersRedux, userID) : console.log("empty");
-    console.log(u);
     return <div>
       <h6>Account Settings</h6>
+
       <div>
         <h7>
           {u ? "Username: " + u.username : ""}
@@ -68,6 +80,7 @@ class AccountSettings extends Component {
           {u ? "Last Name: " + u.lastName : ""}
         </h7>
       </div>
+
       <Form onSubmit={this.handleSetUsername}>
           <label>Set Username:</label>
           <input
@@ -76,21 +89,45 @@ class AccountSettings extends Component {
           <Button type="submit">Submit</Button>
       </Form>
       <br/>
+
       <Form onSubmit={this.handleSetFirstName}>
-          <label>Set First Name:</label>
+          <label>Set First:</label>
           <input
             type="text" id="firstname" onChange={this.handleChange}
           />
           <Button type="submit">Submit</Button>
       </Form>
       <br/>
+      
       <Form onSubmit={this.handleSetLastName}>
-          <label>Set Last Name:</label>
+          <label>Set Last:</label>
           <input
             type="text" id="lastname" onChange={this.handleChange}
           />
           <Button type="submit">Submit</Button>
       </Form>
+      <br/>
+
+      <Form onSubmit={this.handleSetEmail}>
+          <label>Set Email:</label>
+          <input
+            type="text" id="email" onChange={this.handleChange}
+          />
+          <Button type="submit">Submit</Button>
+      </Form>
+      <br/>
+
+      <Form onSubmit={this.handleSetPassword}>
+          <label>Set Password:</label>
+          <input
+            type="text" id="password" onChange={this.handleChange}
+          />
+          <Button type="submit">Submit</Button>
+      </Form>
+      <br/>
+
+
+
     </div>;
   }
 }
@@ -107,7 +144,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     dispatchSetUsername: (username, uid) => dispatch(setUsername(username, uid)),
     dispatchSetFirstName: (firstname, uid) => dispatch(setFirstName(firstname, uid)),
-    dispatchSetLastName: (lastname, uid) => dispatch(setLastName(lastname, uid))
+    dispatchSetLastName: (lastname, uid) => dispatch(setLastName(lastname, uid)),
+    dispatchSetEmail: (email, uid) => dispatch(setEmail(email, uid)),
+    dispatchSetPassword: (password, uid) => dispatch(setPassword(password, uid))
   };
 };
 
