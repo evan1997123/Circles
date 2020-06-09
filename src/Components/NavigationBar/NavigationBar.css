@@ -24,8 +24,8 @@
 }
 
 .blueTextAndBigger {
-  font-size: 1.25rem;
-  color: #007bff !important;
+  /* font-size: 1.25rem;
+  color: #007bff !important; */
 }
 
 .blueTextAndBigger:hover {

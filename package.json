@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.13.0",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
@@ -26,7 +27,7 @@
     "redux-firestore": "^0.13.0",
     "redux-form": "^8.3.5",
     "redux-thunk": "^2.3.0",
-    "serve": "^11.3.1",
+    "serve": "^11.3.2",
     "typescript": "^3.9.3",
     "uuid": "^3.1.0",
     "uuidv4": "^6.0.9"
