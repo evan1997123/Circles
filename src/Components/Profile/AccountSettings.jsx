@@ -27,7 +27,7 @@ class AccountSettings extends Component {
       email: "",
       password: "",
       confirmPassword: "",
-      updateSettingsError: ""
+      updateSettingsError: "",
     };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.accountSettingsHandleClose = this.accountSettingsHandleClose.bind(
@@ -35,9 +35,9 @@ class AccountSettings extends Component {
     );
   }
 
-  handleChange = e => {
+  handleChange = (e) => {
     this.setState({
-      [e.target.id]: e.target.value
+      [e.target.id]: e.target.value,
     });
   };
 
@@ -49,7 +49,7 @@ class AccountSettings extends Component {
       email: "",
       password: "",
       confirmPassword: "",
-      updateSettingsError: ""
+      updateSettingsError: "",
     });
     this.props.handleClose();
   }
@@ -60,7 +60,7 @@ class AccountSettings extends Component {
       prevProps.show === this.props.show
     ) {
       this.setState({
-        updateSettingsError: this.props.updateSettingsError
+        updateSettingsError: this.props.updateSettingsError,
       });
       return;
     }
@@ -74,7 +74,7 @@ class AccountSettings extends Component {
         username: this.props.profileData.username,
         // firstName: this.props.profileData.firstName,
         // lastName: this.props.profileData.lastName,
-        email: this.props.firebaseAuthRedux.email
+        email: this.props.firebaseAuthRedux.email,
       });
     }
   }
@@ -101,7 +101,7 @@ class AccountSettings extends Component {
       // lastName: this.state.lastName,
       email: this.state.email,
       password: this.state.password,
-      confirmPassword: this.state.confirmPassword
+      confirmPassword: this.state.confirmPassword,
     };
     var profileData = this.props.profileData;
     var firebaseAuthRedux = this.props.firebaseAuthRedux;
@@ -110,7 +110,7 @@ class AccountSettings extends Component {
       // firstName: profileData.firstName,
       username: profileData.username,
       // lastName: profileData.lastName,
-      email: firebaseAuthRedux.email
+      email: firebaseAuthRedux.email,
     };
     this.props.handleUpdateSettings(newSettings, oldSettings);
   }
@@ -172,7 +172,8 @@ class AccountSettings extends Component {
       // profileData.firstName === this.state.firstName &&
       // profileData.lastName === this.state.lastName &&
       this.props.firebaseAuthRedux.email === this.state.email &&
-      (!this.state.confirmPassword && !this.state.password)
+      !this.state.confirmPassword &&
+      !this.state.password
     ) {
       changed = false;
     } else {
@@ -188,11 +189,11 @@ class AccountSettings extends Component {
         <Modal.Header closeButton>
           <Modal.Title>Account Settings</Modal.Title>
         </Modal.Header>
-        <Form.Label style={{ color: "red" }}>
-          Note: you may only change your email OR your password in one update.
-        </Form.Label>
 
         <Modal.Body>
+          <p style={{ color: "red" }}>
+            Note: you may only change your email OR your password in one update.
+          </p>
           <Form>
             {/* <div>
             <h6>
