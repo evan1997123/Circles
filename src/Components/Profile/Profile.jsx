@@ -8,8 +8,9 @@ import {
   sendFriendRequest,
   cancelFriendRequest,
   acceptFriendRequest,
-  deleteFriends,
+  deleteFriends
 } from "../../Store/Actions/FriendActions";
+import { updateSettings } from "../../Store/Actions/SettingsActions";
 import { deleteUser } from "../../Store/Actions/UserActions";
 //
 import Picture from "./Picture";
@@ -21,7 +22,11 @@ import { Button, Card } from "react-bootstrap";
 class Profile extends Component {
   constructor(props) {
     super(props);
-    this.state = { showFriendOptionsModal: false, deletedUser: false };
+    this.state = {
+      showFriendOptionsModal: false,
+      deletedUser: false,
+      showAccountSettingsModal: false
+    };
 
     this.handleClose = this.handleClose.bind(this);
     this.handleClick = this.handleClick.bind(this);
@@ -31,6 +36,7 @@ class Profile extends Component {
     this.handleAcceptFriendRequest = this.handleAcceptFriendRequest.bind(this);
     this.handleDeleteFriends = this.handleDeleteFriends.bind(this);
     this.handleDeleteUser = this.handleDeleteUser.bind(this);
+    this.handleUpdateSettings = this.handleUpdateSettings.bind(this);
   }
 
   // For showing modal (creating new task)
@@ -38,7 +44,12 @@ class Profile extends Component {
     switch (e.target.name) {
       case "friendOptionsButton":
         this.setState({
-          showFriendOptionsModal: true,
+          showFriendOptionsModal: true
+        });
+        return;
+      case "accountSettingsButton":
+        this.setState({
+          showAccountSettingsModal: true
         });
         return;
       default:
@@ -48,6 +59,7 @@ class Profile extends Component {
   handleClose() {
     this.setState({
       showFriendOptionsModal: false,
+      showAccountSettingsModal: false
     });
   }
 
@@ -85,12 +97,20 @@ class Profile extends Component {
       var userID = this.props.firebaseAuthRedux.uid;
       this.props.dispatchDeleteUser(userID);
       this.setState({
-        deletedUser: true,
+        deletedUser: true
       });
     } else {
       alert("Your account has not been deleted. Welcome back! 😁");
       return;
     }
+  }
+
+  handleUpdateSettings(newSettings, oldSettings) {
+    this.props.dispatchUpdateSettings(
+      newSettings,
+      oldSettings,
+      this.props.firebaseAuthRedux.uid
+    );
   }
 
   render() {
@@ -105,10 +125,10 @@ class Profile extends Component {
       var incomingFriendRequests;
       if (this.props.firestoreFriendRequestsRedux) {
         myFriendRequests = this.props.firestoreFriendRequestsRedux.filter(
-          (friendRequest) => friendRequest.from === userID
+          friendRequest => friendRequest.from === userID
         );
         incomingFriendRequests = this.props.firestoreFriendRequestsRedux.filter(
-          (friendRequest) => friendRequest.to === userID
+          friendRequest => friendRequest.to === userID
         );
         allLoaded = true;
       }
@@ -123,7 +143,7 @@ class Profile extends Component {
               style={{
                 width: "100%!important",
                 margin: "auto",
-                marginBottom: "10px",
+                marginBottom: "10px"
               }}
               key={index}
               className="card flex-row"
@@ -135,12 +155,12 @@ class Profile extends Component {
                   width: 450,
                   display: "flex",
                   justifyContent: "space-between",
-                  alignItems: "center",
+                  alignItems: "center"
                 }}
               >
                 <Card.Title
                   style={{
-                    margin: 0,
+                    margin: 0
                   }}
                 >
                   {friendIDAndName[1]}
@@ -164,7 +184,7 @@ class Profile extends Component {
       var authID = this.props.firebaseAuthRedux.uid;
       if (this.props.firestoreFriendRequestsRedux && authID) {
         var friendRequestToMe = this.props.friendRequests.filter(
-          (friendRequest) => friendRequest.to === authID
+          friendRequest => friendRequest.to === authID
         );
         // I have a friendRequest for me to respond to
         if (friendRequestToMe.length > 0) {
@@ -179,12 +199,19 @@ class Profile extends Component {
               display: "flex",
               flexDirection: "row",
               justifyContent: "space-evenly",
-              padding: "5%",
+              padding: "5%"
             }}
           >
-            <div className="panelContainer" style={{ width: "50%" }}>
-            <AccountSettings />
-            </div>
+            {/* <div className="panelContainer" style={{ width: "50%" }}> */}
+            <AccountSettings
+              show={this.state.showAccountSettingsModal}
+              firebaseAuthRedux={this.props.firebaseAuthRedux}
+              profileData={profileData}
+              handleClose={this.handleClose}
+              handleUpdateSettings={this.handleUpdateSettings}
+              updateSettingsError={this.props.updateSettingsError}
+            />
+            {/* </div> */}
 
             <div className="panelContainer" style={{ width: "30%" }}>
               <div className="panelItem" style={{ width: "100%" }}>
@@ -196,9 +223,24 @@ class Profile extends Component {
                   handleDeleteUser={this.handleDeleteUser}
                 />
                 {/* <ProfileStatus profileData={profileData} /> */}
+                <Button
+                  name={"accountSettingsButton"}
+                  variant={"outline-primary"}
+                  style={{ margin: "10px 10px 10px 0" }}
+                  onClick={this.handleClick}
+                >
+                  Account Settings
+                </Button>
+                <Button
+                  variant={"outline-primary"}
+                  style={{ margin: "10px 10px 10px 0" }}
+                  onClick={this.handleDeleteUser}
+                >
+                  Delete User
+                </Button>
               </div>
             </div>
-            
+
             <div style={{ width: "50%" }}>
               <h2 style={{ textAlign: "center" }}>Friends List</h2>
               {allLoaded ? (
@@ -235,9 +277,6 @@ class Profile extends Component {
                 friendRequestClassName={friendRequestClassName}
               />
             </div>
-
-
-            
           </div>
         </div>
       );
@@ -252,25 +291,31 @@ const mapStateToProps = (state, ownProps) => {
     firestoreUsersRedux: state.firestore.ordered.users,
     firestoreFriendRequestsRedux: state.firestore.ordered.friendRequests,
     firebase: state.firebase,
+    updateSettingsError: state.settings.updateSettingsError
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
-    dispatchSendFriendRequest: (friendInfo) =>
+    dispatchSendFriendRequest: friendInfo =>
       dispatch(sendFriendRequest(friendInfo)),
-    dispatchCancelFriendRequest: (friendRequestDocumentID) =>
+    dispatchCancelFriendRequest: friendRequestDocumentID =>
       dispatch(cancelFriendRequest(friendRequestDocumentID)),
-    dispatchAcceptFriendRequest: (friendRequest) =>
+    dispatchAcceptFriendRequest: friendRequest =>
       dispatch(acceptFriendRequest(friendRequest)),
-    dispatchDeleteFriends: (deleteInfo) => dispatch(deleteFriends(deleteInfo)),
-    dispatchDeleteUser: (userID) => dispatch(deleteUser(userID)),
+    dispatchDeleteFriends: deleteInfo => dispatch(deleteFriends(deleteInfo)),
+    dispatchDeleteUser: userID => dispatch(deleteUser(userID)),
+    dispatchUpdateSettings: (newSettings, oldSettings, uid) =>
+      dispatch(updateSettings(newSettings, oldSettings, uid))
   };
 };
 
 export default compose(
-  connect(mapStateToProps, mapDispatchToProps),
-  firestoreConnect((props) => {
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  ),
+  firestoreConnect(props => {
     if (props.firebaseAuthRedux.uid) {
       return [
         { collection: "circles" },
@@ -278,17 +323,17 @@ export default compose(
         {
           collection: "friendRequests",
           where: [
-            ["allUsersRelated", "array-contains", props.firebaseAuthRedux.uid],
-          ],
-        },
+            ["allUsersRelated", "array-contains", props.firebaseAuthRedux.uid]
+          ]
+        }
       ];
     } else {
       return [
         { collection: "circles" },
         { collection: "users" },
         {
-          collection: "friendRequests",
-        },
+          collection: "friendRequests"
+        }
       ];
     }
   })
