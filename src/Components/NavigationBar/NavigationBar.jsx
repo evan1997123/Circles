@@ -49,12 +49,12 @@ class NavigationBar extends Component {
         {/* {this.props.profile.initials &&
           this.props.profile.initials.toUpperCase()} */}
         &nbsp;
-        <Image
+        {/* <Image
           src={this.state.source}
           alt="loading from firebase"
           className={friendRequestClassName + " smallImage"}
           // style={{ border: "1px solid #ddd" }}
-        ></Image>
+        ></Image> */}
         &nbsp;
         {this.props.profile.firstName}
       </Nav.Link>
