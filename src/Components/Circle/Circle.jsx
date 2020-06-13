@@ -149,7 +149,6 @@ class Circle extends React.Component {
           59
         );
         // console.log(taskDueDate);
-
         if (taskDueDate.getTime() - currentDate.getTime() < 0) {
           tasksToDelete.push(task);
         }
