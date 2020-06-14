@@ -27,17 +27,10 @@ class Dashboard extends React.Component {
 
   handleRemoveOverdueTasks() {
     var allTasks = this.props.firestoreTasksRedux;
-    var userID = this.props.firebaseAuthRedux.uid;
-    var circleID;
-    if (this.props.firestoreCircleRedux && this.props.firestoreCircleRedux[0]) {
-      circleID = this.props.firestoreCircleRedux[0].circleID;
-    }
-    if (allTasks && circleID) {
+    if (allTasks) {
       var tasksToDelete = [];
       for (var i = 0; i < allTasks.length; i++) {
         var task = allTasks[i];
-        // console.log(task);
-        // Compare current date with the task's completeBy date
         var currentDate = new Date();
         var taskDueDate = task.completeBy;
         var dueDateYear = taskDueDate.slice(0, taskDueDate.indexOf("-"));
@@ -69,8 +62,8 @@ class Dashboard extends React.Component {
       for (var i = 0; i < tasksToDelete.length; i++) {
         this.props.dispatchRemoveOverdueTasks(
           tasksToDelete[i].taskID,
-          userID,
-          circleID
+          tasksToDelete[i].assignedForID,
+          tasksToDelete[i].circleID
         );
       }
       if (tasksToDelete.length > 0) {
