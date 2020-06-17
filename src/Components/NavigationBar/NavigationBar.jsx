@@ -15,7 +15,7 @@ class NavigationBar extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      source: defaultPic,
+      source: defaultPic
     };
 
     this.handleUpdateProfile = this.handleUpdateProfile.bind(this);
@@ -31,7 +31,7 @@ class NavigationBar extends Component {
     let storageRef = this.props.firebase
       .storage()
       .ref(this.props.isAuthed + "/" + "profilepic");
-    storageRef.getDownloadURL().then((url) => this.setState({ source: url }));
+    storageRef.getDownloadURL().then(url => this.setState({ source: url }));
   }
 
   changeVisibility(showHover) {
@@ -53,7 +53,7 @@ class NavigationBar extends Component {
     var friendRequestClassName = null;
     if (this.props.friendRequests && authID) {
       var friendRequestToMe = this.props.friendRequests.filter(
-        (friendRequest) => friendRequest.to === authID
+        friendRequest => friendRequest.to === authID
       );
       // I have a friendRequest for me to respond to
       if (friendRequestToMe.length > 0) {
@@ -67,7 +67,7 @@ class NavigationBar extends Component {
         style={{
           display: "flex",
           flexDirection: "row",
-          alignItems: "center",
+          alignItems: "center"
         }}
       >
         {/* {this.props.profile.initials &&
@@ -125,8 +125,8 @@ class NavigationBar extends Component {
               </div> */}
               <div
                 style={{ position: "relative" }}
-                onMouseEnter={(e) => this.changeVisibility(true)}
-                onMouseLeave={(e) => this.changeVisibility(false)}
+                onMouseEnter={e => this.changeVisibility(true)}
+                onMouseLeave={e => this.changeVisibility(false)}
               >
                 <i
                   class="fas fa-info-circle fa-3x"
@@ -145,12 +145,13 @@ class NavigationBar extends Component {
                     top: "120%",
                     left: "50%",
                     marginLeft: "-200px",
-                    zIndex: "1",
+                    zIndex: "1"
                   }}
                   id="info"
                 >
                   Here are the latest updates ✨
                   <ul>
+                    <li>Fixed bug where task history was deleted </li>
                     <li>You can now change your Circle color!</li>
                     <li>You can now view the latest updates</li>
                     <li>
@@ -171,7 +172,7 @@ class NavigationBar extends Component {
 }
 const mapStateToProps = (state, ownProps) => {
   return {
-    firebase: state.firebase,
+    firebase: state.firebase
   };
 };
 
