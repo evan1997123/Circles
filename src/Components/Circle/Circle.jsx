@@ -255,7 +255,7 @@ class Circle extends React.Component {
 
   // For showing modal (creating new task)
   handleClick = e => {
-    console.log(e.target.name);
+    // console.log(e.target.name);
     switch (e.target.name) {
       case "createTaskButton":
         this.setState({

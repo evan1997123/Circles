@@ -10,6 +10,7 @@ import {
   acceptFriendRequest,
   deleteFriends
 } from "../../Store/Actions/FriendActions";
+import { signOut } from "../../Store/Actions/AuthActions";
 import { updateSettings } from "../../Store/Actions/SettingsActions";
 import { deleteUser } from "../../Store/Actions/UserActions";
 //
@@ -115,6 +116,7 @@ class Profile extends Component {
 
   render() {
     if (!this.props.isAuthed || this.state.deletedUser) {
+      this.props.signOutRedux();
       return <Redirect to="/" />;
     } else {
       const profileData = this.props.firebaseProfileRedux;
@@ -306,7 +308,8 @@ const mapDispatchToProps = dispatch => {
     dispatchDeleteFriends: deleteInfo => dispatch(deleteFriends(deleteInfo)),
     dispatchDeleteUser: userID => dispatch(deleteUser(userID)),
     dispatchUpdateSettings: (newSettings, oldSettings, uid) =>
-      dispatch(updateSettings(newSettings, oldSettings, uid))
+      dispatch(updateSettings(newSettings, oldSettings, uid)),
+    signOutRedux: () => dispatch(signOut())
   };
 };
 

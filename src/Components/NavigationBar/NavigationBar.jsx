@@ -35,9 +35,9 @@ class NavigationBar extends Component {
   }
 
   changeVisibility(showHover) {
-    console.log("change visibility");
+    // console.log("change visibility");
     var element = document.getElementById("info");
-    console.log(element);
+    // console.log(element);
     if (element && element.style) {
       if (showHover) {
         element.style.visibility = "visible";
