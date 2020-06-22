@@ -32,6 +32,9 @@ const TaskReducer = (state = initState, action) => {
     case "EDIT_TASK_ERROR":
       console.log("edit task error", action.err);
       return state;
+    case "CREATE_RECURRING_TASK_NODE":
+      console.log("create recurring task node", action.recurringTaskNode);
+      return state;
     default:
       return state;
   }

@@ -34,6 +34,7 @@ class ViewRewardsHistoryModal extends Component {
     dropdown.innerHTML = name;
 
     var displayTheseItems;
+    console.log(this.props.tasksHistory);
     if (this.props.forRewards) {
       displayTheseItems = this.props.rewardsHistory[userID];
     } else {
@@ -73,6 +74,7 @@ class ViewRewardsHistoryModal extends Component {
   }
 
   render() {
+    console.log(this.state.displayTheseItems);
     var dropdownLeaders = Object.keys(this.props.leaders).map(
       (leaderID, index) => (
         <Dropdown.Item onClick={this.handleClick} name={leaderID} key={index}>

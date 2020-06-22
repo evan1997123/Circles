@@ -8,7 +8,7 @@ class EditCircleModal extends Component {
       newCircleName: "",
       newCircleDescription: "",
       newCircleColor: "",
-      newCircleHighlight: ""
+      newCircleHighlight: "",
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -20,14 +20,14 @@ class EditCircleModal extends Component {
         newCircleName: this.props.currentCircle.circleName,
         newCircleDescription: this.props.currentCircle.circleDescription,
         newCircleColor: this.props.currentCircle.circleColor,
-        newCircleHighlight: this.props.currentCircle.circleHighlight
+        newCircleHighlight: this.props.currentCircle.circleHighlight,
       });
     }
   }
 
   handleChange(e) {
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   }
 
@@ -39,7 +39,7 @@ class EditCircleModal extends Component {
       this.state.newCircleColor === currentCircle.circleColor &&
       this.state.newCircleHighlight === currentCircle.circleHighlight
     ) {
-      alert("There are no changes inthe circle details");
+      alert("There are no changes in the circle details");
       return;
     }
 
@@ -159,7 +159,7 @@ class EditCircleModal extends Component {
                   <Col id="flexColSmall">
                     <Form.Label
                       style={{
-                        color: circleHighlightTextColor
+                        color: circleHighlightTextColor,
                       }}
                     >
                       Circle Highlight
@@ -179,7 +179,11 @@ class EditCircleModal extends Component {
             </Form>
           </Modal.Body>
           <Modal.Footer>
-            <Button type="submit" onClick={this.updateCircle}>
+            <Button
+              type="submit"
+              variant="outline-primary"
+              onClick={this.updateCircle}
+            >
               Update
             </Button>
           </Modal.Footer>

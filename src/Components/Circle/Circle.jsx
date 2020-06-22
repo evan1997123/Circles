@@ -15,6 +15,7 @@ import {
   disapproveTask,
   editTask,
   removeOverdueTasks,
+  createRecurringTask,
 } from "../../Store/Actions/TaskActions";
 import {
   updateCircleMembers,
@@ -69,6 +70,7 @@ class Circle extends React.Component {
       penalty: "", // For overdue tasks
       handledOverdue: false,
       deleteCircleError: "",
+      recurring: "No",
     };
 
     //input form local state
@@ -178,15 +180,13 @@ class Circle extends React.Component {
     // console.log(e.target.value);
   }
 
-  //event handler for creating a task
-  handleCreateTask(e, selectedOption) {
+  handleCreateTask(e, selectedOption, selectedDays) {
     e.preventDefault();
-    console.log(selectedOption);
     if (
       this.state.taskName === "" ||
       selectedOption.length === 0 ||
       this.state.taskDescription === "" ||
-      this.state.completeBy === "" ||
+      (this.state.recurring === "No" && this.state.completeBy === "") ||
       this.state.reward === "" ||
       this.state.penalty === ""
     ) {
@@ -201,20 +201,28 @@ class Circle extends React.Component {
     var taskDetailsTemplate = {
       circleID: this.state.circleID,
       taskName: this.state.taskName,
-      // assignedForID: this.state.assignedForID,
       taskDescription: this.state.taskDescription,
-      completeBy: this.state.completeBy,
       reward: this.state.reward === "" ? 0 : this.state.reward,
       penalty: this.state.penalty === "" ? 0 : this.state.penalty,
     };
     for (var i = 0; i < selectedOption.length; i++) {
       var selectedUser = selectedOption[i];
       var selectedUserID = selectedUser.value;
-      var taskDetails = {
-        ...taskDetailsTemplate,
-        assignedForID: selectedUserID,
-      };
-      this.props.dispatchCreateTask(taskDetails);
+      if (this.state.recurring === "Yes") {
+        var recurringTaskDetails = {
+          ...taskDetailsTemplate,
+          assignedForID: selectedUserID,
+          selectedDays,
+        };
+        this.props.dispatchCreateRecurringTask(recurringTaskDetails);
+      } else {
+        var taskDetails = {
+          ...taskDetailsTemplate,
+          assignedForID: selectedUserID,
+          completeBy: this.state.completeBy,
+        };
+        this.props.dispatchCreateTask(taskDetails);
+      }
     }
 
     var frm = document.getElementsByName("TaskForm")[0];
@@ -676,6 +684,7 @@ class Circle extends React.Component {
       }
 
       var displayTasksHistory = {};
+      console.log(tasksHistory);
       for (var i = 0; i < Object.keys(tasksHistory).length; i++) {
         var personID = Object.keys(tasksHistory)[i];
         var listOfTaskIDs = tasksHistory[personID];
@@ -697,17 +706,7 @@ class Circle extends React.Component {
         <div className="overallContainer">
           <div className="text-center">
             <div className="circle-name">{currentCircle.circleName}</div>
-            {isLeader ? (
-              <Button
-                name="viewEditCircleButton"
-                onClick={this.handleClick}
-                style={{ margin: "7.5px" }}
-                size={"sm"}
-                variant={"outline-primary"}
-              >
-                Edit Circle
-              </Button>
-            ) : null}
+            <div>{currentCircle.circleDescription}</div>
             <div className="circle-info" style={{ marginTop: "10px" }}>
               Number of People: {currentCircle.numberOfPeople} <br />
               Current Points: {currentCircle.points[userID]} <br />
@@ -835,6 +834,17 @@ class Circle extends React.Component {
                 </Dropdown.Item>
               ) : null}
             </DropdownButton>
+            {isLeader ? (
+              <Button
+                name="viewEditCircleButton"
+                onClick={this.handleClick}
+                style={{ margin: "7.5px" }}
+                size={"lg"}
+                variant={"outline-primary"}
+              >
+                Edit Circle
+              </Button>
+            ) : null}
             {!isLeader ? (
               <Button
                 variant="outline-danger"
@@ -1159,6 +1169,8 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(sendFriendRequest(friendInfo)),
     dispatchEditCircleDetails: (newCircleDetails, circleID) =>
       dispatch(editCircleDetails(newCircleDetails, circleID)),
+    dispatchCreateRecurringTask: (recurringTaskDetails) =>
+      dispatch(createRecurringTask(recurringTaskDetails)),
   };
 };
 

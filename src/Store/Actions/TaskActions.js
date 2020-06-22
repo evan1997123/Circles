@@ -4,7 +4,10 @@
 //action creator for creating a task and storing it in firestore database
 //input: task data object
 export const createTask = task => {
-  return (dispatch, getState, { getFirebase, getFirestore }) => {
+  return (dispatch, getState, {
+    getFirebase,
+    getFirestore
+  }) => {
     //pause dispatch
     //do async calls to Database
     //this is asynchronous and returns a Promise. This promise we can use then, which only fires when promise is returned
@@ -36,7 +39,8 @@ export const createTask = task => {
             assignedFor: assignedFor,
             taskStage: "toDo",
             taskID: uuid,
-            dismissed: false
+            dismissed: false,
+            recurring: false
           };
           //add task to firestore, then
           //dispatch action again so be handled by TaskReducer.js
@@ -65,7 +69,10 @@ export const createTask = task => {
 //action creator for moving a task, i.e. modifying it's taskStage property in firestore database
 //input: task data object
 export const moveTask = (task, userID) => {
-  return (dispatch, getState, { getFirebase, getFirestore }) => {
+  return (dispatch, getState, {
+    getFirebase,
+    getFirestore
+  }) => {
     //console.log(task);
     //console.log(userID);
 
@@ -230,7 +237,10 @@ export const moveTask = (task, userID) => {
 export const deleteTask = taskId => {
   // Pause dispatch
   // Make asynchronous call to firebase
-  return (dispatch, getState, { getFirebase, getFirestore }) => {
+  return (dispatch, getState, {
+    getFirebase,
+    getFirestore
+  }) => {
     // Reference to firestore database
     const firestore = getFirestore();
     firestore
@@ -254,7 +264,10 @@ export const deleteTask = taskId => {
 };
 
 export const disapproveTask = taskID => {
-  return (dispatch, getState, { getFirebase, getFirestore }) => {
+  return (dispatch, getState, {
+    getFirebase,
+    getFirestore
+  }) => {
     const firestore = getFirestore();
     firestore
       .collection("tasks")
@@ -277,7 +290,10 @@ export const disapproveTask = taskID => {
 };
 
 export const editTask = newTaskDetails => {
-  return (dispatch, getState, { getFirebase, getFirestore }) => {
+  return (dispatch, getState, {
+    getFirebase,
+    getFirestore
+  }) => {
     const firestore = getFirestore();
     firestore
       .collection("tasks")
@@ -306,7 +322,10 @@ export const editTask = newTaskDetails => {
 };
 
 export const removeOverdueTasks = (deleteThisTaskID, userID, circleID) => {
-  return (dispatch, getState, { getFirebase, getFirestore }) => {
+  return (dispatch, getState, {
+    getFirebase,
+    getFirestore
+  }) => {
     const firestore = getFirestore();
     // Before removing the task, decrease the user's points
     firestore
@@ -331,10 +350,8 @@ export const removeOverdueTasks = (deleteThisTaskID, userID, circleID) => {
             console.log(oldPoints[userID] - penalty);
             var newPoints = {
               ...oldPoints,
-              [userID]:
-                oldPoints[userID] - penalty >= 0
-                  ? oldPoints[userID] - penalty
-                  : 0
+              [userID]: oldPoints[userID] - penalty >= 0 ?
+                oldPoints[userID] - penalty : 0
             };
             // Update the Circle
             firestore
@@ -383,3 +400,106 @@ export const removeOverdueTasks = (deleteThisTaskID, userID, circleID) => {
       });
   };
 };
+
+
+export const createRecurringTask = (recurringTaskDetails) => {
+  return (dispatch, getState, {
+    getFirebase,
+    getFirestore
+  }) => {
+    console.log(recurringTaskDetails);
+    const firestore = getFirestore();
+    const profile = getState().firebase.profile;
+    const assignedByID = getState().firebase.auth.uid;
+    const fullName = profile.firstName + " " + profile.lastName;
+    const uuidv4 = require("uuid/v4");
+    const recurringTaskNodeID = uuidv4();
+    var selectedDays = recurringTaskDetails.selectedDays;
+    var listOfTaskIDs = [];
+    firestore
+      .collection("users")
+      .doc(recurringTaskDetails.assignedForID)
+      .get()
+      .then(doc => {
+        if (!doc.exists) {
+          // Do something (user doesn't exist)
+        } else {
+          var assignedFor = doc.data().firstName + " " + doc.data().lastName;
+          for (var i = 0; i < selectedDays.length; i++) {
+            // Create task for each selected date
+            var uuid = uuidv4();
+            var selectedDay = selectedDays[i];
+            var month =
+              selectedDay.getMonth() < 10 ?
+              "0" + (selectedDay.getMonth() + 1) :
+              selectedDay.getMonth() + 1;
+            var day =
+              selectedDay.getDate() < 10 ?
+              "0" + selectedDay.getDate() :
+              selectedDay.getDate();
+            var completeBy = selectedDay.getFullYear() + "-" + month + "-" + day;
+            listOfTaskIDs.push(uuid);
+            console.log(listOfTaskIDs);
+            var newTask = {
+              circleID: recurringTaskDetails.circleID,
+              taskName: recurringTaskDetails.taskName,
+              taskDescription: recurringTaskDetails.taskDescription,
+              reward: recurringTaskDetails.reward,
+              penalty: recurringTaskDetails.penalty,
+              createdDate: new Date(),
+              assignedBy: fullName,
+              assignedByID: assignedByID,
+              assignedFor: assignedFor,
+              assignedForID: recurringTaskDetails.assignedForID,
+              taskStage: "toDo",
+              taskID: uuid,
+              dismissed: false,
+              recurring: true,
+              recurringTaskNodeID: recurringTaskNodeID,
+              completeBy: completeBy
+            }
+            firestore
+              .collection("tasks")
+              .doc(uuid)
+              .set(newTask)
+              .then(() => {
+                dispatch({
+                  type: "CREATE_TASK",
+                  task: newTask
+                })
+              })
+              .catch(err => {
+                dispatch({
+                  type: "CREATE_TASK_ERROR",
+                  err
+                })
+              });
+          }
+          // Once finish creating individual tasks, create the node
+          console.log(listOfTaskIDs);
+          var recurringTaskNodeDetails = {
+            circleID: recurringTaskDetails.circleID,
+            listOfTaskIDs: listOfTaskIDs.slice(),
+            selectedDays: selectedDays,
+            recurringTaskNodeID: recurringTaskNodeID
+          }
+          firestore
+            .collection("recurringTaskNodes")
+            .doc(recurringTaskNodeID)
+            .set(recurringTaskNodeDetails)
+            .then(() => {
+              dispatch({
+                type: "CREATE_RECURRING_TASK_NODE",
+                recurringTaskNode: recurringTaskNodeDetails
+              })
+            })
+            .catch(err => {
+              dispatch({
+                type: "CREATE_RECURRING_TASK_NODE_ERROR",
+                err
+              })
+            })
+        }
+      })
+  }
+}
