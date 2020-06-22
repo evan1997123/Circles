@@ -111,7 +111,7 @@ class CircleColumns extends Component {
         <CircleColumn
           title="Completed Tasks"
           color="outline-info"
-          buttonText="Earn Points"
+          buttonText="Receive Points"
           tasks={cTasks}
           handleMoveTasks={handleMoveTasks}
           userID={userID}

@@ -115,8 +115,9 @@ class Circle extends React.Component {
     var allTasks = this.props.firestoreTasksRedux;
     if (allTasks) {
       var tasksToDelete = [];
-      for (var i = 0; i < allTasks.length; i++) {
-        var task = allTasks[i];
+      var allTasksToDo = allTasks.filter((task) => task.taskStage === "toDo");
+      for (var i = 0; i < allTasksToDo.length; i++) {
+        var task = allTasksToDo[i];
         var currentDate = new Date();
         var taskDueDate = task.completeBy;
         var dueDateYear = taskDueDate.slice(0, taskDueDate.indexOf("-"));
@@ -262,7 +263,7 @@ class Circle extends React.Component {
 
   // For showing modal (creating new task)
   handleClick = (e) => {
-    console.log(e.target.name);
+    // console.log(e.target.name);
     switch (e.target.name) {
       case "createTaskButton":
         this.setState({

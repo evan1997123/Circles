@@ -370,9 +370,7 @@ class PromoteDemoteModal extends Component {
                     </Dropdown>
                   </Form.Group>
                 </Form.Row>
-                <Form.Group>
-                  <Form.Label>{currentlySelectedMembersToPromote}</Form.Label>
-                </Form.Group>
+                <Form.Group>{currentlySelectedMembersToPromote}</Form.Group>
               </Modal.Body>
               <Modal.Footer>
                 {this.state.currentForm === "promote" ? (
@@ -426,6 +424,11 @@ class PromoteDemoteModal extends Component {
                 <Form.Group>{currentlySelectedLeadersToDemote}</Form.Group>
               </Modal.Body>
               <Modal.Footer>
+                {this.state.currentForm === "promote" ? (
+                  <Button onClick={this.swapForms}>Swap to Demote</Button>
+                ) : (
+                  <Button onClick={this.swapForms}>Swap to Promote</Button>
+                )}
                 <Button onClick={this.props.handleClose}> Close </Button>
                 <Button onClick={this.handlePromoteDemote}>Submit</Button>
               </Modal.Footer>

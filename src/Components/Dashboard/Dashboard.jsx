@@ -29,8 +29,9 @@ class Dashboard extends React.Component {
     var allTasks = this.props.firestoreTasksRedux;
     if (allTasks) {
       var tasksToDelete = [];
-      for (var i = 0; i < allTasks.length; i++) {
-        var task = allTasks[i];
+      var allTasksToDo = allTasks.filter(task => task.taskStage === "toDo");
+      for (var i = 0; i < allTasksToDo.length; i++) {
+        var task = allTasksToDo[i];
         var currentDate = new Date();
         var taskDueDate = task.completeBy;
         var dueDateYear = taskDueDate.slice(0, taskDueDate.indexOf("-"));
@@ -84,7 +85,7 @@ class Dashboard extends React.Component {
     var auth = this.props.firebaseAuthRedux;
     var userID = auth.uid;
     if (allTasks) {
-      allTasks.filter((task) => {
+      allTasks.filter(task => {
         if (task.taskStage === "toDo" && task.assignedForID === userID) {
           if (task.dismissed == false) {
             toDoTasksNotDismissed.push(task);
@@ -105,7 +106,7 @@ class Dashboard extends React.Component {
     // Tasks that are still to be done and are assigned to me
     allTasks = this.props.firestoreTasksRedux;
     if (allTasks) {
-      allTasks = allTasks.filter((task) => {
+      allTasks = allTasks.filter(task => {
         if (task.assignedForID === userID && task.taskStage === "toDo") {
           return true;
         }
@@ -118,7 +119,7 @@ class Dashboard extends React.Component {
           // For each Circle, find the number of tasks that are still left to do
           var myCircle = allCircles[i];
           var myCircleID = myCircle.circleID;
-          circleIDToTasksMap[myCircleID] = allTasks.filter((task) => {
+          circleIDToTasksMap[myCircleID] = allTasks.filter(task => {
             return task.circleID === myCircleID;
           });
         }
@@ -152,7 +153,7 @@ class Dashboard extends React.Component {
     if (allTasks) {
       for (var i = 0; i < leaderInTheseCircles.length; i++) {
         var circleID = leaderInTheseCircles[i];
-        circleIDToNumPendingTasks[circleID] = allTasks.filter((task) => {
+        circleIDToNumPendingTasks[circleID] = allTasks.filter(task => {
           return task.circleID === circleID && task.taskStage === "pending";
         }).length;
       }
@@ -188,25 +189,28 @@ const mapStateToProps = (state, ownProps) => {
     firestoreTasksRedux: state.firestore.ordered.tasks,
     firebaseAuthRedux: state.firebase.auth,
     firestoreCircleRedux: state.firestore.ordered.circles,
-    firebaseProfileRedux: state.firebase.profile,
+    firebaseProfileRedux: state.firebase.profile
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
-    dispatchDismissTask: (task) => dispatch(dismissTask(task)),
+    dispatchDismissTask: task => dispatch(dismissTask(task)),
     dispatchRemoveOverdueTasks: (deleteThisTaskID, userID, circleID) =>
-      dispatch(removeOverdueTasks(deleteThisTaskID, userID, circleID)),
+      dispatch(removeOverdueTasks(deleteThisTaskID, userID, circleID))
   };
 };
 
 export default compose(
-  connect(mapStateToProps, mapDispatchToProps),
-  firestoreConnect((props) => {
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  ),
+  firestoreConnect(props => {
     return [
       {
-        collection: "tasks",
-      },
+        collection: "tasks"
+      }
     ];
   })
 )(Dashboard);
