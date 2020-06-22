@@ -152,7 +152,7 @@ class TaskForm extends Component {
             </Form.Label>
             <Form.Row>
               <Form.Group as={Col}>
-                <Form.Label>Task Name</Form.Label>
+                <Form.Label>Task Name 💭</Form.Label>
                 <Form.Control
                   required={true}
                   type="text"
@@ -163,7 +163,7 @@ class TaskForm extends Component {
                 />
               </Form.Group>
               <Form.Group as={Col}>
-                <Form.Label>Assigned For</Form.Label>
+                <Form.Label>Assigned For 🤗</Form.Label>
                 <Select
                   options={options}
                   isMulti={true}
@@ -176,7 +176,7 @@ class TaskForm extends Component {
               </Form.Group>
             </Form.Row>
             <Form.Group>
-              <Form.Label>Task Description</Form.Label>
+              <Form.Label>Task Description 📝</Form.Label>
               <Form.Control
                 required
                 type="text"
@@ -199,7 +199,7 @@ class TaskForm extends Component {
                 />
               </Form.Group>
               <Form.Group as={Col}>
-                <Form.Label>Penalty (For Overdue Tasks)</Form.Label>
+                <Form.Label>Penalty (For Overdue Tasks) 😢</Form.Label>
                 <Form.Control
                   required
                   type="number"
@@ -218,7 +218,7 @@ class TaskForm extends Component {
                   <span style={{ color: "red", fontWeight: "bold" }}>
                     two-week period
                   </span>{" "}
-                  starting from the first day selected.
+                  starting from the first day selected 🙃
                 </Form.Label>
                 <Form.Control
                   as="select"
@@ -241,7 +241,7 @@ class TaskForm extends Component {
               <Form.Group as={Col}>
                 {formData.recurring === "No" && (
                   <div>
-                    <Form.Label>Complete By</Form.Label>
+                    <Form.Label>Complete By ⏰</Form.Label>
                     <Form.Control
                       required={true}
                       type="date"
