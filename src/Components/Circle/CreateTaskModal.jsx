@@ -142,12 +142,12 @@ class TaskForm extends Component {
       >
         <Modal.Header closeButton>
           <Modal.Title>
-            {this.props.editingTask ? "Edit Task" : "Create a New Task 🗒"}
+            {this.props.editingTask ? "Edit Task" : "Create a New Task 🌟"}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form name="TaskForm">
-            <Form.Label style={{ color: "red" }}>
+            <Form.Label style={{ color: "red", fontWeight: "bold" }}>
               Note: all inputs are required.
             </Form.Label>
             <Form.Row>
