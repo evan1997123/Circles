@@ -18,6 +18,8 @@ class TaskForm extends Component {
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleDayClick = this.handleDayClick.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleClose = this.handleClose.bind(this);
   }
 
   handleChange(selectedOption) {
@@ -39,6 +41,24 @@ class TaskForm extends Component {
       selectedDays.push(day);
     }
     this.setState({ selectedDays });
+  }
+
+  handleSubmit(e) {
+    this.props.handleCreateTask(
+      e,
+      this.state.selectedOption,
+      this.state.selectedDays
+    );
+    this.setState({
+      selectedDays: [],
+    });
+  }
+
+  handleClose() {
+    this.props.handleClose();
+    this.setState({
+      selectedDays: [],
+    });
   }
 
   render() {
@@ -117,7 +137,7 @@ class TaskForm extends Component {
     return (
       <Modal
         show={this.props.showModal}
-        onHide={this.props.handleClose}
+        onHide={this.handleClose}
         dialogClassName="modal-width"
       >
         <Modal.Header closeButton>
@@ -255,12 +275,7 @@ class TaskForm extends Component {
             onClick={
               this.props.editingTask
                 ? this.props.handleSubmitEditedTask
-                : (e) =>
-                    this.props.handleCreateTask(
-                      e,
-                      this.state.selectedOption,
-                      this.state.selectedDays
-                    )
+                : (e) => this.handleSubmit(e)
             }
           >
             Create

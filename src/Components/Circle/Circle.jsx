@@ -242,6 +242,7 @@ class Circle extends React.Component {
       showViewMembersModal: false,
       showEditTaskModal: false,
       showEditCircleModal: false,
+      recurring: "No",
     });
   }
 
@@ -358,6 +359,7 @@ class Circle extends React.Component {
         rewardDescription: "",
         rewardPoints: "",
         deleteCircleError: "",
+        recurring: "No",
       });
     }
   }
