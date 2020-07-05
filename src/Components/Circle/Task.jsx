@@ -178,7 +178,7 @@ class Task extends React.Component {
             )}
             {forNotification && (
               <Button
-                variant="outline-warning"
+                variant="outline-primary"
                 onClick={() => handleDismiss(task)}
               >
                 Dismiss
