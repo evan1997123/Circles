@@ -17,7 +17,7 @@ class ApproveTasksModal extends Component {
           show={this.props.showApproveTasksModal}
           onHide={this.props.handleClose}
         >
-          <Modal.Header>
+          <Modal.Header closeButton>
             <Modal.Title>Approve Tasks</Modal.Title>
           </Modal.Header>
 
@@ -38,9 +38,7 @@ class ApproveTasksModal extends Component {
               </p>
             )}
           </Modal.Body>
-          <Modal.Footer>
-            <Button onClick={this.props.handleClose}>Close</Button>
-          </Modal.Footer>
+          <Modal.Footer></Modal.Footer>
         </Modal>
       </div>
     );

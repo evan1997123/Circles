@@ -9,7 +9,7 @@ class LeaderEditTasksModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      displayAssignedByMe: true
+      displayAssignedByMe: true,
     };
     this.handleClick = this.handleClick.bind(this);
   }
@@ -18,11 +18,11 @@ class LeaderEditTasksModal extends Component {
     e.preventDefault();
     if (e.target.name === "me") {
       this.setState({
-        displayAssignedByMe: true
+        displayAssignedByMe: true,
       });
     } else if (e.target.name === "otherLeaders") {
       this.setState({
-        displayAssignedByMe: false
+        displayAssignedByMe: false,
       });
     }
     var dropdown = document.getElementById("dropdown");
@@ -44,6 +44,7 @@ class LeaderEditTasksModal extends Component {
           handleEditTask={this.props.handleEditTask}
           deleteTask={this.props.deleteTask}
           assignedByMe={true} // I need to pass this in as a prop because
+          handleDeleteRecurringTasks={this.props.handleDeleteRecurringTasks}
         ></Task>
       ));
     } else if (this.state.displayAssignedByMe && this.props.tasksAssignedByMe) {
@@ -56,10 +57,11 @@ class LeaderEditTasksModal extends Component {
           handleEditTask={this.props.handleEditTask}
           deleteTask={this.props.deleteTask}
           assignedByMe={true}
+          handleDeleteRecurringTasks={this.props.handleDeleteRecurringTasks}
         ></Task>
       ));
     } else {
-      displayTheseTasks = this.props.allTasks.filter(task => {
+      displayTheseTasks = this.props.allTasks.filter((task) => {
         if (
           task.assignedByID !== this.props.userID &&
           task.taskStage === "pending"
@@ -78,6 +80,7 @@ class LeaderEditTasksModal extends Component {
           handleEditTask={this.props.handleEditTask}
           deleteTask={this.props.deleteTask}
           assignedByMe={true} // Me or other leaders
+          handleDeleteRecurringTasks={this.props.handleDeleteRecurringTasks}
         ></Task>
       ));
     }

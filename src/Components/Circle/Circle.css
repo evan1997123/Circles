@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Jost:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
 
 .centered {
   display: flex;
@@ -17,7 +17,8 @@
 }
 
 * {
-  font-family: "Jost", sans-serif;
+  font-family: "Montserrat", sans-serif;
+  font-size: 0.95rem;
 }
 
 .circle-name {

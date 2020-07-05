@@ -1,3 +1,11 @@
 .modal-width {
     min-width: 50%;
 }
+
+.modal-width-2 {
+    min-width: 10%;
+}
+
+aside.emoji-picker-react {
+    width: 100% !important;
+}

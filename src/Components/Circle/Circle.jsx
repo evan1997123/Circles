@@ -16,6 +16,8 @@ import {
   editTask,
   removeOverdueTasks,
   createRecurringTask,
+  submitEditedRecurringTask,
+  deleteRecurringTasks,
 } from "../../Store/Actions/TaskActions";
 import {
   updateCircleMembers,
@@ -71,6 +73,9 @@ class Circle extends React.Component {
       handledOverdue: false,
       deleteCircleError: "",
       recurring: "No",
+      editingTaskRecurringTaskNodeId: "",
+      selectedEmoji: "",
+      showEmojiPicker: false,
     };
 
     //input form local state
@@ -97,8 +102,14 @@ class Circle extends React.Component {
     this.handleRemoveOverdueTasks = this.handleRemoveOverdueTasks.bind(this);
     this.handleDeleteCircle = this.handleDeleteCircle.bind(this);
     this.handleClose = this.handleClose.bind(this);
-
     this.handleEditCircle = this.handleEditCircle.bind(this);
+    this.handleSubmitEditedTaskForAllRecurring = this.handleSubmitEditedTaskForAllRecurring.bind(
+      this
+    );
+    this.handleDeleteRecurringTasks = this.handleDeleteRecurringTasks.bind(
+      this
+    );
+    this.handleSelectedEmoji = this.handleSelectedEmoji.bind(this);
   }
 
   componentDidUpdate() {
@@ -162,6 +173,7 @@ class Circle extends React.Component {
   deleteTask = (taskId) => {
     // Delete task
     this.props.dispatchDeleteTask(taskId);
+    alert("You've deleted a task 😨");
   };
 
   //event handler for change in input form local state
@@ -205,6 +217,7 @@ class Circle extends React.Component {
       taskDescription: this.state.taskDescription,
       reward: this.state.reward === "" ? 0 : this.state.reward,
       penalty: this.state.penalty === "" ? 0 : this.state.penalty,
+      emoji: this.state.showEmojiPicker ? this.state.selectedEmoji : "",
     };
     for (var i = 0; i < selectedOption.length; i++) {
       var selectedUser = selectedOption[i];
@@ -243,7 +256,9 @@ class Circle extends React.Component {
       showEditTaskModal: false,
       showEditCircleModal: false,
       recurring: "No",
+      selectedEmoji: "",
     });
+    alert("Congrats! You've created a new task 🥳");
   }
 
   //event handler for moving tasks to a different stage
@@ -264,7 +279,7 @@ class Circle extends React.Component {
 
   // For showing modal (creating new task)
   handleClick = (e) => {
-    // console.log(e.target.name);
+    console.log(e.target.name);
     switch (e.target.name) {
       case "createTaskButton":
         this.setState({
@@ -328,6 +343,12 @@ class Circle extends React.Component {
           showEditCircleModal: true,
         });
         return;
+      case "showEmojiPicker":
+        console.log("this.handleClick");
+        this.setState((prevState) => ({
+          showEmojiPicker: !prevState.showEmojiPicker,
+        }));
+        return;
       default:
         return;
     }
@@ -360,6 +381,13 @@ class Circle extends React.Component {
         rewardPoints: "",
         deleteCircleError: "",
         recurring: "No",
+        taskName: "",
+        taskDescription: "",
+        reward: "",
+        penalty: "",
+        recurring: "No",
+        selectedEmoji: "",
+        showEmojiPicker: false,
       });
     }
   }
@@ -496,7 +524,7 @@ class Circle extends React.Component {
         editTask = currentTask;
       }
     }
-    // console.log(editTask);
+    console.log(editTask);
     this.setState({
       taskName: editTask.taskName,
       taskDescription: editTask.taskDescription,
@@ -506,13 +534,17 @@ class Circle extends React.Component {
       completeBy: editTask.completeBy,
       editingTaskID: editTask.taskID,
       penalty: editTask.penalty,
+      recurring: editTask.recurring,
+      editingTaskRecurringTaskNodeId: editTask.recurringTaskNodeID,
+      selectedEmoji: editTask.emoji,
+      showEmojiPicker: editTask.emoji !== "",
     });
   }
 
   // When submit the new edit
   handleSubmitEditedTask(e) {
     e.preventDefault();
-    console.log("submit edited task");
+    console.log(this.state);
     // Make sure all fields are filled out
     if (
       this.state.taskName === "" ||
@@ -534,7 +566,9 @@ class Circle extends React.Component {
       taskID: this.state.editingTaskID,
       completeBy: this.state.completeBy,
       penalty: this.state.penalty,
+      emoji: this.state.showEmojiPicker ? this.state.selectedEmoji : "",
     };
+    console.log(newTaskDetails);
     this.props.dispatchEditTask(newTaskDetails);
     // Find the form and reset form inputs
     var frm = document.getElementsByName("TaskForm")[0];
@@ -553,7 +587,37 @@ class Circle extends React.Component {
       showViewMembersModal: false,
       showEditTaskModal: false,
       showEditCircleModal: false,
+      selectedEmoji: "",
     });
+  }
+
+  handleSubmitEditedTaskForAllRecurring(e) {
+    console.log("handleSubmitEditedTaskForAllRecurring");
+    console.log(this.state);
+    var newRecurringTaskDetails = {
+      taskName: this.state.taskName,
+      taskDescription: this.state.taskDescription,
+      reward: this.state.reward === "" ? 0 : this.state.reward,
+      taskID: this.state.editingTaskID,
+      penalty: this.state.penalty,
+      recurringTaskNodeID: this.state.editingTaskRecurringTaskNodeId,
+      emoji: this.state.selectedEmoji,
+    };
+    console.log(newRecurringTaskDetails);
+    this.props.dispatchSubmitEditedRecurringTask(newRecurringTaskDetails);
+    var form = document.getElementsByName("TaskForm")[0];
+    form.reset();
+    this.setState({
+      taskName: "",
+      assignedForID: "",
+      taskDescription: "",
+      completeBy: "",
+      reward: 0,
+      penalty: 0,
+      showEditTaskModal: false,
+      selectedEmoji: "",
+    });
+    alert("Changes successfully submitted ✨");
   }
 
   handleEditCircle(newCircleDetails) {
@@ -571,6 +635,19 @@ class Circle extends React.Component {
         currentCircle.circleID
       );
     }
+  }
+
+  handleDeleteRecurringTasks(recurringTaskNodeId) {
+    console.log("handleDeleteRecurringTasks");
+    this.props.dispatchDeleteRecurringTask(recurringTaskNodeId);
+    alert("You've deleted a recurring task 😱");
+  }
+
+  handleSelectedEmoji(event, emojiObject) {
+    console.log(emojiObject);
+    this.setState({
+      selectedEmoji: emojiObject.emoji,
+    });
   }
 
   render() {
@@ -903,6 +980,7 @@ class Circle extends React.Component {
             deleteTask={this.deleteTask}
             userID={userID}
             isLeader={isLeader}
+            handleDeleteRecurringTasks={this.handleDeleteRecurringTasks}
           ></DisplayEditTasks>
           <ViewMembersModal
             showViewMembersModal={this.state.showViewMembersModal}
@@ -959,6 +1037,9 @@ class Circle extends React.Component {
             editingTask={false}
             showModal={this.state.showCreateTaskModal}
             handleClose={this.handleClose}
+            handleSelectedEmoji={this.handleSelectedEmoji}
+            showEmojiPicker={this.state.showEmojiPicker}
+            handleClick={this.handleClick}
           />
           {/* For editing a task that already has been created */}
           <CreateTaskModal
@@ -972,6 +1053,12 @@ class Circle extends React.Component {
             editingTask={true}
             showModal={this.state.showEditTaskModal}
             handleClose={this.handleClose}
+            handleSubmitEditedTaskForAllRecurring={
+              this.handleSubmitEditedTaskForAllRecurring
+            }
+            handleSelectedEmoji={this.handleSelectedEmoji}
+            showEmojiPicker={this.state.showEmojiPicker}
+            handleClick={this.handleClick}
           />
           <EditCircleModal
             showModal={this.state.showEditCircleModal}
@@ -1092,6 +1179,7 @@ class Circle extends React.Component {
               handleDeleteRewards={this.handleDeleteRewards}
               isLeader={isLeader}
               handleEditTask={this.handleEditTask}
+              handleDeleteRecurringTasks={this.handleDeleteRecurringTasks}
             />
           </div>
         </div>
@@ -1174,6 +1262,10 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(editCircleDetails(newCircleDetails, circleID)),
     dispatchCreateRecurringTask: (recurringTaskDetails) =>
       dispatch(createRecurringTask(recurringTaskDetails)),
+    dispatchSubmitEditedRecurringTask: (newRecurringTaskDetails) =>
+      dispatch(submitEditedRecurringTask(newRecurringTaskDetails)),
+    dispatchDeleteRecurringTask: (recurringTaskNodeId) =>
+      dispatch(deleteRecurringTasks(recurringTaskNodeId)),
   };
 };
 

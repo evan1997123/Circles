@@ -70,12 +70,14 @@ class Task extends React.Component {
     // Check if this task is assigned by yourself
     // var assignedByMe = task.assignedByID === userID;
 
+    console.log(this.props);
+
     return (
       <div className={classForTask} style={{ width: "100%" }}>
         <Card id="task-card">
           {/* <Card.Header as="h5">Task</Card.Header> */}
           <Card.Body style={{ width: "100%" }}>
-            <Card.Title>{task.taskName}</Card.Title>
+            <Card.Title>{task.emoji + " " + task.taskName}</Card.Title>
             {!forNotification && (
               <Card.Subtitle className="mb-2 text-muted">
                 Assigned By: {task.assignedBy}
@@ -146,18 +148,34 @@ class Task extends React.Component {
             {!forNotification &&
               (isLeader || assignedByMe) &&
               task.taskStage === "toDo" &&
-              deleteButton}
-            {!forNotification &&
-              ((assignedByMe && task.taskStage === "toDo") ||
-                (forLeaderEdits && task.taskStage === "pending")) && (
+              forLeaderEdits &&
+              task.recurring === "Yes" && (
                 <Button
-                  variant="outline-info"
-                  onClick={() => handleEditTask(task.taskID)}
+                  variant="outline-danger"
                   style={{ margin: "5px 10px 5px 0" }}
+                  onClick={() =>
+                    this.props.handleDeleteRecurringTasks(
+                      task.recurringTaskNodeID
+                    )
+                  }
                 >
-                  Edit Task
+                  Delete All Recurring
                 </Button>
               )}
+            {!forNotification &&
+              (isLeader || assignedByMe) &&
+              task.taskStage === "toDo" &&
+              forLeaderEdits &&
+              deleteButton}
+            {!forNotification && forLeaderEdits && (
+              <Button
+                variant="outline-primary"
+                onClick={() => handleEditTask(task.taskID)}
+                style={{ margin: "5px 10px 5px 0" }}
+              >
+                Edit Task
+              </Button>
+            )}
             {forNotification && (
               <Button
                 variant="outline-warning"

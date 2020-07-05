@@ -14,6 +14,7 @@ class EditCircleModal extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.updateCircle = this.updateCircle.bind(this);
   }
+
   componentDidUpdate(prevProps) {
     if (this.props.currentCircle && prevProps !== this.props) {
       this.setState({
@@ -51,10 +52,11 @@ class EditCircleModal extends Component {
     var circleColorTextColor;
     var circleHighlightTextColor;
     var forHex = /^#[0-9a-fA-F]{6}$/;
-    // var forHex = /#[0-9a-fA-f]{6}/;
 
     console.log(this.state.newCircleColor);
     console.log(new RegExp(forHex).test(this.state.newCircleColor));
+    console.log(this.props);
+
     if (
       this.state.newCircleColor.length === 7 &&
       new RegExp(forHex).test(this.state.newCircleColor)
@@ -62,9 +64,9 @@ class EditCircleModal extends Component {
       console.log("valid circle color");
       circleColorTextColor = this.state.newCircleColor;
     } else if (this.state.newCircleColor.length === 0) {
-      circleColorTextColor = "#007bff"; //blue
+      circleColorTextColor = "#007bff";
     } else {
-      circleColorTextColor = "#212529"; //black
+      circleColorTextColor = "#212529";
     }
 
     if (
@@ -74,9 +76,9 @@ class EditCircleModal extends Component {
       console.log("valid circle color");
       circleHighlightTextColor = this.state.newCircleHighlight;
     } else if (this.state.newCircleHighlight.length === 0) {
-      circleHighlightTextColor = "#ff495c"; //red
+      circleHighlightTextColor = "#ff495c";
     } else {
-      circleHighlightTextColor = "#212529"; //black
+      circleHighlightTextColor = "#212529";
     }
     console.log(this.state);
     return (

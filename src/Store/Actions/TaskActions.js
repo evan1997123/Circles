@@ -3,11 +3,8 @@
 
 //action creator for creating a task and storing it in firestore database
 //input: task data object
-export const createTask = task => {
-  return (dispatch, getState, {
-    getFirebase,
-    getFirestore
-  }) => {
+export const createTask = (task) => {
+  return (dispatch, getState, { getFirebase, getFirestore }) => {
     //pause dispatch
     //do async calls to Database
     //this is asynchronous and returns a Promise. This promise we can use then, which only fires when promise is returned
@@ -21,11 +18,11 @@ export const createTask = task => {
       .collection("users")
       .doc(task.assignedForID)
       .get()
-      .then(doc => {
+      .then((doc) => {
         if (!doc.exists) {
           dispatch({
             type: "CREATE_TASK_ERROR",
-            err: "couldn't find User corresponding to Task (i.e. assignedFor)"
+            err: "couldn't find User corresponding to Task (i.e. assignedFor)",
           });
         } else {
           assignedFor = doc.data().firstName + " " + doc.data().lastName;
@@ -40,7 +37,7 @@ export const createTask = task => {
             taskStage: "toDo",
             taskID: uuid,
             dismissed: false,
-            recurring: false
+            recurring: "No",
           };
           //add task to firestore, then
           //dispatch action again so be handled by TaskReducer.js
@@ -52,13 +49,13 @@ export const createTask = task => {
             .then(() => {
               dispatch({
                 type: "CREATE_TASK",
-                task: newTask
+                task: newTask,
               });
             })
-            .catch(err => {
+            .catch((err) => {
               dispatch({
                 type: "CREATE_TASK_ERROR",
-                err: err
+                err: err,
               });
             });
         }
@@ -69,10 +66,7 @@ export const createTask = task => {
 //action creator for moving a task, i.e. modifying it's taskStage property in firestore database
 //input: task data object
 export const moveTask = (task, userID) => {
-  return (dispatch, getState, {
-    getFirebase,
-    getFirestore
-  }) => {
+  return (dispatch, getState, { getFirebase, getFirestore }) => {
     //console.log(task);
     //console.log(userID);
 
@@ -82,7 +76,7 @@ export const moveTask = (task, userID) => {
     if (typeof task.taskID === "undefined") {
       dispatch({
         type: "MOVE_TASK_ERROR",
-        err: "taskID is undefined"
+        err: "taskID is undefined",
       });
     } else {
       if (task.taskStage === "toDo") {
@@ -90,21 +84,21 @@ export const moveTask = (task, userID) => {
           .collection("tasks")
           .doc(task.taskID)
           .update({
-            taskStage: "pending"
+            taskStage: "pending",
           })
           .then(() => {
             dispatch({
               type: "MOVE_TASK_TODO2PENDING",
               task: {
                 ...task,
-                taskStage: "pending"
-              }
+                taskStage: "pending",
+              },
             });
           })
-          .catch(err => {
+          .catch((err) => {
             dispatch({
               type: "MOVE_TASK_ERROR",
-              err: err
+              err: err,
             });
           });
       } else if (task.taskStage === "pending") {
@@ -112,7 +106,7 @@ export const moveTask = (task, userID) => {
         if (userID === undefined) {
           dispatch({
             type: "MOVE_TASK_ERROR",
-            err: "userID missing"
+            err: "userID missing",
           });
         } else {
           // if (userID === task.assignedByID) {
@@ -120,7 +114,7 @@ export const moveTask = (task, userID) => {
             .collection("tasks")
             .doc(task.taskID)
             .update({
-              taskStage: "completed"
+              taskStage: "completed",
             })
             .then(() => {
               // // After moving the task to the completed stage I want to also give the user the points
@@ -160,14 +154,14 @@ export const moveTask = (task, userID) => {
                 type: "MOVE_TASK_PENDING2COMPLETED",
                 task: {
                   ...task,
-                  taskStage: "completed"
-                }
+                  taskStage: "completed",
+                },
               });
             })
-            .catch(err => {
+            .catch((err) => {
               dispatch({
                 type: "MOVE_TASK_ERROR",
-                err: err
+                err: err,
               });
             });
 
@@ -180,7 +174,7 @@ export const moveTask = (task, userID) => {
           .collection("tasks")
           .doc(task.taskID)
           .update({
-            taskStage: "dismissed"
+            taskStage: "dismissed",
           })
           .then(() => {
             // After moving the task to the completed stage I want to also give the user the points
@@ -190,7 +184,7 @@ export const moveTask = (task, userID) => {
               .collection("circles")
               .doc(circleID)
               .get()
-              .then(doc => {
+              .then((doc) => {
                 // Update the points
                 var circle = doc.data();
                 var points = circle.points;
@@ -198,35 +192,35 @@ export const moveTask = (task, userID) => {
                 var newPoints = oldPoints + task.reward;
                 var updatedPoints = {
                   ...points,
-                  [userID]: newPoints
+                  [userID]: newPoints,
                 };
                 firestore
                   .collection("circles")
                   .doc(circleID)
                   .update({
-                    points: updatedPoints
+                    points: updatedPoints,
                   })
                   .then(
                     dispatch({
                       type: "MOVE_TASK_COMPLETED2DISMISSED",
                       task: {
                         ...task,
-                        taskStage: "dismissed"
-                      }
+                        taskStage: "dismissed",
+                      },
                     })
                   );
               });
           })
-          .catch(err => {
+          .catch((err) => {
             dispatch({
               type: "MOVE_TASK_ERROR",
-              err: err
+              err: err,
             });
           });
       } else {
         dispatch({
           type: "MOVE_TASK_ERROR",
-          err: "taskStage corrupted: " + task.taskStage
+          err: "taskStage corrupted: " + task.taskStage,
         });
       }
     }
@@ -234,13 +228,10 @@ export const moveTask = (task, userID) => {
 };
 
 // Action creator for deleting a task
-export const deleteTask = taskId => {
+export const deleteTask = (taskId) => {
   // Pause dispatch
   // Make asynchronous call to firebase
-  return (dispatch, getState, {
-    getFirebase,
-    getFirestore
-  }) => {
+  return (dispatch, getState, { getFirebase, getFirestore }) => {
     // Reference to firestore database
     const firestore = getFirestore();
     firestore
@@ -250,50 +241,44 @@ export const deleteTask = taskId => {
       .then(() => {
         // Resume dispatch
         dispatch({
-          type: "DELETE_TASK"
+          type: "DELETE_TASK",
         });
       })
       // Catch promise error
-      .catch(err => {
+      .catch((err) => {
         dispatch({
           type: "DELETE_TASK_ERROR",
-          err
+          err,
         });
       });
   };
 };
 
-export const disapproveTask = taskID => {
-  return (dispatch, getState, {
-    getFirebase,
-    getFirestore
-  }) => {
+export const disapproveTask = (taskID) => {
+  return (dispatch, getState, { getFirebase, getFirestore }) => {
     const firestore = getFirestore();
     firestore
       .collection("tasks")
       .doc(taskID)
       .update({
-        taskStage: "toDo"
+        taskStage: "toDo",
       })
       .then(() => {
         dispatch({
-          type: "DISAPPROVE_TASK"
+          type: "DISAPPROVE_TASK",
         });
       })
-      .catch(err => {
+      .catch((err) => {
         dispatch({
           type: "DISAPPROVE_TASK_ERROR",
-          err
+          err,
         });
       });
   };
 };
 
-export const editTask = newTaskDetails => {
-  return (dispatch, getState, {
-    getFirebase,
-    getFirestore
-  }) => {
+export const editTask = (newTaskDetails) => {
+  return (dispatch, getState, { getFirebase, getFirestore }) => {
     const firestore = getFirestore();
     firestore
       .collection("tasks")
@@ -305,34 +290,32 @@ export const editTask = newTaskDetails => {
         taskDescription: newTaskDetails.taskDescription,
         reward: newTaskDetails.reward,
         completeBy: newTaskDetails.completeBy,
-        penalty: newTaskDetails.penalty
+        penalty: newTaskDetails.penalty,
+        emoji: newTaskDetails.emoji,
       })
       .then(() => {
         dispatch({
-          type: "EDIT_TASK"
+          type: "EDIT_TASK",
         });
       })
-      .catch(err => {
+      .catch((err) => {
         dispatch({
           type: "EDIT_TASK_ERROR",
-          err
+          err,
         });
       });
   };
 };
 
 export const removeOverdueTasks = (deleteThisTaskID, userID, circleID) => {
-  return (dispatch, getState, {
-    getFirebase,
-    getFirestore
-  }) => {
+  return (dispatch, getState, { getFirebase, getFirestore }) => {
     const firestore = getFirestore();
     // Before removing the task, decrease the user's points
     firestore
       .collection("tasks")
       .doc(deleteThisTaskID)
       .get()
-      .then(doc => {
+      .then((doc) => {
         // Get the penalty associated with this task
         var taskDetails = doc.data();
         var penalty = taskDetails.penalty;
@@ -341,7 +324,7 @@ export const removeOverdueTasks = (deleteThisTaskID, userID, circleID) => {
           .collection("circles")
           .doc(circleID)
           .get()
-          .then(doc => {
+          .then((doc) => {
             // Update user's points
             var circleDetails = doc.data();
             var oldPoints = circleDetails.points;
@@ -350,15 +333,17 @@ export const removeOverdueTasks = (deleteThisTaskID, userID, circleID) => {
             console.log(oldPoints[userID] - penalty);
             var newPoints = {
               ...oldPoints,
-              [userID]: oldPoints[userID] - penalty >= 0 ?
-                oldPoints[userID] - penalty : 0
+              [userID]:
+                oldPoints[userID] - penalty >= 0
+                  ? oldPoints[userID] - penalty
+                  : 0,
             };
             // Update the Circle
             firestore
               .collection("circles")
               .doc(circleID)
               .update({
-                points: newPoints
+                points: newPoints,
               })
               .then(() => {
                 // Remove task
@@ -368,45 +353,41 @@ export const removeOverdueTasks = (deleteThisTaskID, userID, circleID) => {
                   .delete()
                   .then(() => {
                     dispatch({
-                      type: "REMOVE_OVERDUE_TASKS"
+                      type: "REMOVE_OVERDUE_TASKS",
                     });
                   })
-                  .catch(err => {
+                  .catch((err) => {
                     dispatch({
                       type: "REMOVE_OVERDUE_TASKS_ERROR",
-                      err
+                      err,
                     });
                   });
               })
-              .catch(err => {
+              .catch((err) => {
                 dispatch({
                   type: "REMOVE_OVERDUE_TASKS_ERROR",
-                  err
+                  err,
                 });
               });
           })
-          .catch(err => {
+          .catch((err) => {
             dispatch({
               type: "REMOVE_OVERDUE_TASKS_ERROR",
-              err
+              err,
             });
           });
       })
-      .catch(err => {
+      .catch((err) => {
         dispatch({
           type: "REMOVE_OVERDUE_TASKS_ERROR",
-          err
+          err,
         });
       });
   };
 };
 
-
 export const createRecurringTask = (recurringTaskDetails) => {
-  return (dispatch, getState, {
-    getFirebase,
-    getFirestore
-  }) => {
+  return (dispatch, getState, { getFirebase, getFirestore }) => {
     console.log(recurringTaskDetails);
     const firestore = getFirestore();
     const profile = getState().firebase.profile;
@@ -420,7 +401,7 @@ export const createRecurringTask = (recurringTaskDetails) => {
       .collection("users")
       .doc(recurringTaskDetails.assignedForID)
       .get()
-      .then(doc => {
+      .then((doc) => {
         if (!doc.exists) {
           // Do something (user doesn't exist)
         } else {
@@ -430,14 +411,15 @@ export const createRecurringTask = (recurringTaskDetails) => {
             var uuid = uuidv4();
             var selectedDay = selectedDays[i];
             var month =
-              selectedDay.getMonth() < 10 ?
-              "0" + (selectedDay.getMonth() + 1) :
-              selectedDay.getMonth() + 1;
+              selectedDay.getMonth() < 10
+                ? "0" + (selectedDay.getMonth() + 1)
+                : selectedDay.getMonth() + 1;
             var day =
-              selectedDay.getDate() < 10 ?
-              "0" + selectedDay.getDate() :
-              selectedDay.getDate();
-            var completeBy = selectedDay.getFullYear() + "-" + month + "-" + day;
+              selectedDay.getDate() < 10
+                ? "0" + selectedDay.getDate()
+                : selectedDay.getDate();
+            var completeBy =
+              selectedDay.getFullYear() + "-" + month + "-" + day;
             listOfTaskIDs.push(uuid);
             console.log(listOfTaskIDs);
             var newTask = {
@@ -454,10 +436,11 @@ export const createRecurringTask = (recurringTaskDetails) => {
               taskStage: "toDo",
               taskID: uuid,
               dismissed: false,
-              recurring: true,
+              recurring: "Yes",
               recurringTaskNodeID: recurringTaskNodeID,
-              completeBy: completeBy
-            }
+              completeBy: completeBy,
+              emoji: recurringTaskDetails.emoji,
+            };
             firestore
               .collection("tasks")
               .doc(uuid)
@@ -465,14 +448,14 @@ export const createRecurringTask = (recurringTaskDetails) => {
               .then(() => {
                 dispatch({
                   type: "CREATE_TASK",
-                  task: newTask
-                })
+                  task: newTask,
+                });
               })
-              .catch(err => {
+              .catch((err) => {
                 dispatch({
                   type: "CREATE_TASK_ERROR",
-                  err
-                })
+                  err,
+                });
               });
           }
           // Once finish creating individual tasks, create the node
@@ -481,8 +464,8 @@ export const createRecurringTask = (recurringTaskDetails) => {
             circleID: recurringTaskDetails.circleID,
             listOfTaskIDs: listOfTaskIDs.slice(),
             selectedDays: selectedDays,
-            recurringTaskNodeID: recurringTaskNodeID
-          }
+            recurringTaskNodeID: recurringTaskNodeID,
+          };
           firestore
             .collection("recurringTaskNodes")
             .doc(recurringTaskNodeID)
@@ -490,16 +473,116 @@ export const createRecurringTask = (recurringTaskDetails) => {
             .then(() => {
               dispatch({
                 type: "CREATE_RECURRING_TASK_NODE",
-                recurringTaskNode: recurringTaskNodeDetails
-              })
+                recurringTaskNode: recurringTaskNodeDetails,
+              });
             })
-            .catch(err => {
+            .catch((err) => {
               dispatch({
                 type: "CREATE_RECURRING_TASK_NODE_ERROR",
-                err
-              })
+                err,
+              });
+            });
+        }
+      });
+  };
+};
+
+export const submitEditedRecurringTask = (newRecurringTaskDetails) => {
+  return (dispatch, getState, { getFirebase, getFirestore }) => {
+    const firestore = getFirestore();
+    console.log(newRecurringTaskDetails);
+    var recurringTaskNodeId = newRecurringTaskDetails.recurringTaskNodeID;
+    firestore
+      .collection("recurringTaskNodes")
+      .doc(recurringTaskNodeId)
+      .get()
+      .then((doc) => {
+        console.log(doc.data());
+        var listOfTaskId = doc.data().listOfTaskIDs;
+        for (var i = 0; i < listOfTaskId.length; i++) {
+          var taskId = listOfTaskId[i];
+          console.log(taskId);
+          firestore
+            .collection("tasks")
+            .doc(taskId)
+            .update({
+              taskName: newRecurringTaskDetails.taskName,
+              taskDescription: newRecurringTaskDetails.taskDescription,
+              reward: newRecurringTaskDetails.reward,
+              penalty: newRecurringTaskDetails.penalty,
+              emoji: newRecurringTaskDetails.emoji,
             })
+            .then(() => {
+              dispatch({
+                type: "EDITED_ONE_RECURRING_TASK",
+              });
+            })
+            .catch((err) => {
+              dispatch({
+                type: "EDIT_RECURRING_TASK_ERROR",
+                err,
+              });
+            });
         }
       })
-  }
-}
+      .catch((err) => {
+        dispatch({
+          type: "EDIT_RECURRING_TASK_ERROR",
+          err,
+        });
+      });
+  };
+};
+
+export const deleteRecurringTasks = (recurringTaskNodeId) => {
+  return (dispatch, getState, { getFirebase, getFirestore }) => {
+    var firestore = getFirestore();
+    firestore
+      .collection("recurringTaskNodes")
+      .doc(recurringTaskNodeId)
+      .get()
+      .then((recurringTaskNode) => {
+        var listOfTaskId = recurringTaskNode.data().listOfTaskIDs;
+        console.log(listOfTaskId);
+        for (var i = 0; i < listOfTaskId.length; i++) {
+          var taskId = listOfTaskId[i];
+          firestore
+            .collection("tasks")
+            .doc(taskId)
+            .delete()
+            .then(() => {
+              dispatch({
+                type: "DELETED_ONE_RECURRING_TASK",
+              });
+            })
+            .catch((err) => {
+              dispatch({
+                type: "DELETE_RECURRING_TASK_ERROR",
+                err,
+              });
+            });
+        }
+        firestore
+          .collection("recurringTaskNodes")
+          .doc(recurringTaskNodeId)
+          .delete()
+          .then(() => {
+            dispatch({
+              type: "DELETED_RECURRING_TASK_NODE",
+            });
+          })
+          .catch((err) => {
+            dispatch({
+              type: "DELETE_RECURRING_TASK_ERROR",
+              err,
+            });
+          });
+      })
+      .catch((err) => {
+        dispatch({
+          type: "DELETE_RECURRING_TASK_ERROR",
+          err,
+        });
+      });
+  };
+};
